@@ -1,5 +1,7 @@
 package com.mateo.wallet.transaction.service;
 
+import com.mateo.wallet.common.exception.InsufficientBalanceException;
+import com.mateo.wallet.common.exception.ResourceNotFoundException;
 import com.mateo.wallet.transaction.model.Transaction;
 import com.mateo.wallet.transaction.repository.TransactionRepository;
 import com.mateo.wallet.wallet.model.Wallet;
@@ -26,13 +28,13 @@ public class TransactionServiceImpl implements TransactionService {
     public void transfer(Long fromUserId, Long toUserId, BigDecimal amount) {
 
         Wallet fromWallet = walletRepository.findByUserId(fromUserId)
-                .orElseThrow(() -> new RuntimeException("Source wallet not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
         Wallet toWallet = walletRepository.findByUserId(toUserId)
-                .orElseThrow(() -> new RuntimeException("Destination wallet not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
         if (fromWallet.getBalance().compareTo(amount) < 0) {
-            throw new RuntimeException("Insufficient balance");
+            throw new InsufficientBalanceException();
         }
 
         // descontar

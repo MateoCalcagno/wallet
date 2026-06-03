@@ -1,5 +1,6 @@
 package com.mateo.wallet.user.service;
 
+import com.mateo.wallet.common.exception.ResourceNotFoundException;
 import com.mateo.wallet.user.dto.UserRequest;
 import com.mateo.wallet.user.dto.UserResponse;
 import com.mateo.wallet.user.model.User;
@@ -40,7 +41,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse getUserById(Long id) {
 
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
         return new UserResponse(user.getId(), user.getEmail());
     }

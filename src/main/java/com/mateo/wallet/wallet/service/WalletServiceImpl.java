@@ -1,5 +1,7 @@
 package com.mateo.wallet.wallet.service;
 
+import com.mateo.wallet.common.exception.InsufficientBalanceException;
+import com.mateo.wallet.common.exception.ResourceNotFoundException;
 import com.mateo.wallet.wallet.model.Wallet;
 import com.mateo.wallet.wallet.repository.WalletRepository;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,7 @@ public class WalletServiceImpl implements WalletService {
     public BigDecimal getBalance(Long userId) {
 
         Wallet wallet = walletRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
         return wallet.getBalance();
     }
@@ -30,7 +32,7 @@ public class WalletServiceImpl implements WalletService {
     public void deposit(Long userId, BigDecimal amount) {
 
         Wallet wallet = walletRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
         wallet.deposit(amount);
     }
@@ -40,10 +42,10 @@ public class WalletServiceImpl implements WalletService {
     public void withdraw(Long userId, BigDecimal amount) {
 
         Wallet wallet = walletRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
         if (wallet.getBalance().compareTo(amount) < 0) {
-            throw new RuntimeException("Insufficient balance");
+            throw new InsufficientBalanceException();
         }
 
         wallet.withdraw(amount);
