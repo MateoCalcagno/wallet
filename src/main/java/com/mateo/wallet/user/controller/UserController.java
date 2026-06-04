@@ -3,6 +3,9 @@ package com.mateo.wallet.user.controller;
 import com.mateo.wallet.user.dto.UserRequest;
 import com.mateo.wallet.user.dto.UserResponse;
 import com.mateo.wallet.user.service.UserService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest request) {
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest request) {
         return ResponseEntity.ok(userService.createUser(request));
     }
 

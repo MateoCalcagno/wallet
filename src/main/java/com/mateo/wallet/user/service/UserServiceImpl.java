@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse getUserById(Long id) {
 
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return new UserResponse(user.getId(), user.getEmail());
     }

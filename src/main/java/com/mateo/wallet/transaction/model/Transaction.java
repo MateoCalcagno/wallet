@@ -25,8 +25,9 @@ public class Transaction {
     @Column(nullable = false)
     private BigDecimal amount;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String type; // TRANSFER
+    private TransactionType type;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -37,7 +38,7 @@ public class Transaction {
     public Transaction(Wallet sourceWallet,
                        Wallet destinationWallet,
                        BigDecimal amount,
-                       String type) {
+                       TransactionType type) {
         this.sourceWallet = sourceWallet;
         this.destinationWallet = destinationWallet;
         this.amount = amount;

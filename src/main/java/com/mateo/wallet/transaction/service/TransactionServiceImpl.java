@@ -3,6 +3,7 @@ package com.mateo.wallet.transaction.service;
 import com.mateo.wallet.common.exception.InsufficientBalanceException;
 import com.mateo.wallet.common.exception.ResourceNotFoundException;
 import com.mateo.wallet.transaction.model.Transaction;
+import com.mateo.wallet.transaction.model.TransactionType;
 import com.mateo.wallet.transaction.repository.TransactionRepository;
 import com.mateo.wallet.wallet.model.Wallet;
 import com.mateo.wallet.wallet.repository.WalletRepository;
@@ -44,12 +45,7 @@ public class TransactionServiceImpl implements TransactionService {
         toWallet.deposit(amount);
 
         // guardar transacción
-        Transaction transaction = new Transaction(
-                fromWallet,
-                toWallet,
-                amount,
-                "TRANSFER"
-        );
+        Transaction transaction = new Transaction(fromWallet, toWallet, amount, TransactionType.TRANSFER);
 
         transactionRepository.save(transaction);
     }
