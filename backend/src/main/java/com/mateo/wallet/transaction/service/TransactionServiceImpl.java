@@ -28,13 +28,20 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public void transfer(String fromEmail, Long toUserId, BigDecimal amount) {
+    public void transfer(String fromEmail, String toEmail, BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+
+        if (fromEmail.equalsIgnoreCase(toEmail)) {
+            throw new IllegalArgumentException("Cannot transfer to yourself");
+        }
 
         Wallet fromWallet = walletRepository.findByUserEmail(fromEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
-        Wallet toWallet = walletRepository.findByUserId(toUserId)
-                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
+        Wallet toWallet = walletRepository.findByUserEmail(toEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Destination wallet not found"));
 
         if (fromWallet.getBalance().compareTo(amount) < 0) {
             throw new InsufficientBalanceException();

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 
 function Transfer() {
-  const [toUserId, setToUserId] = useState('')
+  const [toEmail, setToEmail] = useState('')
   const [amount, setAmount] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -12,11 +12,11 @@ function Transfer() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await api.post(`/transactions/transfer?toUserId=${toUserId}&amount=${amount}`)
+      await api.post(`/transactions/transfer?toEmail=${toEmail}&amount=${amount}`)
       setSuccess(true)
       setTimeout(() => navigate('/dashboard'), 1500)
     } catch (err) {
-      setError('Error al transferir, verificá el ID y el saldo')
+      setError('Error al transferir, verificá el email y el saldo')
     }
   }
 
@@ -30,13 +30,12 @@ function Transfer() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">ID del destinatario</label>
+            <label className="block text-sm font-medium text-gray-700">Email del destinatario</label>
             <input
-              type="number"
-              value={toUserId}
-              onChange={(e) => setToUserId(e.target.value)}
+              type="email"
+              value={toEmail}
+              onChange={(e) => setToEmail(e.target.value)}
               className="mt-1 w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-              min="1"
             />
           </div>
           <div>

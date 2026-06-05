@@ -3,6 +3,7 @@ package com.mateo.wallet.wallet.controller;
 import com.mateo.wallet.wallet.service.WalletService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.math.BigDecimal;
 
@@ -16,22 +17,22 @@ public class WalletController {
         this.walletService = walletService;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<BigDecimal> getBalance(@PathVariable Long userId) {
-        return ResponseEntity.ok(walletService.getBalance(userId));
+    @GetMapping("/me")
+    public ResponseEntity<BigDecimal> getBalance(@AuthenticationPrincipal String email) {
+        return ResponseEntity.ok(walletService.getBalance(email));
     }
 
     @PostMapping("/deposit")
-    public ResponseEntity<Void> deposit(@RequestParam Long userId,
-                                        @RequestParam BigDecimal amount) {
-        walletService.deposit(userId, amount);
+    public ResponseEntity<Void> deposit(@RequestParam BigDecimal amount,
+                                         @AuthenticationPrincipal String email) {
+        walletService.deposit(email, amount);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/withdraw")
-    public ResponseEntity<Void> withdraw(@RequestParam Long userId,
-                                          @RequestParam BigDecimal amount) {
-        walletService.withdraw(userId, amount);
+    public ResponseEntity<Void> withdraw(@RequestParam BigDecimal amount,
+                                          @AuthenticationPrincipal String email) {
+        walletService.withdraw(email, amount);
         return ResponseEntity.ok().build();
     }
 }

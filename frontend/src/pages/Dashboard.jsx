@@ -15,18 +15,17 @@ function Dashboard() {
   }
 
   const fetchData = async () => {
-    try {
-      const meRes = await api.get('/users/me')
-      const userId = meRes.data.id
-      const [balanceRes, historyRes] = await Promise.all([
-        api.get(`/wallet/${userId}`),
-        api.get('/transactions/history')
-      ])
-      setBalance(balanceRes.data)
-      setHistory(historyRes.data)
-    } catch (err) {
-      navigate('/login')
-    }
+      try {
+        const [meRes, balanceRes, historyRes] = await Promise.all([
+          api.get('/users/me'),
+          api.get('/wallet/me'),
+          api.get('/transactions/history')
+        ])
+        setBalance(balanceRes.data)
+        setHistory(historyRes.data)
+      } catch (err) {
+        navigate('/login')
+      }
   }
 
   useEffect(() => {

@@ -8,24 +8,15 @@ function Deposit() {
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
 
-  const getUserId = () => {
-    const token = localStorage.getItem('token')
-    if (!token) return null
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    return payload.sub
-  }
-
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    try {
-      const meRes = await api.get('/users/me')
-      const userId = meRes.data.id
-      await api.post(`/wallet/deposit?userId=${userId}&amount=${amount}`)
-      setSuccess(true)
-      setTimeout(() => navigate('/dashboard'), 1500)
-    } catch (err) {
-      setError('Error al depositar')
-    }
+      e.preventDefault()
+      try {
+        await api.post(`/wallet/deposit?amount=${amount}`)
+        setSuccess(true)
+        setTimeout(() => navigate('/dashboard'), 1500)
+      } catch (err) {
+        setError('Error al depositar')
+      }
   }
 
   return (

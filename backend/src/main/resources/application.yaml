@@ -4,8 +4,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/wallet-db?currentSchema=public&stringtype=unspecified&reWriteBatchedInserts=true
-    username: mateo
-    password: 1234
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -22,5 +22,5 @@ server:
   port: 8080
 
 jwt:
-  secret: unaClaveSecretaMuyLargaParaQueSeaSegura1234567890
-  expiration: 86400000
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}

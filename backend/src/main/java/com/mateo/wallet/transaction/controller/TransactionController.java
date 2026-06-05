@@ -21,11 +21,11 @@ public class TransactionController {
 
     @PostMapping("/transfer")
     public ResponseEntity<Void> transfer(
-            @RequestParam Long toUserId,
+            @RequestParam String toEmail,
             @RequestParam BigDecimal amount,
             @AuthenticationPrincipal String email
     ) {
-        transactionService.transfer(email, toUserId, amount);
+        transactionService.transfer(email, toEmail, amount);
         return ResponseEntity.ok().build();
     }
 

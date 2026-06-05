@@ -19,35 +19,34 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public BigDecimal getBalance(Long userId) {
-
-        Wallet wallet = walletRepository.findByUserId(userId)
+    public BigDecimal getBalance(String email) {
+        Wallet wallet = walletRepository.findByUserEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
-
         return wallet.getBalance();
     }
 
     @Override
     @Transactional
-    public void deposit(Long userId, BigDecimal amount) {
-
-        Wallet wallet = walletRepository.findByUserId(userId)
+    public void deposit(String email, BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+        Wallet wallet = walletRepository.findByUserEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
-
         wallet.deposit(amount);
     }
 
     @Override
     @Transactional
-    public void withdraw(Long userId, BigDecimal amount) {
-
-        Wallet wallet = walletRepository.findByUserId(userId)
+    public void withdraw(String email, BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+        Wallet wallet = walletRepository.findByUserEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
-
         if (wallet.getBalance().compareTo(amount) < 0) {
             throw new InsufficientBalanceException();
         }
-
         wallet.withdraw(amount);
     }
 }

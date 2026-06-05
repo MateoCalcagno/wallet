@@ -6,6 +6,7 @@ import com.mateo.wallet.auth.util.JwtUtil;
 import com.mateo.wallet.common.exception.ResourceNotFoundException;
 import com.mateo.wallet.user.model.User;
 import com.mateo.wallet.user.repository.UserRepository;
+import com.mateo.wallet.common.exception.InvalidCredentialsException;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,10 +29,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new InvalidCredentialsException());
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new InvalidCredentialsException();
         }
 
         String token = jwtUtil.generateToken(user.getEmail());
