@@ -7,6 +7,8 @@ import com.mateo.wallet.user.model.User;
 import com.mateo.wallet.user.repository.UserRepository;
 import com.mateo.wallet.wallet.model.Wallet;
 import com.mateo.wallet.wallet.repository.WalletRepository;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,25 +17,23 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final WalletRepository walletRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository,
-                           WalletRepository walletRepository) {
+                        WalletRepository walletRepository,
+                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.walletRepository = walletRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional
     public UserResponse createUser(UserRequest request) {
-
-        // 1. crear user
-        User user = new User(request.getEmail(), request.getPassword());
+        User user = new User(request.getEmail(), passwordEncoder.encode(request.getPassword()));
         User savedUser = userRepository.save(user);
-
-        // 2. crear wallet automáticamente
         Wallet wallet = new Wallet(savedUser);
         walletRepository.save(wallet);
-
         return new UserResponse(savedUser.getId(), savedUser.getEmail());
     }
 

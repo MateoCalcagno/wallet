@@ -51,4 +51,24 @@ public class Transaction {
     public Long getId() {
         return id;
     }
+
+    public Wallet getSourceWallet() {
+        return sourceWallet;
+    }
+
+    public Wallet getDestinationWallet() {
+        return destinationWallet;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public TransactionType getType() {
+        return type;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }

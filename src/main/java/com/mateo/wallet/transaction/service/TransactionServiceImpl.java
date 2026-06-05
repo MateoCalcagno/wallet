@@ -2,6 +2,7 @@ package com.mateo.wallet.transaction.service;
 
 import com.mateo.wallet.common.exception.InsufficientBalanceException;
 import com.mateo.wallet.common.exception.ResourceNotFoundException;
+import com.mateo.wallet.transaction.dto.TransactionResponse;
 import com.mateo.wallet.transaction.model.Transaction;
 import com.mateo.wallet.transaction.model.TransactionType;
 import com.mateo.wallet.transaction.repository.TransactionRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -26,9 +28,9 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public void transfer(Long fromUserId, Long toUserId, BigDecimal amount) {
+    public void transfer(String fromEmail, Long toUserId, BigDecimal amount) {
 
-        Wallet fromWallet = walletRepository.findByUserId(fromUserId)
+        Wallet fromWallet = walletRepository.findByUserEmail(fromEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
         Wallet toWallet = walletRepository.findByUserId(toUserId)
@@ -38,15 +40,30 @@ public class TransactionServiceImpl implements TransactionService {
             throw new InsufficientBalanceException();
         }
 
-        // descontar
         fromWallet.withdraw(amount);
-
-        // acreditar
         toWallet.deposit(amount);
 
-        // guardar transacción
-        Transaction transaction = new Transaction(fromWallet, toWallet, amount, TransactionType.TRANSFER);
+        transactionRepository.save(new Transaction(fromWallet, toWallet, amount, TransactionType.TRANSFER));
+    }
 
-        transactionRepository.save(transaction);
+    @Override
+    public List<TransactionResponse> getHistory(String email) {
+
+        Wallet wallet = walletRepository.findByUserEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
+
+        return transactionRepository
+                .findBySourceWalletIdOrDestinationWalletIdOrderByCreatedAtDesc(
+                    wallet.getId(), wallet.getId()
+                )
+                .stream()
+                .map(t -> new TransactionResponse(
+                    t.getId(),
+                    t.getAmount(),
+                    t.getType(),
+                    t.getSourceWallet().getId().equals(wallet.getId()) ? "SENT" : "RECEIVED",
+                    t.getCreatedAt()
+                ))
+                .toList();
     }
 }
