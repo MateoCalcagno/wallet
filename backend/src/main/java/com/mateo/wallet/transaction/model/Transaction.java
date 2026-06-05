@@ -15,11 +15,11 @@ public class Transaction {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "source_wallet_id")
+    @JoinColumn(name = "source_wallet_id", nullable = true) 
     private Wallet sourceWallet;
 
     @ManyToOne
-    @JoinColumn(name = "destination_wallet_id")
+    @JoinColumn(name = "destination_wallet_id", nullable = true) 
     private Wallet destinationWallet;
 
     @Column(nullable = false)

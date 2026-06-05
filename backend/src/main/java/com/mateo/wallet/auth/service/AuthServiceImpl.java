@@ -3,7 +3,6 @@ package com.mateo.wallet.auth.service;
 import com.mateo.wallet.auth.dto.LoginRequest;
 import com.mateo.wallet.auth.dto.LoginResponse;
 import com.mateo.wallet.auth.util.JwtUtil;
-import com.mateo.wallet.common.exception.ResourceNotFoundException;
 import com.mateo.wallet.user.model.User;
 import com.mateo.wallet.user.repository.UserRepository;
 import com.mateo.wallet.common.exception.InvalidCredentialsException;

@@ -1,5 +1,6 @@
 package com.mateo.wallet.user.service;
 
+import com.mateo.wallet.common.exception.EmailAlreadyExistsException;
 import com.mateo.wallet.common.exception.ResourceNotFoundException;
 import com.mateo.wallet.user.dto.UserRequest;
 import com.mateo.wallet.user.dto.UserResponse;
@@ -30,6 +31,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse createUser(UserRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new EmailAlreadyExistsException();
+        }
         User user = new User(request.getEmail(), passwordEncoder.encode(request.getPassword()));
         User savedUser = userRepository.save(user);
         Wallet wallet = new Wallet(savedUser);

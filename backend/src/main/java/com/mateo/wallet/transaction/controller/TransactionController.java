@@ -1,12 +1,15 @@
 package com.mateo.wallet.transaction.controller;
 
 import com.mateo.wallet.transaction.dto.TransactionResponse;
+import com.mateo.wallet.transaction.dto.TransferRequest;
 import com.mateo.wallet.transaction.service.TransactionService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -21,11 +24,10 @@ public class TransactionController {
 
     @PostMapping("/transfer")
     public ResponseEntity<Void> transfer(
-            @RequestParam String toEmail,
-            @RequestParam BigDecimal amount,
+            @RequestBody @Valid TransferRequest request,
             @AuthenticationPrincipal String email
     ) {
-        transactionService.transfer(email, toEmail, amount);
+        transactionService.transfer(email, request.getToEmail(), request.getAmount());
         return ResponseEntity.ok().build();
     }
 

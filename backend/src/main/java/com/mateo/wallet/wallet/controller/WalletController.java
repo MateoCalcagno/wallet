@@ -1,6 +1,12 @@
 package com.mateo.wallet.wallet.controller;
 
 import com.mateo.wallet.wallet.service.WalletService;
+
+import jakarta.validation.Valid;
+
+import com.mateo.wallet.wallet.dto.DepositRequest;
+import com.mateo.wallet.wallet.dto.WithdrawRequest;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,16 +29,18 @@ public class WalletController {
     }
 
     @PostMapping("/deposit")
-    public ResponseEntity<Void> deposit(@RequestParam BigDecimal amount,
-                                         @AuthenticationPrincipal String email) {
-        walletService.deposit(email, amount);
+    public ResponseEntity<Void> deposit(
+            @RequestBody @Valid DepositRequest request,
+            @AuthenticationPrincipal String email
+    ){
+        walletService.deposit(email, request.getAmount());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/withdraw")
-    public ResponseEntity<Void> withdraw(@RequestParam BigDecimal amount,
-                                          @AuthenticationPrincipal String email) {
-        walletService.withdraw(email, amount);
+    public ResponseEntity<Void> withdraw(@RequestBody @Valid WithdrawRequest request,
+                                        @AuthenticationPrincipal String email) {
+        walletService.withdraw(email, request.getAmount());
         return ResponseEntity.ok().build();
     }
 }

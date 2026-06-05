@@ -68,7 +68,8 @@ public class TransactionServiceImpl implements TransactionService {
                     t.getId(),
                     t.getAmount(),
                     t.getType(),
-                    t.getSourceWallet().getId().equals(wallet.getId()) ? "SENT" : "RECEIVED",
+                    t.getSourceWallet() != null && t.getSourceWallet().getId().equals(wallet.getId())
+                        ? "SENT" : "RECEIVED",
                     t.getCreatedAt()
                 ))
                 .toList();

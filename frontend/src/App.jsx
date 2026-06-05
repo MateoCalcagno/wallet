@@ -4,6 +4,7 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Deposit from './pages/Deposit'
 import Transfer from './pages/Transfer'
+import Withdraw from './pages/Withdraw'
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token')
@@ -18,6 +19,7 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
       <Route path="/deposit" element={<PrivateRoute><Deposit /></PrivateRoute>} />
+      <Route path="/withdraw" element={<PrivateRoute><Withdraw /></PrivateRoute>} />
       <Route path="/transfer" element={<PrivateRoute><Transfer /></PrivateRoute>} />
     </Routes>
   )

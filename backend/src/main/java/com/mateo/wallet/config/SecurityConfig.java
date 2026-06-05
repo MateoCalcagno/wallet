@@ -1,5 +1,6 @@
 package com.mateo.wallet.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,6 +21,9 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
 
+    @Value("${cors.allowed-origin}")
+    private String allowedOrigin;
+
     public SecurityConfig(JwtFilter jwtFilter, JwtAuthEntryPoint jwtAuthEntryPoint) {
         this.jwtFilter = jwtFilter;
         this.jwtAuthEntryPoint = jwtAuthEntryPoint;
@@ -33,7 +37,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOrigins(List.of(allowedOrigin));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
