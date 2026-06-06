@@ -59,7 +59,13 @@ public class SecurityConfig {
                 .authenticationEntryPoint(jwtAuthEntryPoint)
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/login", "/users").permitAll()
+                .requestMatchers(
+        "/auth/login",
+                    "/users",
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html"
+            ).permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

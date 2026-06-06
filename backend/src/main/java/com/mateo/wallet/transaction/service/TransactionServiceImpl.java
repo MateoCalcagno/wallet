@@ -55,7 +55,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<TransactionResponse> getHistory(String email) {
-
         Wallet wallet = walletRepository.findByUserEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
@@ -64,14 +63,28 @@ public class TransactionServiceImpl implements TransactionService {
                     wallet.getId(), wallet.getId()
                 )
                 .stream()
-                .map(t -> new TransactionResponse(
-                    t.getId(),
-                    t.getAmount(),
-                    t.getType(),
-                    t.getSourceWallet() != null && t.getSourceWallet().getId().equals(wallet.getId())
-                        ? "SENT" : "RECEIVED",
-                    t.getCreatedAt()
-                ))
+                .map(t -> {
+                    boolean isSender = t.getSourceWallet() != null
+                            && t.getSourceWallet().getId().equals(wallet.getId());
+
+                    String direction = isSender ? "SENT" : "RECEIVED";
+
+                    String counterpartEmail = null;
+                    if (t.getType() == TransactionType.TRANSFER) {
+                        counterpartEmail = isSender
+                                ? t.getDestinationWallet().getUser().getEmail()
+                                : t.getSourceWallet().getUser().getEmail();
+                    }
+
+                    return new TransactionResponse(
+                            t.getId(),
+                            t.getAmount(),
+                            t.getType(),
+                            direction,
+                            counterpartEmail,
+                            t.getCreatedAt()
+                    );
+                })
                 .toList();
     }
 }

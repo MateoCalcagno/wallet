@@ -1,5 +1,6 @@
 package com.mateo.wallet.auth.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 public class JwtUtil {
@@ -30,24 +32,17 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String extractEmail(String token) {
-        return Jwts.parser()
-                .verifyWith(getKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .getSubject();
-    }
-
-    public boolean isTokenValid(String token) {
+    // Devuelve el email si el token es válido, vacío si no
+    public Optional<String> extractEmailIfValid(String token) {
         try {
-            Jwts.parser()
+            Claims claims = Jwts.parser()
                     .verifyWith(getKey())
                     .build()
-                    .parseSignedClaims(token);
-            return true;
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return Optional.of(claims.getSubject());
         } catch (Exception e) {
-            return false;
+            return Optional.empty();
         }
     }
 }

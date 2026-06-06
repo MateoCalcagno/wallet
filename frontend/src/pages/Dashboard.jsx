@@ -44,8 +44,8 @@ function Dashboard() {
   const getLabel = (t) => {
     if (t.type === 'DEPOSIT') return 'Depósito'
     if (t.type === 'WITHDRAWAL') return 'Retiro'
-    if (t.direction === 'SENT') return 'Transferencia enviada'
-    return 'Transferencia recibida'
+    if (t.direction === 'SENT') return `Enviado a ${t.counterpartEmail}`
+    return `Recibido de ${t.counterpartEmail}`
   }
 
   const getAmountColor = (t) => {
