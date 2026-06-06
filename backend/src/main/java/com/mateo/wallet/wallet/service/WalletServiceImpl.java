@@ -57,4 +57,15 @@ public class WalletServiceImpl implements WalletService {
         wallet.withdraw(amount);
         transactionRepository.save(new Transaction(wallet, null, amount, TransactionType.WITHDRAWAL));
     }
+
+    @Override
+    @Transactional
+    public void updateAlias(String email, String alias) {
+        if (walletRepository.existsByAlias(alias)) {
+            throw new IllegalArgumentException("Alias already in use");
+        }
+        Wallet wallet = walletRepository.findByUserEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
+        wallet.setAlias(alias.toLowerCase());
+    }
 }

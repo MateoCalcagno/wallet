@@ -5,7 +5,7 @@ import api from '../api/axios'
 function Dashboard() {
   const [balance, setBalance] = useState(null)
   const [history, setHistory] = useState([])
-  const [email, setEmail] = useState('')
+  const [user, setUser] = useState(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -16,7 +16,7 @@ function Dashboard() {
           api.get('/wallet/me'),
           api.get('/transactions/history')
         ])
-        setEmail(meRes.data.email)
+        setUser(meRes.data)
         setBalance(balanceRes.data)
         setHistory(historyRes.data)
       } catch (err) {
@@ -129,10 +129,10 @@ function Dashboard() {
 
         {/* Topbar */}
         <div className="bg-white border-b border-gray-100 px-6 py-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-base font-medium text-gray-900">Buen día</h1>
-            <p className="text-xs text-gray-400 mt-0.5">{email || '...'}</p>
-          </div>
+          <h1 className="text-base font-medium text-gray-900">
+            Hola, {user?.firstName || ''} !
+          </h1>
+          <p className="text-xs text-gray-400 mt-0.5">{user?.email || '...'}</p>
           <div className="w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -178,6 +178,47 @@ function Dashboard() {
                 </svg>
                 Retirar
               </button>
+            </div>
+          </div>
+
+          {/* CBU y Alias */}
+          <div className="bg-white rounded-xl border border-gray-100 p-4 flex flex-col gap-3">
+            <p className="text-xs font-medium text-gray-400">Tus datos bancarios</p>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-gray-400 mb-0.5">CBU</p>
+                <p className="text-sm font-mono text-gray-800">{user?.cbu || '...'}</p>
+              </div>
+              <button
+                onClick={() => navigator.clipboard.writeText(user?.cbu)}
+                className="text-xs text-blue-500 hover:text-blue-700 transition"
+              >
+                Copiar
+              </button>
+            </div>
+
+            <div className="h-px bg-gray-50" />
+
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-gray-400 mb-0.5">Alias</p>
+                <p className="text-sm font-mono text-gray-800">{user?.alias || '...'}</p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => navigator.clipboard.writeText(user?.alias)}
+                  className="text-xs text-blue-500 hover:text-blue-700 transition"
+                >
+                  Copiar
+                </button>
+                <button
+                  onClick={() => navigate('/profile')}
+                  className="text-xs text-gray-400 hover:text-gray-600 transition"
+                >
+                  Editar
+                </button>
+              </div>
             </div>
           </div>
 

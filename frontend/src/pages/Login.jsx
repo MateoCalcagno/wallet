@@ -43,51 +43,9 @@ function Login() {
           <h2 className="text-white text-2xl font-medium leading-snug mb-3">
             Tu dinero,<br />bajo control.
           </h2>
-          <p className="text-slate-400 text-sm leading-relaxed mb-8">
+          <p className="text-slate-400 text-sm leading-relaxed">
             Administrá tu saldo, transferí y hacé depósitos en segundos.
           </p>
-
-          {/* Tarjeta decorativa */}
-          <div className="bg-blue-900 rounded-2xl p-5 relative overflow-hidden">
-            <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-blue-600 opacity-25" />
-            <div className="absolute -bottom-5 left-8 w-16 h-16 rounded-full bg-blue-500 opacity-15" />
-
-            {/* Top */}
-            <div className="flex justify-between items-start mb-6">
-              <div className="w-7 h-5 bg-yellow-400 rounded-sm" />
-              <div className="flex">
-                <div className="w-5 h-5 rounded-full bg-red-500 opacity-80" />
-                <div className="w-5 h-5 rounded-full bg-orange-500 opacity-80 -ml-2" />
-              </div>
-            </div>
-
-            {/* Número enmascarado */}
-            <div className="flex items-center gap-2 mb-6">
-              {[0, 1, 2, 3].map((g) => (
-                <div key={g} className="flex gap-1">
-                  {[0, 1, 2, 3].map((d) => (
-                    <div key={d} className="w-1.5 h-1.5 rounded-full bg-slate-400 opacity-60" />
-                  ))}
-                  {g < 3 && <div className="w-3 h-px bg-slate-600 mx-1 self-center" />}
-                </div>
-              ))}
-            </div>
-
-            {/* Bottom */}
-            <div className="flex justify-between items-end">
-              <div>
-                <p className="text-slate-500 text-xs mb-1">Titular</p>
-                <p className="text-slate-300 text-sm font-medium">•••• ••••••</p>
-              </div>
-              <div>
-                <p className="text-slate-500 text-xs mb-1">Vencimiento</p>
-                <p className="text-slate-300 text-sm font-medium">••/••</p>
-              </div>
-              <svg viewBox="0 0 24 24" fill="none" stroke="#475569" strokeWidth={1.5} className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z" />
-              </svg>
-            </div>
-          </div>
         </div>
 
         <div className="z-10">

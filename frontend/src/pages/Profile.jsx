@@ -1,28 +1,37 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 
-function Transfer() {
-  const [identifier, setIdentifier] = useState('')
-  const [amount, setAmount] = useState('')
+function Profile() {
+  const [alias, setAlias] = useState('')
+  const [currentAlias, setCurrentAlias] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
 
+  useEffect(() => {
+    api.get('/users/me').then(res => {
+      setCurrentAlias(res.data.alias || '')
+      setAlias(res.data.alias || '')
+    }).catch(() => navigate('/login'))
+  }, [])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    const parsed = parseFloat(amount)
-    if (isNaN(parsed) || parsed <= 0) {
-      setError('Ingresá un monto válido')
+    setSuccess(false)
+
+    if (!/^[a-zA-Z]+\.[a-zA-Z]+\.[a-zA-Z]+$/.test(alias)) {
+      setError('El alias debe tener el formato palabra.palabra.palabra')
       return
     }
+
     try {
-      await api.post('/transactions/transfer', { identifier, amount: parsed })
+      await api.patch('/wallet/alias', { alias })
+      setCurrentAlias(alias)
       setSuccess(true)
-      setTimeout(() => navigate('/dashboard'), 1500)
     } catch (err) {
-      setError(err.response?.data?.message || 'Error al transferir')
+      setError(err.response?.data?.message || 'Error al actualizar el alias')
     }
   }
 
@@ -45,10 +54,10 @@ function Transfer() {
 
         <div className="z-10">
           <h2 className="text-white text-2xl font-medium leading-snug mb-3">
-            Transferí dinero<br />en segundos.
+            Tu alias,<br />tu identidad.
           </h2>
           <p className="text-slate-400 text-sm leading-relaxed">
-            Usá el CBU o alias del destinatario.
+            Personalizá tu alias para recibir transferencias más fácil.
           </p>
         </div>
 
@@ -62,8 +71,10 @@ function Transfer() {
         <div className="max-w-sm w-full mx-auto">
 
           <div className="mb-8">
-            <h1 className="text-xl font-medium text-gray-900 mb-1">Transferir</h1>
-            <p className="text-sm text-gray-500">Ingresá el CBU o alias del destinatario</p>
+            <h1 className="text-xl font-medium text-gray-900 mb-1">Editar alias</h1>
+            <p className="text-sm text-gray-500">
+              Alias actual: <span className="font-mono text-gray-700">{currentAlias || '...'}</span>
+            </p>
           </div>
 
           {error && (
@@ -74,54 +85,37 @@ function Transfer() {
 
           {success && (
             <div className="mb-4 px-4 py-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-600">
-              ¡Transferencia exitosa! Redirigiendo...
+              ¡Alias actualizado correctamente!
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">CBU o Alias</label>
+              <label className="block text-xs font-medium text-gray-500 mb-1.5">Nuevo alias</label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                   </svg>
                 </span>
                 <input
                   type="text"
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
-                  placeholder="sol.luna.rio  ó  1234567890123456789012"
-                  className="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  value={alias}
+                  onChange={(e) => setAlias(e.target.value.toLowerCase())}
+                  placeholder="palabra.palabra.palabra"
+                  className="w-full pl-9 pr-3 py-2.5 text-sm font-mono border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 />
               </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">Monto</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </span>
-                <input
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder="0.00"
-                  min="0.01"
-                  step="0.01"
-                  className="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                />
-              </div>
+              <p className="text-xs text-gray-400 mt-1.5">
+                Solo letras separadas por puntos. Ej: <span className="font-mono">sol.luna.rio</span>
+              </p>
             </div>
 
             <button
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2"
             >
-              Transferir
+              Guardar alias
             </button>
 
             <button
@@ -139,4 +133,4 @@ function Transfer() {
   )
 }
 
-export default Transfer
+export default Profile

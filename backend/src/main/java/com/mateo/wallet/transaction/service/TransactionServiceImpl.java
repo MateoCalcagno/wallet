@@ -26,22 +26,24 @@ public class TransactionServiceImpl implements TransactionService {
         this.transactionRepository = transactionRepository;
     }
 
-    @Override
+   @Override
     @Transactional
-    public void transfer(String fromEmail, String toEmail, BigDecimal amount) {
+    public void transfer(String fromEmail, String identifier, BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be positive");
-        }
-
-        if (fromEmail.equalsIgnoreCase(toEmail)) {
-            throw new IllegalArgumentException("Cannot transfer to yourself");
         }
 
         Wallet fromWallet = walletRepository.findByUserEmail(fromEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
-        Wallet toWallet = walletRepository.findByUserEmail(toEmail)
+        // busca por CBU o alias
+        Wallet toWallet = walletRepository.findByCbu(identifier)
+                .or(() -> walletRepository.findByAlias(identifier))
                 .orElseThrow(() -> new ResourceNotFoundException("Destination wallet not found"));
+
+        if (fromWallet.getId().equals(toWallet.getId())) {
+            throw new IllegalArgumentException("Cannot transfer to yourself");
+        }
 
         if (fromWallet.getBalance().compareTo(amount) < 0) {
             throw new InsufficientBalanceException();

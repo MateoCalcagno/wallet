@@ -3,28 +3,53 @@ import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 
 function Register() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    dni: '',
+    email: '',
+    password: ''
+  })
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
-    if (password.length < 8) {
+    if (form.password.length < 8) {
       setError('La contraseña debe tener al menos 8 caracteres')
       return
     }
 
+    if (!/^\d{7,8}$/.test(form.dni)) {
+      setError('El DNI debe tener 7 u 8 dígitos')
+      return
+    }
+
     try {
-      await api.post('/users', { email, password })
+      await api.post('/users', form)
       navigate('/login')
     } catch (err) {
       setError(err.response?.data?.message || 'Error al registrarse')
     }
   }
+
+  const fields = [
+    { name: 'firstName', label: 'Nombre', type: 'text', placeholder: 'Juan',
+      icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
+    { name: 'lastName', label: 'Apellido', type: 'text', placeholder: 'Pérez',
+      icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
+    { name: 'dni', label: 'DNI', type: 'text', placeholder: '12345678',
+      icon: 'M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2' },
+    { name: 'email', label: 'Email', type: 'email', placeholder: 'tu@email.com',
+      icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
+  ]
 
   return (
     <div className="min-h-screen flex">
@@ -58,12 +83,12 @@ function Register() {
       </div>
 
       {/* Derecha */}
-      <div className="flex-1 flex flex-col justify-center px-8 md:px-14 bg-white">
+      <div className="flex-1 flex flex-col justify-center px-8 md:px-14 bg-white overflow-y-auto py-10">
         <div className="max-w-sm w-full mx-auto">
 
           <div className="mb-8">
             <h1 className="text-xl font-medium text-gray-900 mb-1">Crear cuenta</h1>
-            <p className="text-sm text-gray-500">Registrate para comenzar</p>
+            <p className="text-sm text-gray-500">Completá tus datos para registrarte</p>
           </div>
 
           {error && (
@@ -74,24 +99,28 @@ function Register() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
 
-            <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">Email</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </span>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tu@email.com"
-                  className="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                />
+            {fields.map(({ name, label, type, placeholder, icon }) => (
+              <div key={name}>
+                <label className="block text-xs font-medium text-gray-500 mb-1.5">{label}</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
+                    </svg>
+                  </span>
+                  <input
+                    type={type}
+                    name={name}
+                    value={form[name]}
+                    onChange={handleChange}
+                    placeholder={placeholder}
+                    className="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  />
+                </div>
               </div>
-            </div>
+            ))}
 
+            {/* Password aparte por el botón mostrar/ocultar */}
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">Contraseña</label>
               <div className="relative">
@@ -102,8 +131,9 @@ function Register() {
                 </span>
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
                   placeholder="Mínimo 8 caracteres"
                   className="w-full pl-9 pr-10 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 />
@@ -124,11 +154,9 @@ function Register() {
                   )}
                 </button>
               </div>
-
-              {/* Indicador de longitud */}
-              {password.length > 0 && (
-                <p className={`text-xs mt-1.5 ${password.length >= 8 ? 'text-green-500' : 'text-gray-400'}`}>
-                  {password.length >= 8 ? '✓ Contraseña válida' : `${8 - password.length} caracteres más`}
+              {form.password.length > 0 && (
+                <p className={`text-xs mt-1.5 ${form.password.length >= 8 ? 'text-green-500' : 'text-gray-400'}`}>
+                  {form.password.length >= 8 ? '✓ Contraseña válida' : `${8 - form.password.length} caracteres más`}
                 </p>
               )}
             </div>

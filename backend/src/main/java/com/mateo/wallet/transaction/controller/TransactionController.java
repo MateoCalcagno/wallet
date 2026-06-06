@@ -27,7 +27,7 @@ public class TransactionController {
             @RequestBody @Valid TransferRequest request,
             @AuthenticationPrincipal String email
     ) {
-        transactionService.transfer(email, request.getToEmail(), request.getAmount());
+        transactionService.transfer(email, request.getIdentifier(), request.getAmount());
         return ResponseEntity.ok().build();
     }
 
