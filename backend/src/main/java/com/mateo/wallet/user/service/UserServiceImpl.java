@@ -50,8 +50,6 @@ public class UserServiceImpl implements UserService {
         // regenera alias hasta encontrar uno que no exista
         Wallet wallet = new Wallet(savedUser);
         while (walletRepository.existsByAlias(wallet.getAlias())) {
-            wallet.setAlias(null); 
-            // forzamos regeneración llamando al setter con un nuevo valor generado
             wallet.regenerateAlias();
         }
         walletRepository.save(wallet);
