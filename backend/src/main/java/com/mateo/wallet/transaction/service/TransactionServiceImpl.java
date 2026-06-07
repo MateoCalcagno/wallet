@@ -8,11 +8,14 @@ import com.mateo.wallet.transaction.model.TransactionType;
 import com.mateo.wallet.transaction.repository.TransactionRepository;
 import com.mateo.wallet.wallet.model.Wallet;
 import com.mateo.wallet.wallet.repository.WalletRepository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -56,37 +59,50 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionResponse> getHistory(String email) {
+    public Page<TransactionResponse> getHistory(
+            String email,
+            int page,
+            int size
+    ) {
         Wallet wallet = walletRepository.findByUserEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
+        Pageable pageable = PageRequest.of(page, size);
+
         return transactionRepository
                 .findBySourceWalletIdOrDestinationWalletIdOrderByCreatedAtDesc(
-                    wallet.getId(), wallet.getId()
+                        wallet.getId(),
+                        wallet.getId(),
+                        pageable
                 )
-                .stream()
                 .map(t -> {
-                    boolean isSender = t.getSourceWallet() != null
-                            && t.getSourceWallet().getId().equals(wallet.getId());
+
+                    boolean isSender =
+                            t.getSourceWallet() != null &&
+                            t.getSourceWallet().getId().equals(wallet.getId());
 
                     String direction = isSender ? "SENT" : "RECEIVED";
 
-                    String counterpartEmail = null;
-                    if (t.getType() == TransactionType.TRANSFER) {
-                        counterpartEmail = isSender
-                                ? t.getDestinationWallet().getUser().getEmail()
-                                : t.getSourceWallet().getUser().getEmail();
-                    }
+                    String counterpartName = null;
+
+                if (t.getType() == TransactionType.TRANSFER) {
+                counterpartName = isSender
+                        ? t.getDestinationWallet().getUser().getFirstName()
+                                + " "
+                                + t.getDestinationWallet().getUser().getLastName()
+                        : t.getSourceWallet().getUser().getFirstName()
+                                + " "
+                                + t.getSourceWallet().getUser().getLastName();
+                }
 
                     return new TransactionResponse(
                             t.getId(),
                             t.getAmount(),
                             t.getType(),
                             direction,
-                            counterpartEmail,
+                            counterpartName,
                             t.getCreatedAt()
                     );
-                })
-                .toList();
+                });
     }
 }

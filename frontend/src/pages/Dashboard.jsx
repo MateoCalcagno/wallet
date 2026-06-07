@@ -6,25 +6,42 @@ function Dashboard() {
   const [balance, setBalance] = useState(null)
   const [history, setHistory] = useState([])
   const [user, setUser] = useState(null)
+  const [page, setPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
   const navigate = useNavigate()
+
+  const fetchHistory = async (pageNumber) => {
+    const response = await api.get(
+      `/transactions/history?page=${pageNumber}&size=3`
+    )
+
+    console.log(response.data)
+
+    setHistory(response.data.content)
+    setTotalPages(response.data.totalPages)
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [meRes, balanceRes, historyRes] = await Promise.all([
+        const [meRes, balanceRes] = await Promise.all([
           api.get('/users/me'),
-          api.get('/wallet/me'),
-          api.get('/transactions/history')
+          api.get('/wallet/me')
         ])
+
         setUser(meRes.data)
         setBalance(balanceRes.data)
-        setHistory(historyRes.data)
-      } catch (err) {
+      } catch {
         navigate('/login')
       }
     }
+
     fetchData()
   }, [])
+
+  useEffect(() => {
+    fetchHistory(page)
+  }, [page])
 
   const handleLogout = () => {
     localStorage.removeItem('token')
@@ -44,8 +61,8 @@ function Dashboard() {
   const getLabel = (t) => {
     if (t.type === 'DEPOSIT') return 'Depósito'
     if (t.type === 'WITHDRAWAL') return 'Retiro'
-    if (t.direction === 'SENT') return `Enviado a ${t.counterpartEmail}`
-    return `Recibido de ${t.counterpartEmail}`
+    if (t.direction === 'SENT') return `Enviado a ${t.counterpartName}`
+    return `Recibido de ${t.counterpartName}`
   }
 
   const getAmountColor = (t) => {
@@ -251,6 +268,59 @@ function Dashboard() {
                   )
                 })
               )}
+            </div>
+            <div className="flex items-center justify-center gap-4 mt-5">
+
+              <button
+                disabled={page === 0}
+                onClick={() => setPage(page - 1)}
+                className="
+                  px-4 py-2
+                  bg-blue-500
+                  hover:bg-blue-600
+                  text-white
+                  rounded-lg
+                  text-sm
+                  font-medium
+                  transition
+                  disabled:bg-blue-300
+                  disabled:cursor-not-allowed
+                "
+              >
+                ← Anterior
+              </button>
+
+              <div className="px-4 py-2 bg-slate-900 rounded-lg">
+                <span className="text-sm font-medium text-white">
+                  {page + 1}
+                </span>
+                <span className="text-sm text-slate-400 mx-1">
+                  /
+                </span>
+                <span className="text-sm text-slate-300">
+                  {totalPages}
+                </span>
+              </div>
+
+              <button
+                disabled={page + 1 >= totalPages}
+                onClick={() => setPage(page + 1)}
+                className="
+                  px-4 py-2
+                  bg-blue-500
+                  hover:bg-blue-600
+                  text-white
+                  rounded-lg
+                  text-sm
+                  font-medium
+                  transition
+                  disabled:bg-blue-300
+                  disabled:cursor-not-allowed
+                "
+              >
+                Siguiente →
+              </button>
+
             </div>
           </div>
 

@@ -9,8 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 @RestController
 @RequestMapping("/transactions")
@@ -32,9 +31,13 @@ public class TransactionController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<List<TransactionResponse>> getHistory(
-            @AuthenticationPrincipal String email
+    public ResponseEntity<Page<TransactionResponse>> getHistory(
+            @AuthenticationPrincipal String email,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "4") int size
     ) {
-        return ResponseEntity.ok(transactionService.getHistory(email));
+        return ResponseEntity.ok(
+                transactionService.getHistory(email, page, size)
+        );
     }
 }

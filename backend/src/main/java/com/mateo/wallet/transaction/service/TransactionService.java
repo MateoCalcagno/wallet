@@ -1,10 +1,12 @@
 package com.mateo.wallet.transaction.service;
 
 import java.math.BigDecimal;
-import java.util.List;
+
+import org.springframework.data.domain.Page;
+
 import com.mateo.wallet.transaction.dto.TransactionResponse;
 
 public interface TransactionService {
     void transfer(String fromEmail, String identifier, BigDecimal amount);
-    List<TransactionResponse> getHistory(String email);
+    Page<TransactionResponse> getHistory(String email, int page, int size);  
 }

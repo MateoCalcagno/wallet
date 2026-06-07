@@ -10,16 +10,22 @@ public class TransactionResponse {
     private BigDecimal amount;
     private TransactionType type;
     private String direction;
-    private String counterpartEmail;
+    private String counterpartName;
     private LocalDateTime createdAt;
 
-    public TransactionResponse(Long id, BigDecimal amount, TransactionType type,
-                                String direction, String counterpartEmail, LocalDateTime createdAt) {
+    public TransactionResponse(
+            Long id,
+            BigDecimal amount,
+            TransactionType type,
+            String direction,
+            String counterpartName,
+            LocalDateTime createdAt
+    ) {
         this.id = id;
         this.amount = amount;
         this.type = type;
         this.direction = direction;
-        this.counterpartEmail = counterpartEmail;
+        this.counterpartName = counterpartName;
         this.createdAt = createdAt;
     }
 
@@ -27,6 +33,6 @@ public class TransactionResponse {
     public BigDecimal getAmount() { return amount; }
     public TransactionType getType() { return type; }
     public String getDirection() { return direction; }
-    public String getCounterpartEmail() { return counterpartEmail; }
+    public String getCounterpartName() { return counterpartName; }
     public LocalDateTime getCreatedAt() { return createdAt; }
 }
