@@ -186,4 +186,4 @@ En desarrollo.
 ## 👨‍💻 Autor
 
 **Mateo Calcagno**
-Analista en Computación — Interesado en arquitectura de software, APIs REST y buenas prácticas de desarrollo.
+Analista en Computación 
