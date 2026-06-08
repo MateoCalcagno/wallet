@@ -6,44 +6,40 @@ Aplicación de billetera virtual desarrollada con **Java, Spring Boot y React**.
 
 ## ✨ Características
 
-* 👤 Registro y autenticación de usuarios
-* 🔐 Autorización mediante JWT
-* 💰 Gestión de saldo personal
-* 📥 Depósitos de dinero
-* 📤 Retiros de dinero
-* 🔄 Transferencias por CBU o Alias
-* 📜 Historial de transacciones paginado
-* 🏦 Generación automática de CBU
-* ✏️ Alias personalizable
-* 🙍 Perfil de usuario
-* 🗄️ Persistencia de datos con PostgreSQL
+* Registro y autenticación de usuarios
+* Autorización mediante JWT
+* Gestión de saldo personal
+* Depósitos y retiros de dinero
+* Transferencias por CBU o Alias
+* Historial de transacciones paginado
+* Generación automática de CBU
+* Alias personalizable
+* Perfil de usuario
+* Persistencia de datos con PostgreSQL
 
 ---
 
 ## 🛠️ Tecnologías utilizadas
 
 ### Backend
-
-* ☕ Java 21
-* 🍃 Spring Boot
-* 🔒 Spring Security
-* 🎟️ JWT
-* 📦 Spring Data JPA
-* 🐘 PostgreSQL
-* 🔨 Maven
+* Java 21
+* Spring Boot
+* Spring Security
+* JWT
+* Spring Data JPA
+* PostgreSQL
+* Maven
 
 ### Frontend
-
-* ⚛️ React
-* 🛣️ React Router
-* 🌐 Axios
-* 🎨 Tailwind CSS
-* ⚡ Vite
+* React
+* React Router
+* Axios
+* Tailwind CSS
+* Vite
 
 ### Infraestructura
-
-* 🐳 Docker
-* 📦 Docker Compose
+* Docker
+* Docker Compose
 
 ---
 
@@ -74,38 +70,41 @@ Database
 
 Además, se utilizan:
 
-* 📄 DTOs para la comunicación entre cliente y servidor
-* ✅ Validaciones de datos
-* 🚨 Manejo centralizado de excepciones
-* 🔐 Seguridad basada en JWT
+* DTOs para la comunicación entre cliente y servidor
+* Validaciones de datos
+* Manejo centralizado de excepciones
+* Seguridad basada en JWT
+
+---
+
+## 🧪 Testing
+
+* Tests unitarios con JUnit 5 y Mockito
+* Tests de integración con MockMvc y H2
+* Cobertura de código con JaCoCo
+* CI con GitHub Actions
 
 ---
 
 ## 🚀 Funcionalidades
 
-### 🔐 Autenticación
-
+### Autenticación
 * Registro de usuarios
 * Inicio de sesión
 * Generación de token JWT
 * Protección de endpoints
 
-### 💳 Wallet
-
+### Wallet
 * Consulta de saldo
-* Depósitos
-* Retiros
+* Depósitos y retiros
 * Actualización de alias
 
-### 🔄 Transferencias
-
-* Transferencia mediante Alias
-* Transferencia mediante CBU
+### Transferencias
+* Transferencia mediante Alias o CBU
 * Validación de saldo disponible
 * Registro automático de movimientos
 
-### 📜 Historial
-
+### Historial
 * Consulta de movimientos
 * Paginación de resultados
 * Visualización de depósitos, retiros y transferencias
@@ -126,7 +125,6 @@ docker compose up -d
 
 ```bash
 cd backend
-
 ./mvnw spring-boot:run
 ```
 
@@ -142,7 +140,6 @@ http://localhost:8080
 
 ```bash
 cd frontend
-
 npm install
 npm run dev
 ```
@@ -157,21 +154,18 @@ http://localhost:5173
 
 ## 🌐 Endpoints principales
 
-### 🔐 Autenticación
-
+### Autenticación
 ```http
 POST /auth/login
 ```
 
-### 👤 Usuarios
-
+### Usuarios
 ```http
 POST /users
 GET /users/me
 ```
 
-### 💳 Wallet
-
+### Wallet
 ```http
 GET /wallet/me
 POST /wallet/deposit
@@ -179,21 +173,17 @@ POST /wallet/withdraw
 PATCH /wallet/alias
 ```
 
-### 🔄 Transferencias
-
+### Transferencias
 ```http
 POST /transactions/transfer
 GET /transactions/history
 ```
 
-En desarollo, agrengando nuevas funcionalides y mejoras
+En desarrollo.
 
 ---
 
 ## 👨‍💻 Autor
 
 **Mateo Calcagno**
-
-🎓 Analista en Computación 
-
-💡 Interesado en arquitectura de software, APIs REST, microservicios y buenas prácticas de desarrollo.
+Analista en Computación — Interesado en arquitectura de software, APIs REST y buenas prácticas de desarrollo.
