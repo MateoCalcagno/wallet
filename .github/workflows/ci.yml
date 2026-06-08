@@ -23,4 +23,10 @@ jobs:
 
       - name: Run tests
         working-directory: backend
+        env:
+          DB_USERNAME: sa
+          DB_PASSWORD: ""
+          JWT_SECRET: testsecrettestsecrettestsecrettestsecret
+          JWT_EXPIRATION: 86400000
+          CORS_ALLOWED_ORIGIN: http://localhost:3000
         run: ./mvnw test
