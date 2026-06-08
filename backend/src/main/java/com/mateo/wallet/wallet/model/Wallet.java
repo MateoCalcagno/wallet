@@ -78,9 +78,8 @@ public class Wallet {
         this.balance = this.balance.subtract(amount);
     }
 
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
+    public void setAlias(String alias) { this.alias = alias; }
+    public void setId(Long id) { this.id = id; } // Para tests
 
     public Long getId() { return id; }
     public User getUser() { return user; }
