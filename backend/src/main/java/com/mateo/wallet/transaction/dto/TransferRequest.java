@@ -16,6 +16,9 @@ public class TransferRequest {
 
     public TransferRequest() {}
 
+    public void setIdentifier(String identifier) { this.identifier = identifier; }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
+
     public String getIdentifier() { return identifier; }
     public BigDecimal getAmount() { return amount; }
 }
