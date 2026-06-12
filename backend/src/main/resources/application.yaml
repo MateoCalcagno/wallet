@@ -1,4 +1,7 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
+
   application:
     name: wallet
 
@@ -15,7 +18,7 @@ spring:
     properties:
       hibernate:
         jdbc:
-            time_zone: UTC
+          time_zone: UTC
         format_sql: true
 
 server:
