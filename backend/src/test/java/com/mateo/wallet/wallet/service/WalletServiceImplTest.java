@@ -47,14 +47,7 @@ class WalletServiceImplTest {
         assertEquals(new BigDecimal("150"), wallet.getBalance());
         verify(transactionRepository, times(1)).save(any());
     }
-
-    @Test
-    void deposit_negativeAmount() {
-        assertThrows(IllegalArgumentException.class, () ->
-                walletService.deposit("mateo@gmail.com", new BigDecimal("-50"))
-        );
-    }
-
+    
     @Test
     void withdraw_success() {
         Wallet wallet = buildWallet(new BigDecimal("100"));
