@@ -1,8 +1,12 @@
 package com.mateo.wallet.common.exception;
 
 import com.mateo.wallet.common.response.ApiResponse;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,13 +30,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleValidation(MethodArgumentNotValidException ex) {
-        String message = ex.getBindingResult()
+        List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
-                .get(0)
-                .getDefaultMessage();
+                .stream()
+                .map(FieldError::getDefaultMessage)
+                .toList();
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse(400, message));
+                .body(new ApiResponse(400, "Validation failed", errors));
     }
 
     @ExceptionHandler(Exception.class)

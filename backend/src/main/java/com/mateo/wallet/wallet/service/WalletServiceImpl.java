@@ -34,9 +34,6 @@ public class WalletServiceImpl implements WalletService {
     @Override
     @Transactional
     public void deposit(String email, BigDecimal amount) {
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Amount must be positive");
-        }
         Wallet wallet = walletRepository.findByUserEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
         wallet.deposit(amount);
@@ -46,9 +43,6 @@ public class WalletServiceImpl implements WalletService {
     @Override
     @Transactional
     public void withdraw(String email, BigDecimal amount) {
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Amount must be positive");
-        }
         Wallet wallet = walletRepository.findByUserEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
         if (wallet.getBalance().compareTo(amount) < 0) {
