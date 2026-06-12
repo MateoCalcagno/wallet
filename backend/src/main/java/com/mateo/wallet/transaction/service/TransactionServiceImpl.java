@@ -3,6 +3,7 @@ package com.mateo.wallet.transaction.service;
 import com.mateo.wallet.common.exception.InsufficientBalanceException;
 import com.mateo.wallet.common.exception.ResourceNotFoundException;
 import com.mateo.wallet.transaction.dto.TransactionResponse;
+import com.mateo.wallet.transaction.mapper.TransactionMapper;
 import com.mateo.wallet.transaction.model.Transaction;
 import com.mateo.wallet.transaction.model.TransactionType;
 import com.mateo.wallet.transaction.repository.TransactionRepository;
@@ -22,11 +23,14 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
+    private final TransactionMapper transactionMapper; 
 
     public TransactionServiceImpl(WalletRepository walletRepository,
-                                  TransactionRepository transactionRepository) {
+                                  TransactionRepository transactionRepository,
+                                  TransactionMapper transactionMapper) {
         this.walletRepository = walletRepository;
         this.transactionRepository = transactionRepository;
+        this.transactionMapper = transactionMapper;
     }
 
    @Override
@@ -59,11 +63,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Page<TransactionResponse> getHistory(
-            String email,
-            int page,
-            int size
-    ) {
+    public Page<TransactionResponse> getHistory(String email, int page, int size) {
         Wallet wallet = walletRepository.findByUserEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
@@ -71,38 +71,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         return transactionRepository
                 .findBySourceWalletIdOrDestinationWalletIdOrderByCreatedAtDesc(
-                        wallet.getId(),
-                        wallet.getId(),
-                        pageable
-                )
-                .map(t -> {
-
-                    boolean isSender =
-                            t.getSourceWallet() != null &&
-                            t.getSourceWallet().getId().equals(wallet.getId());
-
-                    String direction = isSender ? "SENT" : "RECEIVED";
-
-                    String counterpartName = null;
-
-                if (t.getType() == TransactionType.TRANSFER) {
-                counterpartName = isSender
-                        ? t.getDestinationWallet().getUser().getFirstName()
-                                + " "
-                                + t.getDestinationWallet().getUser().getLastName()
-                        : t.getSourceWallet().getUser().getFirstName()
-                                + " "
-                                + t.getSourceWallet().getUser().getLastName();
-                }
-
-                    return new TransactionResponse(
-                            t.getId(),
-                            t.getAmount(),
-                            t.getType(),
-                            direction,
-                            counterpartName,
-                            t.getCreatedAt()
-                    );
-                });
+                        wallet.getId(), wallet.getId(), pageable)
+                .map(t -> transactionMapper.toResponse(t, wallet));
     }
 }

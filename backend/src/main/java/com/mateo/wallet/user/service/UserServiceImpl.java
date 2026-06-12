@@ -4,6 +4,7 @@ import com.mateo.wallet.common.exception.EmailAlreadyExistsException;
 import com.mateo.wallet.common.exception.ResourceNotFoundException;
 import com.mateo.wallet.user.dto.UserRequest;
 import com.mateo.wallet.user.dto.UserResponse;
+import com.mateo.wallet.user.mapper.UserMapper;
 import com.mateo.wallet.user.model.User;
 import com.mateo.wallet.user.repository.UserRepository;
 import com.mateo.wallet.wallet.model.Wallet;
@@ -18,13 +19,16 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final WalletRepository walletRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     public UserServiceImpl(UserRepository userRepository,
                            WalletRepository walletRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           UserMapper userMapper) { 
         this.userRepository = userRepository;
         this.walletRepository = walletRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -37,14 +41,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("DNI already in use");
         }
 
-        User user = new User(
-                request.getEmail(),
-                passwordEncoder.encode(request.getPassword()),
-                request.getFirstName(),
-                request.getLastName(),
-                request.getDni()
-        );
-
+        User user = userMapper.toEntity(request, passwordEncoder.encode(request.getPassword()));
         User savedUser = userRepository.save(user);
 
         // regenera alias hasta encontrar uno que no exista
@@ -54,7 +51,7 @@ public class UserServiceImpl implements UserService {
         }
         walletRepository.save(wallet);
 
-        return toResponse(savedUser, wallet);
+        return userMapper.toResponse(savedUser, wallet);
     }
 
     @Override
@@ -63,7 +60,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Wallet wallet = walletRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
-        return toResponse(user, wallet);
+        return userMapper.toResponse(user, wallet);
     }
 
     @Override
@@ -72,18 +69,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Wallet wallet = walletRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
-        return toResponse(user, wallet);
-    }
-
-    private UserResponse toResponse(User user, Wallet wallet) {
-        return new UserResponse(
-                user.getId(),
-                user.getEmail(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getDni(),
-                wallet.getCbu(),
-                wallet.getAlias()
-        );
+        return userMapper.toResponse(user, wallet);
     }
 }

@@ -4,8 +4,8 @@ import com.mateo.wallet.user.model.User;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Random;
 
 @Entity
 @Table(name = "wallets")
@@ -39,6 +39,8 @@ public class Wallet {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+
     public Wallet() {}
 
     public Wallet(User user) {
@@ -50,19 +52,17 @@ public class Wallet {
     }
 
     private String generateCbu() {
-        Random random = new Random();
         StringBuilder sb = new StringBuilder(22);
         for (int i = 0; i < 22; i++) {
-            sb.append(random.nextInt(10));
+            sb.append(SECURE_RANDOM.nextInt(10));
         }
         return sb.toString();
     }
 
     private String generateAlias() {
-        Random random = new Random();
-        String w1 = WORDS[random.nextInt(WORDS.length)];
-        String w2 = WORDS[random.nextInt(WORDS.length)];
-        String w3 = WORDS[random.nextInt(WORDS.length)];
+        String w1 = WORDS[SECURE_RANDOM.nextInt(WORDS.length)];
+        String w2 = WORDS[SECURE_RANDOM.nextInt(WORDS.length)];
+        String w3 = WORDS[SECURE_RANDOM.nextInt(WORDS.length)];
         return w1 + "." + w2 + "." + w3;
     }
 
