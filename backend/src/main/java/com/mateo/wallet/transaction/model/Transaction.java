@@ -1,14 +1,14 @@
 package com.mateo.wallet.transaction.model;
 
+import com.mateo.wallet.common.audit.Auditable;
 import com.mateo.wallet.wallet.model.Wallet;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transactions")
-public class Transaction {
+public class Transaction extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,11 +29,7 @@ public class Transaction {
     @Column(nullable = false)
     private TransactionType type;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    public Transaction() {
-    }
+    public Transaction() {}
 
     public Transaction(Wallet sourceWallet,
                        Wallet destinationWallet,
@@ -43,32 +39,13 @@ public class Transaction {
         this.destinationWallet = destinationWallet;
         this.amount = amount;
         this.type = type;
-        this.createdAt = LocalDateTime.now();
     }
 
     // getters
 
-    public Long getId() {
-        return id;
-    }
-
-    public Wallet getSourceWallet() {
-        return sourceWallet;
-    }
-
-    public Wallet getDestinationWallet() {
-        return destinationWallet;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public TransactionType getType() {
-        return type;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+    public Long getId() { return id; }
+    public Wallet getSourceWallet() { return sourceWallet; }
+    public Wallet getDestinationWallet() { return destinationWallet; }
+    public BigDecimal getAmount() { return amount; }
+    public TransactionType getType() { return type; }
 }

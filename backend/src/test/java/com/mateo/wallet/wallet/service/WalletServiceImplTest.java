@@ -1,7 +1,7 @@
 package com.mateo.wallet.wallet.service;
 
 import com.mateo.wallet.common.exception.InsufficientBalanceException;
-import com.mateo.wallet.transaction.service.TransactionService;
+import com.mateo.wallet.transaction.recorder.TransactionRecorder;
 import com.mateo.wallet.user.model.User;
 import com.mateo.wallet.wallet.factory.WalletFactory;
 import com.mateo.wallet.wallet.model.Wallet;
@@ -16,6 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,7 +27,7 @@ class WalletServiceImplTest {
     private WalletRepository walletRepository;
 
     @Mock
-    private TransactionService transactionService;
+    private TransactionRecorder transactionRecorder;  // antes era TransactionService
 
     @Mock
     private WalletResolver walletResolver;
@@ -52,7 +54,7 @@ class WalletServiceImplTest {
         walletService.deposit("mateo@gmail.com", new BigDecimal("50"));
 
         assertEquals(new BigDecimal("150"), wallet.getBalance());
-        verify(transactionService, times(1)).registerDeposit(eq(wallet), eq(new BigDecimal("50")));
+        verify(transactionRecorder, times(1)).recordDeposit(eq(wallet), eq(new BigDecimal("50")));  // antes registerDeposit
     }
 
     @Test
@@ -64,7 +66,7 @@ class WalletServiceImplTest {
         walletService.withdraw("mateo@gmail.com", new BigDecimal("50"));
 
         assertEquals(new BigDecimal("50"), wallet.getBalance());
-        verify(transactionService, times(1)).registerWithdrawal(eq(wallet), eq(new BigDecimal("50")));
+        verify(transactionRecorder, times(1)).recordWithdrawal(eq(wallet), eq(new BigDecimal("50")));  // antes registerWithdrawal
     }
 
     @Test
@@ -97,5 +99,17 @@ class WalletServiceImplTest {
         assertThrows(IllegalArgumentException.class, () ->
                 walletService.updateAlias("mateo@gmail.com", "alias.en.uso")
         );
+    }
+
+    @Test
+    void updateAlias_sameAlias_doesNothing() {
+        Wallet wallet = buildWallet(new BigDecimal("100"));
+
+        when(walletResolver.resolveByEmail("mateo@gmail.com")).thenReturn(wallet);
+
+        walletService.updateAlias("mateo@gmail.com", "sol.luna.rio");
+
+        verify(walletRepository, never()).existsByAlias(any());
+        assertEquals("sol.luna.rio", wallet.getAlias());
     }
 }

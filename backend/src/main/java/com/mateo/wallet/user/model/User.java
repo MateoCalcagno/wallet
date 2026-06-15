@@ -1,11 +1,12 @@
 package com.mateo.wallet.user.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+
+import com.mateo.wallet.common.audit.Auditable;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,12 +27,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String dni;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
     public User() {}
 
     public User(String email, String password, String firstName, String lastName, String dni) {
@@ -40,7 +35,6 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dni = dni;
-        this.createdAt = LocalDateTime.now();
     }
 
     public Long getId() { return id; }
@@ -51,6 +45,4 @@ public class User {
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
     public String getDni() { return dni; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
 }

@@ -1,14 +1,14 @@
 package com.mateo.wallet.wallet.model;
 
+import com.mateo.wallet.common.audit.Auditable;
 import com.mateo.wallet.common.exception.InsufficientBalanceException;
 import com.mateo.wallet.user.model.User;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "wallets")
-public class Wallet {
+public class Wallet extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +27,6 @@ public class Wallet {
     @Column(unique = true)
     private String alias;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
     public Wallet() {}
 
     public Wallet(User user, String cbu, String alias) {
@@ -37,7 +34,6 @@ public class Wallet {
         this.balance = BigDecimal.ZERO;
         this.cbu = cbu;
         this.alias = alias;
-        this.createdAt = LocalDateTime.now();
     }
 
     public void deposit(BigDecimal amount) {
@@ -58,5 +54,4 @@ public class Wallet {
     public BigDecimal getBalance() { return balance; }
     public String getCbu() { return cbu; }
     public String getAlias() { return alias; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
 }

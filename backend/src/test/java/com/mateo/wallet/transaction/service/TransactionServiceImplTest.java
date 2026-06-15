@@ -1,7 +1,10 @@
 package com.mateo.wallet.transaction.service;
 
 import com.mateo.wallet.common.exception.InsufficientBalanceException;
+import com.mateo.wallet.transaction.factory.TransactionFactory;
 import com.mateo.wallet.transaction.mapper.TransactionMapper;
+import com.mateo.wallet.transaction.model.Transaction;
+import com.mateo.wallet.transaction.model.TransactionType;
 import com.mateo.wallet.transaction.repository.TransactionRepository;
 import com.mateo.wallet.user.model.User;
 import com.mateo.wallet.wallet.model.Wallet;
@@ -31,6 +34,9 @@ class TransactionServiceImplTest {
     @Mock
     private WalletResolver walletResolver;
 
+    @Mock
+    private TransactionFactory transactionFactory;
+
     @InjectMocks
     private TransactionServiceImpl transactionService;
 
@@ -49,6 +55,8 @@ class TransactionServiceImplTest {
 
         when(walletResolver.resolveByEmail("from@gmail.com")).thenReturn(from);
         when(walletResolver.resolveByIdentifier("alias.destino.test")).thenReturn(to);
+        when(transactionFactory.createTransfer(any(), any(), any()))
+                .thenReturn(new Transaction(from, to, new BigDecimal("200"), TransactionType.TRANSFER));
 
         transactionService.transfer("from@gmail.com", "alias.destino.test", new BigDecimal("200"));
 

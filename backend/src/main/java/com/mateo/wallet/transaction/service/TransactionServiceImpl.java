@@ -1,9 +1,8 @@
 package com.mateo.wallet.transaction.service;
 
 import com.mateo.wallet.transaction.dto.TransactionResponse;
+import com.mateo.wallet.transaction.factory.TransactionFactory;
 import com.mateo.wallet.transaction.mapper.TransactionMapper;
-import com.mateo.wallet.transaction.model.Transaction;
-import com.mateo.wallet.transaction.model.TransactionType;
 import com.mateo.wallet.transaction.repository.TransactionRepository;
 import com.mateo.wallet.wallet.model.Wallet;
 import com.mateo.wallet.wallet.resolver.WalletResolver;
@@ -22,13 +21,16 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper; 
     private final WalletResolver walletResolver;
+    private final TransactionFactory transactionFactory;
 
     public TransactionServiceImpl(TransactionRepository transactionRepository,
                                   TransactionMapper transactionMapper,
-                                  WalletResolver walletResolver) {
+                                  WalletResolver walletResolver,
+                                  TransactionFactory transactionFactory) {
         this.transactionRepository = transactionRepository;
         this.transactionMapper = transactionMapper;
         this.walletResolver = walletResolver;
+        this.transactionFactory = transactionFactory;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class TransactionServiceImpl implements TransactionService {
         fromWallet.withdraw(amount);
         toWallet.deposit(amount);
 
-        transactionRepository.save(new Transaction(fromWallet, toWallet, amount, TransactionType.TRANSFER));
+        transactionRepository.save(transactionFactory.createTransfer(fromWallet, toWallet, amount));
     }
 
     @Override
@@ -57,17 +59,5 @@ public class TransactionServiceImpl implements TransactionService {
                 .findBySourceWalletIdOrDestinationWalletIdOrderByCreatedAtDesc(
                         wallet.getId(), wallet.getId(), pageable)
                 .map(t -> transactionMapper.toResponse(t, wallet));
-    }
-
-    @Override
-    @Transactional
-    public void registerDeposit(Wallet wallet, BigDecimal amount) {
-        transactionRepository.save(new Transaction(null, wallet, amount, TransactionType.DEPOSIT));
-    }
-
-    @Override
-    @Transactional
-    public void registerWithdrawal(Wallet wallet, BigDecimal amount) {
-        transactionRepository.save(new Transaction(wallet, null, amount, TransactionType.WITHDRAWAL));
     }
 }
