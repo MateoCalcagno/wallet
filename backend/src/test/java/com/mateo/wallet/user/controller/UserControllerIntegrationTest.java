@@ -87,7 +87,7 @@ class UserControllerIntegrationTest {
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(buildRequest("otro@gmail.com", "12345678"))))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("DNI already in use"));
     }
 

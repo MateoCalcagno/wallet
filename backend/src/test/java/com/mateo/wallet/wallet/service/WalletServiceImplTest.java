@@ -94,6 +94,9 @@ class WalletServiceImplTest {
 
     @Test
     void updateAlias_aliasAlreadyInUse() {
+        Wallet wallet = buildWallet(new BigDecimal("100"));
+
+        when(walletResolver.resolveByEmail("mateo@gmail.com")).thenReturn(wallet);
         when(walletRepository.existsByAlias("alias.en.uso")).thenReturn(true);
 
         assertThrows(IllegalArgumentException.class, () ->
