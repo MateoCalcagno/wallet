@@ -7,6 +7,9 @@ import com.mateo.wallet.wallet.factory.WalletFactory;
 import com.mateo.wallet.wallet.model.Wallet;
 import com.mateo.wallet.wallet.repository.WalletRepository;
 import com.mateo.wallet.wallet.resolver.WalletResolver;
+import com.mateo.wallet.wallet.strategy.DepositStrategy;
+import com.mateo.wallet.wallet.strategy.DepositStrategyFactory;
+import com.mateo.wallet.wallet.strategy.PaymentMethod;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,13 +30,16 @@ class WalletServiceImplTest {
     private WalletRepository walletRepository;
 
     @Mock
-    private TransactionRecorder transactionRecorder;  // antes era TransactionService
+    private TransactionRecorder transactionRecorder;
 
     @Mock
     private WalletResolver walletResolver;
 
     @Mock
     private WalletFactory walletFactory;
+
+    @Mock
+    private DepositStrategyFactory depositStrategyFactory;
 
     @InjectMocks
     private WalletServiceImpl walletService;
@@ -46,15 +52,33 @@ class WalletServiceImplTest {
     }
 
     @Test
-    void deposit_success() {
+    void deposit_success_debitCard() {
         Wallet wallet = buildWallet(new BigDecimal("100"));
+        DepositStrategy mockStrategy = amount -> amount.subtract(
+            amount.multiply(new BigDecimal("0.01"))
+        ); // simula 1% de comisión
 
         when(walletResolver.resolveByEmail("mateo@gmail.com")).thenReturn(wallet);
+        when(depositStrategyFactory.getStrategy(PaymentMethod.DEBIT_CARD)).thenReturn(mockStrategy);
 
-        walletService.deposit("mateo@gmail.com", new BigDecimal("50"));
+        walletService.deposit("mateo@gmail.com", new BigDecimal("100"), PaymentMethod.DEBIT_CARD);
+
+        assertEquals(new BigDecimal("199.00"), wallet.getBalance()); // 100 inicial + 99 depositados
+        verify(transactionRecorder, times(1)).recordDeposit(eq(wallet), eq(new BigDecimal("99.00")));
+    }
+
+    @Test
+    void deposit_success_bankTransfer() {
+        Wallet wallet = buildWallet(new BigDecimal("100"));
+        DepositStrategy mockStrategy = amount -> amount; // sin comisión
+
+        when(walletResolver.resolveByEmail("mateo@gmail.com")).thenReturn(wallet);
+        when(depositStrategyFactory.getStrategy(PaymentMethod.BANK_TRANSFER)).thenReturn(mockStrategy);
+
+        walletService.deposit("mateo@gmail.com", new BigDecimal("50"), PaymentMethod.BANK_TRANSFER);
 
         assertEquals(new BigDecimal("150"), wallet.getBalance());
-        verify(transactionRecorder, times(1)).recordDeposit(eq(wallet), eq(new BigDecimal("50")));  // antes registerDeposit
+        verify(transactionRecorder, times(1)).recordDeposit(eq(wallet), eq(new BigDecimal("50")));
     }
 
     @Test
@@ -66,7 +90,7 @@ class WalletServiceImplTest {
         walletService.withdraw("mateo@gmail.com", new BigDecimal("50"));
 
         assertEquals(new BigDecimal("50"), wallet.getBalance());
-        verify(transactionRecorder, times(1)).recordWithdrawal(eq(wallet), eq(new BigDecimal("50")));  // antes registerWithdrawal
+        verify(transactionRecorder, times(1)).recordWithdrawal(eq(wallet), eq(new BigDecimal("50")));
     }
 
     @Test

@@ -28,7 +28,7 @@ public class WalletController {
     public ResponseEntity<Void> deposit(
             @RequestBody @Valid AmountRequest request,
             @AuthenticationPrincipal String email) {
-        walletService.deposit(email, request.getAmount());
+        walletService.deposit(email, request.getAmount(), request.getPaymentMethod());
         return ResponseEntity.ok().build();
     }
 

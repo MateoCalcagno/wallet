@@ -7,6 +7,9 @@ import com.mateo.wallet.transaction.recorder.TransactionRecorder;
 import com.mateo.wallet.user.model.User;
 import com.mateo.wallet.wallet.repository.WalletRepository;
 import com.mateo.wallet.wallet.resolver.WalletResolver;
+import com.mateo.wallet.wallet.strategy.DepositStrategy;
+import com.mateo.wallet.wallet.strategy.DepositStrategyFactory;
+import com.mateo.wallet.wallet.strategy.PaymentMethod;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,15 +23,18 @@ public class WalletServiceImpl implements WalletService {
     private final TransactionRecorder transactionRecorder;
     private final WalletResolver walletResolver;
     private final WalletFactory walletFactory;
+    private final DepositStrategyFactory depositStrategyFactory;
 
     public WalletServiceImpl(WalletRepository walletRepository,
-                             TransactionRecorder transactionRecorder,
-                             WalletResolver walletResolver,
-                             WalletFactory walletFactory) {
+                            TransactionRecorder transactionRecorder,
+                            WalletResolver walletResolver,
+                            WalletFactory walletFactory,
+                            DepositStrategyFactory depositStrategyFactory) {
         this.walletRepository = walletRepository;
         this.transactionRecorder = transactionRecorder;
         this.walletResolver = walletResolver;
         this.walletFactory = walletFactory;
+        this.depositStrategyFactory = depositStrategyFactory;
     }
 
     @Override
@@ -39,10 +45,14 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     @Transactional
-    public void deposit(String email, BigDecimal amount) {
+    public void deposit(String email, BigDecimal amount, PaymentMethod paymentMethod) {
         Wallet wallet = walletResolver.resolveByEmail(email);
-        wallet.deposit(amount);
-        transactionRecorder.recordDeposit(wallet, amount);
+
+        DepositStrategy strategy = depositStrategyFactory.getStrategy(paymentMethod);
+        BigDecimal finalAmount = strategy.process(amount);
+
+        wallet.deposit(finalAmount);
+        transactionRecorder.recordDeposit(wallet, finalAmount);
     }
 
     @Override

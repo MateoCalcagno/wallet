@@ -5,10 +5,11 @@ import java.math.BigDecimal;
 import com.mateo.wallet.user.model.User;
 import com.mateo.wallet.wallet.dto.WalletResponse;
 import com.mateo.wallet.wallet.model.Wallet;
+import com.mateo.wallet.wallet.strategy.PaymentMethod;
 
 public interface WalletService {
     WalletResponse getBalance(String email);
-    void deposit(String email, BigDecimal amount);
+    void deposit(String email, BigDecimal amount, PaymentMethod paymentMethod);
     void withdraw(String email, BigDecimal amount);
     void updateAlias(String email, String alias);
     Wallet createForUser(User user);
