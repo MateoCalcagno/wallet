@@ -30,14 +30,14 @@ function Dashboard() {
         ])
 
         setUser(meRes.data)
-        setBalance(balanceRes.data)
+        setBalance(balanceRes.data.balance)
       } catch {
         navigate('/login')
       }
     }
 
     fetchData()
-  }, [])
+  }, [navigate])
 
   useEffect(() => {
     fetchHistory(page)

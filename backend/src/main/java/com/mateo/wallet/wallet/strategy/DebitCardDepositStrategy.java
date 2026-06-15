@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-@Component
+@Component("DEBIT_CARD")
 public class DebitCardDepositStrategy implements DepositStrategy {
 
     private static final BigDecimal COMMISSION = new BigDecimal("0.01"); // 1%

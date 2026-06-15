@@ -3,7 +3,7 @@ package com.mateo.wallet.wallet.strategy;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 
-@Component
+@Component("BANK_TRANSFER")
 public class BankTransferDepositStrategy implements DepositStrategy {
 
     @Override

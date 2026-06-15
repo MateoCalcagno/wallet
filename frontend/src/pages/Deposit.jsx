@@ -1,12 +1,20 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import AuthPanel from '../components/AuthPanel'
 import api from '../api/axios'
 
 function Deposit() {
   const [amount, setAmount] = useState('')
+  const [paymentMethod, setPaymentMethod] = useState('BANK_TRANSFER')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
+
+  const methods = [
+    { value: 'BANK_TRANSFER', label: 'Transferencia bancaria', commission: 'Sin comisión' },
+    { value: 'DEBIT_CARD', label: 'Tarjeta de débito', commission: '1% de comisión' },
+    { value: 'CREDIT_CARD', label: 'Tarjeta de crédito', commission: '3% de comisión' },
+  ]
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -17,7 +25,7 @@ function Deposit() {
       return
     }
     try {
-      await api.post('/wallet/deposit', { amount: parsed })
+      await api.post('/wallet/deposit', { amount: parsed, paymentMethod })
       setSuccess(true)
       setTimeout(() => navigate('/dashboard'), 1500)
     } catch (err) {
@@ -29,32 +37,7 @@ function Deposit() {
     <div className="min-h-screen flex">
 
       {/* Izquierda */}
-      <div className="hidden md:flex w-5/12 bg-slate-900 flex-col justify-between p-10 relative overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-60 h-60 rounded-full bg-blue-900 opacity-40" />
-        <div className="absolute -bottom-16 -left-16 w-44 h-44 rounded-full bg-blue-900 opacity-30" />
-
-        <div className="flex items-center gap-3 z-10">
-          <div className="w-9 h-9 bg-blue-500 rounded-xl flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-            </svg>
-          </div>
-          <span className="text-white text-base font-medium">Wallet</span>
-        </div>
-
-        <div className="z-10">
-          <h2 className="text-white text-2xl font-medium leading-snug mb-3">
-            Depositá dinero,<br />al instante.
-          </h2>
-          <p className="text-slate-400 text-sm leading-relaxed">
-            Agregá saldo a tu cuenta en segundos.
-          </p>
-        </div>
-
-        <div className="z-10">
-          <p className="text-slate-600 text-xs">Wallet App · v1.0</p>
-        </div>
-      </div>
+      <AuthPanel title={"Depositá dinero,\nal instante."} subtitle="Elegí tu método de pago y agregá saldo en segundos." />
 
       {/* Derecha */}
       <div className="flex-1 flex flex-col justify-center px-8 md:px-14 bg-white">
@@ -62,7 +45,7 @@ function Deposit() {
 
           <div className="mb-8">
             <h1 className="text-xl font-medium text-gray-900 mb-1">Depositar</h1>
-            <p className="text-sm text-gray-500">Ingresá el monto a acreditar</p>
+            <p className="text-sm text-gray-500">Elegí el método y el monto a acreditar</p>
           </div>
 
           {error && (
@@ -78,6 +61,40 @@ function Deposit() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+
+            {/* Método de pago */}
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-2">Método de pago</label>
+              <div className="flex flex-col gap-2">
+                {methods.map((m) => (
+                  <label
+                    key={m.value}
+                    className={`flex items-center justify-between px-4 py-3 rounded-lg border cursor-pointer transition
+                      ${paymentMethod === m.value
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-200 bg-gray-50 hover:border-gray-300'
+                      }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value={m.value}
+                        checked={paymentMethod === m.value}
+                        onChange={() => setPaymentMethod(m.value)}
+                        className="accent-blue-500"
+                      />
+                      <span className="text-sm text-gray-800">{m.label}</span>
+                    </div>
+                    <span className={`text-xs font-medium ${m.value === 'BANK_TRANSFER' ? 'text-green-500' : 'text-orange-400'}`}>
+                      {m.commission}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Monto */}
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">Monto</label>
               <div className="relative">
@@ -113,7 +130,6 @@ function Deposit() {
               ← Volver al inicio
             </button>
           </form>
-
         </div>
       </div>
     </div>
