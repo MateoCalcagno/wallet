@@ -2,13 +2,12 @@ package com.mateo.wallet.wallet.controller;
 
 import com.mateo.wallet.wallet.dto.AliasRequest;
 import com.mateo.wallet.wallet.dto.AmountRequest;
+import com.mateo.wallet.wallet.dto.WalletResponse;
 import com.mateo.wallet.wallet.service.WalletService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/wallet")
@@ -21,7 +20,7 @@ public class WalletController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<BigDecimal> getBalance(@AuthenticationPrincipal String email) {
+    public ResponseEntity<WalletResponse> getBalance(@AuthenticationPrincipal String email) {
         return ResponseEntity.ok(walletService.getBalance(email));
     }
 

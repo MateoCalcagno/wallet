@@ -8,7 +8,8 @@ import com.mateo.wallet.user.mapper.UserMapper;
 import com.mateo.wallet.user.model.User;
 import com.mateo.wallet.user.repository.UserRepository;
 import com.mateo.wallet.wallet.model.Wallet;
-import com.mateo.wallet.wallet.repository.WalletRepository;
+import com.mateo.wallet.wallet.service.WalletService;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,16 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final WalletRepository walletRepository;
+    private final WalletService walletService;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
     public UserServiceImpl(UserRepository userRepository,
-                           WalletRepository walletRepository,
+                           WalletService walletService,
                            PasswordEncoder passwordEncoder,
-                           UserMapper userMapper) { 
+                           UserMapper userMapper) {
         this.userRepository = userRepository;
-        this.walletRepository = walletRepository;
+        this.walletService = walletService;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
     }
@@ -44,12 +45,7 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toEntity(request, passwordEncoder.encode(request.getPassword()));
         User savedUser = userRepository.save(user);
 
-        // regenera alias hasta encontrar uno que no exista
-        Wallet wallet = new Wallet(savedUser);
-        while (walletRepository.existsByAlias(wallet.getAlias())) {
-            wallet.regenerateAlias();
-        }
-        walletRepository.save(wallet);
+        Wallet wallet = walletService.createForUser(savedUser);
 
         return userMapper.toResponse(savedUser, wallet);
     }
@@ -58,8 +54,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Wallet wallet = walletRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
+        Wallet wallet = walletService.getByUserId(user.getId());
         return userMapper.toResponse(user, wallet);
     }
 
@@ -67,8 +62,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Wallet wallet = walletRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
+        Wallet wallet = walletService.getByUserId(user.getId());
         return userMapper.toResponse(user, wallet);
     }
 }

@@ -1,5 +1,7 @@
 package com.mateo.wallet.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mateo.wallet.common.response.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
@@ -11,12 +13,20 @@ import java.io.IOException;
 @Component
 public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
 
+    private final ObjectMapper objectMapper; 
+
+    public JwtAuthEntryPoint(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
-        response.getWriter().write("{\"status\":401,\"message\":\"Unauthorized\"}");
+
+        ApiResponse body = new ApiResponse(401, "Unauthorized"); 
+        objectMapper.writeValue(response.getWriter(), body);
     }
 }

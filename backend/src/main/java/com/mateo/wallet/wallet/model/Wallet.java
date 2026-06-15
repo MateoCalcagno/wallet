@@ -1,23 +1,14 @@
 package com.mateo.wallet.wallet.model;
 
+import com.mateo.wallet.common.exception.InsufficientBalanceException;
 import com.mateo.wallet.user.model.User;
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "wallets")
 public class Wallet {
-
-    private static final String[] WORDS = {
-        "sol", "luna", "rio", "mar", "viento", "fuego", "tierra", "cielo",
-        "piedra", "flor", "nube", "lluvia", "nieve", "bosque", "lago",
-        "campo", "valle", "monte", "arena", "ola", "roca", "hoja",
-        "toro", "puma", "aguila", "zorro", "lobo", "tigre", "leon",
-        "rosa", "pino", "sauce", "cedro", "roble", "palma", "menta"
-    };
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,35 +30,14 @@ public class Wallet {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
-
     public Wallet() {}
 
-    public Wallet(User user) {
+    public Wallet(User user, String cbu, String alias) {
         this.user = user;
         this.balance = BigDecimal.ZERO;
-        this.cbu = generateCbu();
-        this.alias = generateAlias();
+        this.cbu = cbu;
+        this.alias = alias;
         this.createdAt = LocalDateTime.now();
-    }
-
-    private String generateCbu() {
-        StringBuilder sb = new StringBuilder(22);
-        for (int i = 0; i < 22; i++) {
-            sb.append(SECURE_RANDOM.nextInt(10));
-        }
-        return sb.toString();
-    }
-
-    private String generateAlias() {
-        String w1 = WORDS[SECURE_RANDOM.nextInt(WORDS.length)];
-        String w2 = WORDS[SECURE_RANDOM.nextInt(WORDS.length)];
-        String w3 = WORDS[SECURE_RANDOM.nextInt(WORDS.length)];
-        return w1 + "." + w2 + "." + w3;
-    }
-
-    public void regenerateAlias() {
-        this.alias = generateAlias();
     }
 
     public void deposit(BigDecimal amount) {
@@ -75,11 +45,13 @@ public class Wallet {
     }
 
     public void withdraw(BigDecimal amount) {
+        if (this.balance.compareTo(amount) < 0) {
+            throw new InsufficientBalanceException();
+        }
         this.balance = this.balance.subtract(amount);
     }
 
     public void setAlias(String alias) { this.alias = alias; }
-    public void setId(Long id) { this.id = id; } // Para tests
 
     public Long getId() { return id; }
     public User getUser() { return user; }

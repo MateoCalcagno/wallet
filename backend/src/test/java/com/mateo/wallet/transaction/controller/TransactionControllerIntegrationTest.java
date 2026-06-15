@@ -6,6 +6,7 @@ import com.mateo.wallet.transaction.dto.TransferRequest;
 import com.mateo.wallet.transaction.repository.TransactionRepository;
 import com.mateo.wallet.user.model.User;
 import com.mateo.wallet.user.repository.UserRepository;
+import com.mateo.wallet.wallet.factory.WalletFactory;
 import com.mateo.wallet.wallet.model.Wallet;
 import com.mateo.wallet.wallet.repository.WalletRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,26 +51,26 @@ class TransactionControllerIntegrationTest {
     private String token;
     private Wallet toWallet;
 
+    @Autowired
+    private WalletFactory walletFactory;
+
     @BeforeEach
     void setUp() throws Exception {
         transactionRepository.deleteAll();
         walletRepository.deleteAll();
         userRepository.deleteAll();
 
-        // usuario que envía
         User fromUser = new User("from@gmail.com", passwordEncoder.encode("12345678"), "Mateo", "Lopez", "12345678");
         User savedFrom = userRepository.save(fromUser);
-        Wallet fromWallet = new Wallet(savedFrom);
+        Wallet fromWallet = walletFactory.createForUser(savedFrom);
         fromWallet.deposit(new BigDecimal("500"));
         walletRepository.save(fromWallet);
 
-        // usuario que recibe
         User toUser = new User("to@gmail.com", passwordEncoder.encode("12345678"), "Juan", "Garcia", "87654321");
         User savedTo = userRepository.save(toUser);
-        toWallet = new Wallet(savedTo);
+        toWallet = walletFactory.createForUser(savedTo);
         walletRepository.save(toWallet);
 
-        // obtenemos token del usuario que envía
         LoginRequest loginRequest = new LoginRequest("from@gmail.com", "12345678");
         MvcResult result = mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)

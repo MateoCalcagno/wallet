@@ -1,10 +1,12 @@
 package com.mateo.wallet.wallet.service;
 
 import com.mateo.wallet.common.exception.InsufficientBalanceException;
-import com.mateo.wallet.transaction.repository.TransactionRepository;
+import com.mateo.wallet.transaction.service.TransactionService;
 import com.mateo.wallet.user.model.User;
+import com.mateo.wallet.wallet.factory.WalletFactory;
 import com.mateo.wallet.wallet.model.Wallet;
 import com.mateo.wallet.wallet.repository.WalletRepository;
+import com.mateo.wallet.wallet.resolver.WalletResolver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -24,14 +25,20 @@ class WalletServiceImplTest {
     private WalletRepository walletRepository;
 
     @Mock
-    private TransactionRepository transactionRepository;
+    private TransactionService transactionService;
+
+    @Mock
+    private WalletResolver walletResolver;
+
+    @Mock
+    private WalletFactory walletFactory;
 
     @InjectMocks
     private WalletServiceImpl walletService;
 
     private Wallet buildWallet(BigDecimal balance) {
         User user = new User("mateo@gmail.com", "pass", "Mateo", "Lopez", "12345678");
-        Wallet wallet = new Wallet(user);
+        Wallet wallet = new Wallet(user, "1234567890123456789012", "sol.luna.rio");
         wallet.deposit(balance);
         return wallet;
     }
@@ -40,31 +47,31 @@ class WalletServiceImplTest {
     void deposit_success() {
         Wallet wallet = buildWallet(new BigDecimal("100"));
 
-        when(walletRepository.findByUserEmail("mateo@gmail.com")).thenReturn(Optional.of(wallet));
+        when(walletResolver.resolveByEmail("mateo@gmail.com")).thenReturn(wallet);
 
         walletService.deposit("mateo@gmail.com", new BigDecimal("50"));
 
         assertEquals(new BigDecimal("150"), wallet.getBalance());
-        verify(transactionRepository, times(1)).save(any());
+        verify(transactionService, times(1)).registerDeposit(eq(wallet), eq(new BigDecimal("50")));
     }
-    
+
     @Test
     void withdraw_success() {
         Wallet wallet = buildWallet(new BigDecimal("100"));
 
-        when(walletRepository.findByUserEmail("mateo@gmail.com")).thenReturn(Optional.of(wallet));
+        when(walletResolver.resolveByEmail("mateo@gmail.com")).thenReturn(wallet);
 
         walletService.withdraw("mateo@gmail.com", new BigDecimal("50"));
 
         assertEquals(new BigDecimal("50"), wallet.getBalance());
-        verify(transactionRepository, times(1)).save(any());
+        verify(transactionService, times(1)).registerWithdrawal(eq(wallet), eq(new BigDecimal("50")));
     }
 
     @Test
     void withdraw_insufficientBalance() {
         Wallet wallet = buildWallet(new BigDecimal("30"));
 
-        when(walletRepository.findByUserEmail("mateo@gmail.com")).thenReturn(Optional.of(wallet));
+        when(walletResolver.resolveByEmail("mateo@gmail.com")).thenReturn(wallet);
 
         assertThrows(InsufficientBalanceException.class, () ->
                 walletService.withdraw("mateo@gmail.com", new BigDecimal("100"))
@@ -76,7 +83,7 @@ class WalletServiceImplTest {
         Wallet wallet = buildWallet(new BigDecimal("100"));
 
         when(walletRepository.existsByAlias("nuevo.alias.test")).thenReturn(false);
-        when(walletRepository.findByUserEmail("mateo@gmail.com")).thenReturn(Optional.of(wallet));
+        when(walletResolver.resolveByEmail("mateo@gmail.com")).thenReturn(wallet);
 
         walletService.updateAlias("mateo@gmail.com", "nuevo.alias.test");
 

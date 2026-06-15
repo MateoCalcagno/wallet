@@ -1,14 +1,12 @@
 package com.mateo.wallet.transaction.service;
 
-import com.mateo.wallet.common.exception.InsufficientBalanceException;
-import com.mateo.wallet.common.exception.ResourceNotFoundException;
 import com.mateo.wallet.transaction.dto.TransactionResponse;
 import com.mateo.wallet.transaction.mapper.TransactionMapper;
 import com.mateo.wallet.transaction.model.Transaction;
 import com.mateo.wallet.transaction.model.TransactionType;
 import com.mateo.wallet.transaction.repository.TransactionRepository;
 import com.mateo.wallet.wallet.model.Wallet;
-import com.mateo.wallet.wallet.repository.WalletRepository;
+import com.mateo.wallet.wallet.resolver.WalletResolver;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,39 +19,26 @@ import java.math.BigDecimal;
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
-    private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper; 
+    private final WalletResolver walletResolver;
 
-    public TransactionServiceImpl(WalletRepository walletRepository,
-                                  TransactionRepository transactionRepository,
-                                  TransactionMapper transactionMapper) {
-        this.walletRepository = walletRepository;
+    public TransactionServiceImpl(TransactionRepository transactionRepository,
+                                  TransactionMapper transactionMapper,
+                                  WalletResolver walletResolver) {
         this.transactionRepository = transactionRepository;
         this.transactionMapper = transactionMapper;
+        this.walletResolver = walletResolver;
     }
 
-   @Override
+    @Override
     @Transactional
     public void transfer(String fromEmail, String identifier, BigDecimal amount) {
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Amount must be positive");
-        }
-
-        Wallet fromWallet = walletRepository.findByUserEmail(fromEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
-
-        // busca por CBU o alias
-        Wallet toWallet = walletRepository.findByCbu(identifier)
-                .or(() -> walletRepository.findByAlias(identifier))
-                .orElseThrow(() -> new ResourceNotFoundException("Destination wallet not found"));
+        Wallet fromWallet = walletResolver.resolveByEmail(fromEmail);
+        Wallet toWallet = walletResolver.resolveByIdentifier(identifier);
 
         if (fromWallet.getId().equals(toWallet.getId())) {
             throw new IllegalArgumentException("Cannot transfer to yourself");
-        }
-
-        if (fromWallet.getBalance().compareTo(amount) < 0) {
-            throw new InsufficientBalanceException();
         }
 
         fromWallet.withdraw(amount);
@@ -64,8 +49,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Page<TransactionResponse> getHistory(String email, int page, int size) {
-        Wallet wallet = walletRepository.findByUserEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
+        Wallet wallet = walletResolver.resolveByEmail(email);
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -73,5 +57,17 @@ public class TransactionServiceImpl implements TransactionService {
                 .findBySourceWalletIdOrDestinationWalletIdOrderByCreatedAtDesc(
                         wallet.getId(), wallet.getId(), pageable)
                 .map(t -> transactionMapper.toResponse(t, wallet));
+    }
+
+    @Override
+    @Transactional
+    public void registerDeposit(Wallet wallet, BigDecimal amount) {
+        transactionRepository.save(new Transaction(null, wallet, amount, TransactionType.DEPOSIT));
+    }
+
+    @Override
+    @Transactional
+    public void registerWithdrawal(Wallet wallet, BigDecimal amount) {
+        transactionRepository.save(new Transaction(wallet, null, amount, TransactionType.WITHDRAWAL));
     }
 }
