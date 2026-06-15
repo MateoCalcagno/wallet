@@ -68,4 +68,11 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT)
                 .body(new ApiResponse(409, ex.getMessage()));
     }
+
+    @ExceptionHandler(DniAlreadyExistsException.class)
+    public ResponseEntity<ApiResponse> handleDniAlreadyExists(DniAlreadyExistsException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ApiResponse(409, ex.getMessage()));
+    }
 }

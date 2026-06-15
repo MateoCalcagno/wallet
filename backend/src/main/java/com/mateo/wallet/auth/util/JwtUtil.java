@@ -3,6 +3,8 @@ package com.mateo.wallet.auth.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -19,8 +21,11 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long expiration;
 
-    private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
+    private SecretKey key;
+
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     public String generateToken(String email) {
@@ -28,15 +33,14 @@ public class JwtUtil {
                 .subject(email)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getKey())
+                .signWith(key)
                 .compact();
     }
 
-    // Devuelve el email si el token es válido, vacío si no
     public Optional<String> extractEmailIfValid(String token) {
         try {
             Claims claims = Jwts.parser()
-                    .verifyWith(getKey())
+                    .verifyWith(key)
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();

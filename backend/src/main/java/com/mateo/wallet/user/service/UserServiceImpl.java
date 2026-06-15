@@ -1,5 +1,6 @@
 package com.mateo.wallet.user.service;
 
+import com.mateo.wallet.common.exception.DniAlreadyExistsException;
 import com.mateo.wallet.common.exception.EmailAlreadyExistsException;
 import com.mateo.wallet.common.exception.ResourceNotFoundException;
 import com.mateo.wallet.user.dto.UserRequest;
@@ -39,7 +40,7 @@ public class UserServiceImpl implements UserService {
             throw new EmailAlreadyExistsException();
         }
         if (userRepository.existsByDni(request.getDni())) {
-            throw new IllegalArgumentException("DNI already in use");
+            throw new DniAlreadyExistsException();
         }
 
         User user = userMapper.toEntity(request, passwordEncoder.encode(request.getPassword()));
