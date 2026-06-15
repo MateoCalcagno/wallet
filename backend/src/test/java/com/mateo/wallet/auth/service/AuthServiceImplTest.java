@@ -44,7 +44,7 @@ class AuthServiceImplTest {
 
         LoginResponse response = authService.login(request);
 
-        assertEquals("fake-token", response.getToken());
+        assertEquals("fake-token", response.token());
     }
 
     @Test
