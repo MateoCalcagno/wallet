@@ -77,6 +77,13 @@ Además, se utilizan:
 
 ---
 
+## 🧩 Patrones de diseño
+
+- **Factory** — creación de transacciones y wallets (`TransactionFactory`, `WalletFactory`)
+- **Strategy** — métodos de depósito intercambiables con distintas comisiones (`DebitCardDepositStrategy`, `CreditCardDepositStrategy`, `BankTransferDepositStrategy`)
+
+---
+
 ## 🧪 Testing
 
 * Tests unitarios con JUnit 5 y Mockito
