@@ -1,108 +1,41 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import api from '../api/axios'
+import { useDashboard } from '../hooks/useDashboard'
+import { useTransactionHistory } from '../hooks/useTransactionHistory'
+import { getIconConfig, getLabel, getAmountColor, getAmountPrefix, formatDate } from '../utils/transactionHelpers'
 
 function Dashboard() {
-  const [balance, setBalance] = useState(null)
-  const [history, setHistory] = useState([])
-  const [user, setUser] = useState(null)
-  const [page, setPage] = useState(0)
-  const [totalPages, setTotalPages] = useState(0)
+  const { user, balance, isLoading, handleLogout } = useDashboard()
+  const { history, page, setPage, totalPages, historyError } = useTransactionHistory()
+  const [copiedField, setCopiedField] = useState(null)
   const navigate = useNavigate()
 
-  const fetchHistory = async (pageNumber) => {
-    const response = await api.get(
-      `/transactions/history?page=${pageNumber}&size=3`
-    )
-
-    console.log(response.data)
-
-    setHistory(response.data.content)
-    setTotalPages(response.data.totalPages)
-  }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [meRes, balanceRes] = await Promise.all([
-          api.get('/users/me'),
-          api.get('/wallet/me')
-        ])
-
-        setUser(meRes.data)
-        setBalance(balanceRes.data.balance)
-      } catch {
-        navigate('/login')
-      }
+  const handleCopy = async (text, field) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopiedField(field)
+      setTimeout(() => setCopiedField(null), 2000)
+    } catch {
+      setCopiedField(null)
     }
-
-    fetchData()
-  }, [navigate])
-
-  useEffect(() => {
-    fetchHistory(page)
-  }, [page])
-
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    navigate('/login')
   }
 
-  const getIconConfig = (t) => {
-    if (t.type === 'DEPOSIT')
-      return { bg: 'bg-blue-50', color: 'text-blue-500', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4' }
-    if (t.type === 'WITHDRAWAL')
-      return { bg: 'bg-orange-50', color: 'text-orange-500', icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12' }
-    if (t.direction === 'SENT')
-      return { bg: 'bg-red-50', color: 'text-red-500', icon: 'M7 11l5-5m0 0l5 5m-5-5v12' }
-    return { bg: 'bg-green-50', color: 'text-green-500', icon: 'M17 13l-5 5m0 0l-5-5m5 5V6' }
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-gray-400">Cargando tu cuenta...</p>
+        </div>
+      </div>
+    )
   }
-
-  const getLabel = (t) => {
-    if (t.type === 'DEPOSIT') return 'Depósito'
-    if (t.type === 'WITHDRAWAL') return 'Retiro'
-    if (t.direction === 'SENT') return `Enviado a ${t.counterpartName}`
-    return `Recibido de ${t.counterpartName}`
-  }
-
-  const getAmountColor = (t) => {
-    if (t.type === 'DEPOSIT' || t.direction === 'RECEIVED') return 'text-green-500'
-    return 'text-red-500'
-  }
-
-  const getAmountPrefix = (t) => {
-    if (t.type === 'DEPOSIT' || t.direction === 'RECEIVED') return '+'
-    return '-'
-  }
-
-  const formatDate = (dateStr) => {
-    const date = new Date(dateStr)
-    return date.toLocaleString('es-AR', {
-      day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
-    })
-  }
-
-  const NavItem = ({ icon, label, path, active }) => (
-    <div
-      onClick={() => navigate(path)}
-      className={`flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer text-sm transition
-        ${active
-          ? 'bg-blue-900 text-blue-300'
-          : 'text-slate-500 hover:bg-slate-800 hover:text-slate-300'
-        }`}
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
-      </svg>
-      {label}
-    </div>
-  )
 
   return (
     <div className="flex min-h-screen">
 
       {/* Sidebar */}
-      <div className="w-52 bg-slate-900 flex flex-col justify-between py-7 px-5 relative overflow-hidden flex-shrink-0">
+      <div className="w-52 bg-slate-900 flex flex-col justify-between py-7 px-5 relative overflow-hidden shrink-0">
         <div className="absolute -top-14 -right-14 w-40 h-40 rounded-full bg-blue-900 opacity-35" />
         <div className="absolute -bottom-10 -left-10 w-28 h-28 rounded-full bg-blue-900 opacity-25" />
 
@@ -208,10 +141,10 @@ function Dashboard() {
                 <p className="text-sm font-mono text-gray-800">{user?.cbu || '...'}</p>
               </div>
               <button
-                onClick={() => navigator.clipboard.writeText(user?.cbu)}
+                onClick={() => handleCopy(user?.cbu, 'cbu')}
                 className="text-xs text-blue-500 hover:text-blue-700 transition"
               >
-                Copiar
+                {copiedField === 'cbu' ? '✓ Copiado' : 'Copiar'}
               </button>
             </div>
 
@@ -224,10 +157,10 @@ function Dashboard() {
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => navigator.clipboard.writeText(user?.alias)}
+                  onClick={() => handleCopy(user?.alias, 'alias')}
                   className="text-xs text-blue-500 hover:text-blue-700 transition"
                 >
-                  Copiar
+                  {copiedField === 'alias' ? '✓ Copiado' : 'Copiar'}
                 </button>
                 <button
                   onClick={() => navigate('/profile')}
@@ -242,6 +175,13 @@ function Dashboard() {
           {/* Historial */}
           <div>
             <p className="text-xs font-medium text-gray-400 mb-3">Últimos movimientos</p>
+
+            {historyError && (
+              <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 mb-3">
+                {historyError}
+              </div>
+            )}
+
             <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
               {history.length === 0 ? (
                 <p className="text-sm text-gray-400 text-center py-8">No hay transacciones aún.</p>
@@ -251,7 +191,7 @@ function Dashboard() {
                   return (
                     <div key={t.id} className="flex justify-between items-center px-4 py-3 border-b border-gray-50 last:border-0">
                       <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 ${bg} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                        <div className={`w-8 h-8 ${bg} rounded-lg flex items-center justify-center shrink-0`}>
                           <svg xmlns="http://www.w3.org/2000/svg" className={`w-4 h-4 ${color}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
                           </svg>

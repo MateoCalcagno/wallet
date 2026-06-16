@@ -69,6 +69,13 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse(400, "Validation failed", errors));
     }
 
+    @ExceptionHandler(UniqueGenerationException.class)
+    public ResponseEntity<ApiResponse> handleUniqueGeneration(UniqueGenerationException ex) {
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(new ApiResponse(503, ex.getMessage()));
+    }
+
     // siempre al último — atrapa todo lo que no matcheó arriba
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleGeneric(Exception ex) {

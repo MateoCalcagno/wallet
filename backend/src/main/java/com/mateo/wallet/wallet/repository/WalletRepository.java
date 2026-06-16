@@ -11,4 +11,5 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
     Optional<Wallet> findByCbu(String cbu);
     Optional<Wallet> findByAlias(String alias);
     boolean existsByAlias(String alias);
+    boolean existsByCbu(String cbu);
 }

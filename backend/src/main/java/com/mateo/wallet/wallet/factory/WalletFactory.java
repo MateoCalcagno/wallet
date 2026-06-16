@@ -29,9 +29,19 @@ public class WalletFactory {
     }
 
     public Wallet createForUser(User user) {
-        String cbu = generateCbu();
+        String cbu = generateUniqueCbu(walletRepository::existsByCbu);
         String alias = generateUniqueAlias(walletRepository::existsByAlias);
         return new Wallet(user, cbu, alias);
+    }
+
+    private String generateUniqueCbu(Predicate<String> alreadyExists) {
+        for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+            String cbu = generateCbu();
+            if (!alreadyExists.test(cbu)) {
+                return cbu;
+            }
+        }
+        throw new RuntimeException("Could not generate a unique CBU after " + MAX_ATTEMPTS + " attempts");
     }
 
     private String generateCbu() {
