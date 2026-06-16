@@ -24,6 +24,8 @@ import java.math.BigDecimal;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -123,5 +125,23 @@ class TransactionControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(buildTransfer(toWallet.getAlias(), new BigDecimal("100")))))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getHistory_success() throws Exception {
+        // primero hacemos una transferencia para que haya algo en el historial
+        mockMvc.perform(post("/transactions/transfer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token)
+                .content(objectMapper.writeValueAsString(buildTransfer(toWallet.getAlias(), new BigDecimal("100")))))
+                .andExpect(status().isOk());
+
+        // después consultamos el historial
+        mockMvc.perform(get("/transactions/history")
+                .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content[0].type").value("TRANSFER"))
+                .andExpect(jsonPath("$.content[0].direction").value("SENT"));
     }
 }

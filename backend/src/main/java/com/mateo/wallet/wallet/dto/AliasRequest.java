@@ -12,5 +12,6 @@ public class AliasRequest {
 
     public AliasRequest() {}
 
+    public void setAlias(String alias){ this.alias = alias; } // para tests
     public String getAlias() { return alias; }
 }
