@@ -76,6 +76,13 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse(503, ex.getMessage()));
     }
 
+    @ExceptionHandler(SelfTransferException.class)
+    public ResponseEntity<ApiResponse> handleSelfTransfer(SelfTransferException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponse(400, ex.getMessage()));
+    }
+
     // siempre al último — atrapa todo lo que no matcheó arriba
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleGeneric(Exception ex) {

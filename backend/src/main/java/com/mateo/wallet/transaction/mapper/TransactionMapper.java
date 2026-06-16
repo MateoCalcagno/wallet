@@ -10,19 +10,9 @@ import org.springframework.stereotype.Component;
 public class TransactionMapper {
 
     public TransactionResponse toResponse(Transaction t, Wallet wallet) {
-        boolean isSender = t.getSourceWallet() != null &&
-                t.getSourceWallet().getId().equals(wallet.getId());
-
-        String direction = isSender ? "SENT" : "RECEIVED";
-
-        String counterpartName = null;
-        if (t.getType() == TransactionType.TRANSFER) {
-            counterpartName = isSender
-                    ? t.getDestinationWallet().getUser().getFirstName()
-                            + " " + t.getDestinationWallet().getUser().getLastName()
-                    : t.getSourceWallet().getUser().getFirstName()
-                            + " " + t.getSourceWallet().getUser().getLastName();
-        }
+        boolean isSender = isSender(t, wallet);
+        String direction = resolveDirection(isSender);
+        String counterpartName = resolveCounterpartName(t, isSender);
 
         return new TransactionResponse(
                 t.getId(),
@@ -32,5 +22,23 @@ public class TransactionMapper {
                 counterpartName,
                 t.getCreatedAt()
         );
+    }
+
+    private boolean isSender(Transaction t, Wallet wallet) {
+        return t.getSourceWallet() != null &&
+                t.getSourceWallet().getId().equals(wallet.getId());
+    }
+
+    private String resolveDirection(boolean isSender) {
+        return isSender ? "SENT" : "RECEIVED";
+    }
+
+    private String resolveCounterpartName(Transaction t, boolean isSender) {
+        if (t.getType() != TransactionType.TRANSFER) {
+            return null;
+        }
+
+        Wallet counterpart = isSender ? t.getDestinationWallet() : t.getSourceWallet();
+        return counterpart.getUser().getFirstName() + " " + counterpart.getUser().getLastName();
     }
 }

@@ -1,5 +1,6 @@
 package com.mateo.wallet.transaction.service;
 
+import com.mateo.wallet.common.exception.SelfTransferException;
 import com.mateo.wallet.transaction.dto.TransactionResponse;
 import com.mateo.wallet.transaction.factory.TransactionFactory;
 import com.mateo.wallet.transaction.mapper.TransactionMapper;
@@ -40,7 +41,7 @@ public class TransactionServiceImpl implements TransactionService {
         Wallet toWallet = walletResolver.resolveByIdentifier(identifier);
 
         if (fromWallet.getId().equals(toWallet.getId())) {
-            throw new IllegalArgumentException("Cannot transfer to yourself");
+            throw new SelfTransferException();
         }
 
         fromWallet.withdraw(amount);
