@@ -1,5 +1,7 @@
 # 💳 Wallet App
 
+![Status](https://img.shields.io/badge/estado-en%20desarrollo%20continuo-blue)
+
 Aplicación de billetera virtual desarrollada con **Java, Spring Boot y React**. Permite a los usuarios registrarse, autenticarse mediante JWT, gestionar su saldo y realizar operaciones financieras de manera simple y segura.
 
 ---
@@ -186,7 +188,15 @@ POST /transactions/transfer
 GET /transactions/history
 ```
 
-En desarrollo.
+---
+
+## ⚙️ Variables de entorno
+
+Copiá el archivo de ejemplo y completá con tus valores:
+
+```bash
+cp .env.example .env
+```
 
 ---
 
