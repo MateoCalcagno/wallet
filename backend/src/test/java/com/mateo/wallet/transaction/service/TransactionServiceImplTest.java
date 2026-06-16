@@ -1,6 +1,7 @@
 package com.mateo.wallet.transaction.service;
 
 import com.mateo.wallet.common.exception.InsufficientBalanceException;
+import com.mateo.wallet.common.exception.SelfTransferException;
 import com.mateo.wallet.transaction.factory.TransactionFactory;
 import com.mateo.wallet.transaction.mapper.TransactionMapper;
 import com.mateo.wallet.transaction.model.Transaction;
@@ -85,7 +86,7 @@ class TransactionServiceImplTest {
         when(walletResolver.resolveByEmail("from@gmail.com")).thenReturn(from);
         when(walletResolver.resolveByIdentifier("alias.destino.test")).thenReturn(from);
 
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(SelfTransferException.class, () ->
                 transactionService.transfer("from@gmail.com", "alias.destino.test", new BigDecimal("200"))
         );
     }
