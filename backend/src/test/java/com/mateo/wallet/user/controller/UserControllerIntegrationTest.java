@@ -13,6 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import com.mateo.wallet.verification.service.EmailVerificationService;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -36,12 +41,17 @@ class UserControllerIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
+  
+    @MockitoBean
+    private EmailVerificationService emailVerificationService;
+    
     @BeforeEach
     void setUp() {
         transactionRepository.deleteAll();
         walletRepository.deleteAll();
         userRepository.deleteAll();
+
+        doNothing().when(emailVerificationService).assertEmailVerified(any(String.class));
     }
 
     private UserRequest buildRequest(String email, String dni) {
