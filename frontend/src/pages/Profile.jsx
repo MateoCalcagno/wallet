@@ -22,11 +22,6 @@ function Profile() {
     setError('')
     setSuccess(false)
 
-    if (!/^[a-zA-Z]+\.[a-zA-Z]+\.[a-zA-Z]+$/.test(alias)) {
-      setError('El alias debe tener el formato palabra.palabra.palabra')
-      return
-    }
-
     try {
       await api.patch('/wallet/alias', { alias })
       setCurrentAlias(alias)
@@ -83,7 +78,7 @@ function Profile() {
                 />
               </div>
               <p className="text-xs text-gray-400 mt-1.5">
-                Solo letras separadas por puntos. Ej: <span className="font-mono">sol.luna.rio</span>
+                Podés usar letras, números, puntos y guiones.
               </p>
             </div>
 

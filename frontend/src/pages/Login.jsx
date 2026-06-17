@@ -17,7 +17,12 @@ function Login() {
       localStorage.setItem('token', res.data.token)
       navigate('/dashboard')
     } catch (err) {
-      setError(err.response?.data?.message || 'Email o contraseña incorrectos')
+      const msg = err.response?.data?.message || ''
+      if (msg.toLowerCase().includes('invalid credentials')) {
+        setError('Email o contraseña incorrectos, revisá tus datos')
+      } else {
+        setError('Ocurrió un error al iniciar sesión')
+      }
     }
   }
 
@@ -96,7 +101,7 @@ function Login() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2 cursor-pointer"
             >
               Ingresar
             </button>

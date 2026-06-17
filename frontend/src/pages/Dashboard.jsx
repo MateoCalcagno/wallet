@@ -20,6 +20,25 @@ function Dashboard() {
     }
   }
 
+  const NavItem = ({ path, label, icon, active }) => {
+    const navigate = useNavigate()
+    return (
+      <div
+        onClick={() => navigate(path)}
+        className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm transition
+          ${active
+            ? 'bg-slate-800 text-white'
+            : 'text-slate-500 hover:text-white hover:bg-slate-800'
+          }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
+        </svg>
+        {label}
+      </div>
+    )
+  }
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -41,13 +60,16 @@ function Dashboard() {
 
         <div className="z-10">
           {/* Brand */}
-          <div className="flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-              </svg>
+          <div className="flex items-center gap-3 z-10 mb-8">
+            <svg width="38" height="38" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="48" rx="10" fill="#1a3a6e"/>
+              <path d="M24 6 L29 18 L41 22 L29 26 L24 38 L19 26 L7 22 L19 18 Z" fill="#3d8ef8"/>
+              <circle cx="24" cy="22" r="3.5" fill="#6eb4ff"/>
+            </svg>
+            <div className="flex flex-col leading-tight">
+              <span className="text-white text-lg font-bold tracking-widest">NOVA</span>
+              <span className="text-blue-400 text-[10px] tracking-[0.3em]">WALLET</span>
             </div>
-            <span className="text-white text-sm font-medium">Wallet</span>
           </div>
 
           {/* Nav */}
@@ -103,7 +125,7 @@ function Dashboard() {
             <div className="flex gap-2 relative z-10">
               <button
                 onClick={() => navigate('/deposit')}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs font-medium transition"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs font-medium transition cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -112,7 +134,7 @@ function Dashboard() {
               </button>
               <button
                 onClick={() => navigate('/transfer')}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs font-medium transition"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs font-medium transition cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -121,7 +143,7 @@ function Dashboard() {
               </button>
               <button
                 onClick={() => navigate('/withdraw')}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs font-medium transition"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs font-medium transition cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -132,39 +154,39 @@ function Dashboard() {
           </div>
 
           {/* CBU y Alias */}
-          <div className="bg-white rounded-xl border border-gray-100 p-4 flex flex-col gap-3">
-            <p className="text-xs font-medium text-gray-400">Tus datos bancarios</p>
+          <div className="bg-blue-50 rounded-xl border border-blue-100 p-4 flex flex-col gap-3">
+            <p className="text-xs font-medium text-blue-400">Tus datos bancarios</p>
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-gray-400 mb-0.5">CBU</p>
-                <p className="text-sm font-mono text-gray-800">{user?.cbu || '...'}</p>
+                <p className="text-xs text-blue-300 mb-0.5">CBU</p>
+                <p className="text-sm font-mono text-blue-900">{user?.cbu || '...'}</p>
               </div>
               <button
                 onClick={() => handleCopy(user?.cbu, 'cbu')}
-                className="text-xs text-blue-500 hover:text-blue-700 transition"
+                className="text-xs text-blue-500 hover:text-blue-700 transition cursor-pointer"
               >
                 {copiedField === 'cbu' ? '✓ Copiado' : 'Copiar'}
               </button>
             </div>
 
-            <div className="h-px bg-gray-50" />
+            <div className="h-px bg-blue-100" />
 
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-gray-400 mb-0.5">Alias</p>
-                <p className="text-sm font-mono text-gray-800">{user?.alias || '...'}</p>
+                <p className="text-xs text-blue-300 mb-0.5">Alias</p>
+                <p className="text-sm font-mono text-blue-900">{user?.alias || '...'}</p>
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={() => handleCopy(user?.alias, 'alias')}
-                  className="text-xs text-blue-500 hover:text-blue-700 transition"
+                  className="text-xs text-blue-500 hover:text-blue-700 transition cursor-pointer"
                 >
                   {copiedField === 'alias' ? '✓ Copiado' : 'Copiar'}
                 </button>
                 <button
                   onClick={() => navigate('/profile')}
-                  className="text-xs text-gray-400 hover:text-gray-600 transition"
+                  className="text-xs text-blue-300 hover:text-blue-500 transition cursor-pointer"
                 >
                   Editar
                 </button>
@@ -173,7 +195,7 @@ function Dashboard() {
           </div>
 
           {/* Historial */}
-          <div>
+          <div className="flex flex-col">
             <p className="text-xs font-medium text-gray-400 mb-3">Últimos movimientos</p>
 
             {historyError && (
@@ -182,84 +204,61 @@ function Dashboard() {
               </div>
             )}
 
-            <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-              {history.length === 0 ? (
-                <p className="text-sm text-gray-400 text-center py-8">No hay transacciones aún.</p>
-              ) : (
-                history.map((t) => {
-                  const { bg, color, icon } = getIconConfig(t)
-                  return (
-                    <div key={t.id} className="flex justify-between items-center px-4 py-3 border-b border-gray-50 last:border-0">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 ${bg} rounded-lg flex items-center justify-center shrink-0`}>
-                          <svg xmlns="http://www.w3.org/2000/svg" className={`w-4 h-4 ${color}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
-                          </svg>
+            {/* Contenedor de altura fija que "reserva" el espacio */}
+            <div style={{ minHeight: '245px' }} className="flex flex-col justify-between">
+              
+              <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+                {history.length === 0 ? (
+                  <p className="text-sm text-gray-400 text-center py-8">No hay transacciones aún.</p>
+                ) : (
+                  history.map((t) => {
+                    const { bg, color, icon } = getIconConfig(t)
+                    return (
+                      <div key={t.id} className="flex justify-between items-center px-4 py-3 border-b border-gray-50 last:border-0">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 ${bg} rounded-lg flex items-center justify-center shrink-0`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" className={`w-4 h-4 ${color}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-800">{getLabel(t)}</p>
+                            <p className="text-xs text-gray-400">{formatDate(t.createdAt)}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-800">{getLabel(t)}</p>
-                          <p className="text-xs text-gray-400">{formatDate(t.createdAt)}</p>
-                        </div>
+                        <span className={`text-sm font-medium ${getAmountColor(t)}`}>
+                          {getAmountPrefix(t)}${Number(t.amount).toFixed(2)}
+                        </span>
                       </div>
-                      <span className={`text-sm font-medium ${getAmountColor(t)}`}>
-                        {getAmountPrefix(t)}${Number(t.amount).toFixed(2)}
-                      </span>
-                    </div>
-                  )
-                })
-              )}
-            </div>
-            <div className="flex items-center justify-center gap-4 mt-5">
-
-              <button
-                disabled={page === 0}
-                onClick={() => setPage(page - 1)}
-                className="
-                  px-4 py-2
-                  bg-blue-500
-                  hover:bg-blue-600
-                  text-white
-                  rounded-lg
-                  text-sm
-                  font-medium
-                  transition
-                  disabled:bg-blue-300
-                  disabled:cursor-not-allowed
-                "
-              >
-                ← Anterior
-              </button>
-
-              <div className="px-4 py-2 bg-slate-900 rounded-lg">
-                <span className="text-sm font-medium text-white">
-                  {page + 1}
-                </span>
-                <span className="text-sm text-slate-400 mx-1">
-                  /
-                </span>
-                <span className="text-sm text-slate-300">
-                  {totalPages}
-                </span>
+                    )
+                  })
+                )}
               </div>
 
-              <button
-                disabled={page + 1 >= totalPages}
-                onClick={() => setPage(page + 1)}
-                className="
-                  px-4 py-2
-                  bg-blue-500
-                  hover:bg-blue-600
-                  text-white
-                  rounded-lg
-                  text-sm
-                  font-medium
-                  transition
-                  disabled:bg-blue-300
-                  disabled:cursor-not-allowed
-                "
-              >
-                Siguiente →
-              </button>
+              {/* Botones siempre al fondo del contenedor */}
+              <div className="flex items-center justify-center gap-4 mt-5">
+                <button
+                  disabled={page === 0}
+                  onClick={() => setPage(page - 1)}
+                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition disabled:bg-blue-300 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  ← Anterior
+                </button>
+
+                <div className="px-4 py-2 bg-slate-900 rounded-lg">
+                  <span className="text-sm font-medium text-white">{page + 1}</span>
+                  <span className="text-sm text-slate-400 mx-1">/</span>
+                  <span className="text-sm text-slate-300">{totalPages}</span>
+                </div>
+
+                <button
+                  disabled={page + 1 >= totalPages}
+                  onClick={() => setPage(page + 1)}
+                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium transition disabled:bg-blue-300 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  Siguiente →
+                </button>
+              </div>
 
             </div>
           </div>

@@ -23,7 +23,14 @@ function Transfer() {
       setSuccess(true)
       setTimeout(() => navigate('/dashboard'), 1500)
     } catch (err) {
-      setError(err.response?.data?.message || 'Error al transferir')
+      const msg = err.response?.data?.message || ''
+      if (msg.toLowerCase().includes('destination wallet not found')) {
+        setError('No se encontró ninguna cuenta con ese CBU o alias')
+      } else if (msg.toLowerCase().includes('insufficient')) {
+        setError('Saldo insuficiente para realizar la transferencia')
+      } else {
+        setError('Error al transferir')
+      }
     }
   }
 
@@ -95,7 +102,7 @@ function Transfer() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2 cursor-pointer"
             >
               Transferir
             </button>
@@ -103,7 +110,7 @@ function Transfer() {
             <button
               type="button"
               onClick={() => navigate('/dashboard')}
-              className="w-full text-sm text-gray-500 hover:text-gray-700 transition py-1"
+              className="w-full text-sm text-gray-500 hover:text-gray-700 transition py-1 cursor-pointer"
             >
               ← Volver al inicio
             </button>

@@ -76,7 +76,7 @@ function Withdraw() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2 cursor-pointer"
             >
               Retirar
             </button>
@@ -84,7 +84,7 @@ function Withdraw() {
             <button
               type="button"
               onClick={() => navigate('/dashboard')}
-              className="w-full text-sm text-gray-500 hover:text-gray-700 transition py-1"
+              className="w-full text-sm text-gray-500 hover:text-gray-700 transition py-1 cursor-pointer"
             >
               ← Volver al inicio
             </button>

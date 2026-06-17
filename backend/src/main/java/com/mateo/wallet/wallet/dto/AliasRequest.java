@@ -6,8 +6,7 @@ import jakarta.validation.constraints.Pattern;
 public class AliasRequest {
 
     @NotBlank(message = "Alias is required")
-    @Pattern(regexp = "^[a-zA-Z]+\\.[a-zA-Z]+\\.[a-zA-Z]+$",
-             message = "Alias must follow the format word.word.word")
+    @Pattern(regexp = "^[a-zA-Z0-9._-]+$", message = "Alias no válido")
     private String alias;
 
     public AliasRequest() {}
