@@ -63,7 +63,9 @@ public class SecurityConfig {
         "/auth/login",
                     "/users",
                     "/users/send-verification",   
-                    "/users/verify-pin",          
+                    "/users/verify-pin",
+                    "/users/forgot-password/verify",  
+                    "/users/forgot-password/reset",           
                     "/v3/api-docs/**",
                     "/swagger-ui/**",
                     "/swagger-ui.html"

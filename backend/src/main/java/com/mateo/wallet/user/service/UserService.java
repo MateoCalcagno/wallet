@@ -6,4 +6,5 @@ import com.mateo.wallet.user.dto.UserResponse;
 public interface UserService {
     UserResponse createUser(UserRequest request);
     UserResponse getUserByEmail(String email);
+    void resetPassword(String email, String newPassword);
 }

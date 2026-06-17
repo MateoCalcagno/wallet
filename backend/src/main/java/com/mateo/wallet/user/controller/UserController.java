@@ -1,5 +1,6 @@
 package com.mateo.wallet.user.controller;
 
+import com.mateo.wallet.user.dto.ResetPasswordRequest;
 import com.mateo.wallet.user.dto.SendVerificationRequest;
 import com.mateo.wallet.user.dto.UserRequest;
 import com.mateo.wallet.user.dto.UserResponse;
@@ -38,6 +39,21 @@ public class UserController {
     @PostMapping("/verify-pin")
     public ResponseEntity<Void> verifyPin(@RequestBody @Valid VerifyPinRequest request) {
         emailVerificationService.verifyPin(request.getEmail(), request.getPin());
+        return ResponseEntity.ok().build();
+    }
+
+    @SecurityRequirements
+    @PostMapping("/forgot-password/verify")
+    public ResponseEntity<Void> verifyForgotPassword(@RequestBody @Valid VerifyPinRequest request) {
+        emailVerificationService.verifyPin(request.getEmail(), request.getPin());
+        return ResponseEntity.ok().build();
+    }
+
+    @SecurityRequirements
+    @PostMapping("/forgot-password/reset")
+    public ResponseEntity<Void> resetPassword(@RequestBody @Valid ResetPasswordRequest request) {
+        emailVerificationService.assertEmailVerified(request.getEmail());
+        userService.resetPassword(request.getEmail(), request.getNewPassword());
         return ResponseEntity.ok().build();
     }
 

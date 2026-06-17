@@ -58,4 +58,12 @@ public class UserServiceImpl implements UserService {
         Wallet wallet = walletService.getByUserId(user.getId());
         return userMapper.toResponse(user, wallet);
     }
+
+    @Override
+    @Transactional
+    public void resetPassword(String email, String newPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setPassword(passwordEncoder.encode(newPassword));
+    }
 }

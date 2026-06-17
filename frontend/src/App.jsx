@@ -6,6 +6,7 @@ import Profile from './pages/Profile'
 import Deposit from './pages/Deposit'
 import Transfer from './pages/Transfer'
 import Withdraw from './pages/Withdraw'
+import ForgotPassword from './pages/ForgotPassword'
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token')
@@ -23,6 +24,7 @@ function App() {
       <Route path="/deposit" element={<PrivateRoute><Deposit /></PrivateRoute>} />
       <Route path="/withdraw" element={<PrivateRoute><Withdraw /></PrivateRoute>} />
       <Route path="/transfer" element={<PrivateRoute><Transfer /></PrivateRoute>} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
     </Routes>
   )
 }
