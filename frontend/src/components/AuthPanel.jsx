@@ -26,7 +26,8 @@ function AuthPanel({ title, subtitle }) {
       </div>
 
       <div className="z-10">
-        <p className="text-slate-600 text-xs">Wallet App · v1.0</p>
+        <p className="text-slate-600 text-xs">Nova Wallet · v1.0</p>
+        <p className="text-slate-600 text-xs">Developed by Mateo Calcagno</p>
       </div>
     </div>
   )
