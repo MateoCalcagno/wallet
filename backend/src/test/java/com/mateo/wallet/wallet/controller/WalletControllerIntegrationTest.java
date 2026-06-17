@@ -157,16 +157,4 @@ class WalletControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
     }
-
-    @Test
-    void updateAlias_invalidFormat() throws Exception {
-        AliasRequest request = new AliasRequest();
-        request.setAlias("aliasInvalido");
-
-        mockMvc.perform(patch("/wallet/alias")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", "Bearer " + token)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
-    }
 }

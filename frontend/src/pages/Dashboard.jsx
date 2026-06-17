@@ -8,6 +8,7 @@ function Dashboard() {
   const { user, balance, isLoading, handleLogout } = useDashboard()
   const { history, page, setPage, totalPages, historyError } = useTransactionHistory()
   const [copiedField, setCopiedField] = useState(null)
+  const [showBalance, setShowBalance] = useState(true)
   const navigate = useNavigate()
 
   const handleCopy = async (text, field) => {
@@ -119,9 +120,38 @@ function Dashboard() {
             <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-blue-900 opacity-50" />
             <div className="absolute -bottom-8 right-20 w-20 h-20 rounded-full bg-blue-600 opacity-15" />
             <p className="text-slate-500 text-xs relative z-10">Saldo disponible</p>
-            <p className="text-white text-3xl font-medium mt-1 mb-4 relative z-10">
-              ${balance !== null ? Number(balance).toFixed(2) : '...'}
-            </p>
+            <div className="flex items-center gap-2 mt-1 mb-4">
+              <p className="text-white text-3xl font-medium relative z-10 flex items-start">
+                {showBalance ? (
+                  balance !== null ? (
+                    <>
+                      <span>${Math.floor(Number(balance)).toLocaleString('es-AR')}</span>
+                      <span className="text-base font-medium text-slate-400 mt-1 ml-1">
+                        {(Number(balance) % 1).toFixed(2).slice(2)}
+                      </span>
+                    </>
+                  ) : '...'
+                ) : (
+                  <span>$***</span>
+                )}
+              </p>
+
+              <button
+                onClick={() => setShowBalance(!showBalance)}
+                className="text-slate-500 hover:text-slate-300 transition cursor-pointer mt-1"
+              >
+                {showBalance ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                  </svg>
+                )}
+              </button>
+            </div>
             <div className="flex gap-2 relative z-10">
               <button
                 onClick={() => navigate('/deposit')}
