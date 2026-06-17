@@ -92,11 +92,6 @@ function Login() {
                   )}
                 </button>
               </div>
-              <div className="text-right mt-1.5">
-                <span className="text-xs text-blue-500 cursor-pointer hover:underline">
-                  ¿Olvidaste tu contraseña?
-                </span>
-              </div>
             </div>
 
             <button
