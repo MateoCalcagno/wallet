@@ -4,6 +4,8 @@ import com.mateo.wallet.user.dto.UserRequest;
 import com.mateo.wallet.user.dto.UserResponse;
 import com.mateo.wallet.user.service.UserService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import jakarta.validation.Valid;
 
@@ -20,6 +22,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @SecurityRequirements
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest request) {
         return ResponseEntity.ok(userService.createUser(request));

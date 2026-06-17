@@ -3,6 +3,8 @@ package com.mateo.wallet.auth.controller;
 import com.mateo.wallet.auth.dto.LoginRequest;
 import com.mateo.wallet.auth.dto.LoginResponse;
 import com.mateo.wallet.auth.service.AuthService;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @SecurityRequirements
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
