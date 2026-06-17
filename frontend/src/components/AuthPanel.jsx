@@ -5,12 +5,15 @@ function AuthPanel({ title, subtitle }) {
       <div className="absolute -bottom-16 -left-16 w-44 h-44 rounded-full bg-blue-900 opacity-30" />
 
       <div className="flex items-center gap-3 z-10">
-        <div className="w-9 h-9 bg-blue-500 rounded-xl flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-          </svg>
+        <svg width="38" height="38" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <rect width="48" height="48" rx="10" fill="#1a3a6e"/>
+          <path d="M24 6 L29 18 L41 22 L29 26 L24 38 L19 26 L7 22 L19 18 Z" fill="#3d8ef8"/>
+          <circle cx="24" cy="22" r="3.5" fill="#6eb4ff"/>
+        </svg>
+        <div className="flex flex-col leading-tight">
+          <span className="text-white text-lg font-bold tracking-widest">NOVA</span>
+          <span className="text-blue-400 text-[10px] tracking-[0.3em]">WALLET</span>
         </div>
-        <span className="text-white text-base font-medium">Wallet</span>
       </div>
 
       <div className="z-10">
