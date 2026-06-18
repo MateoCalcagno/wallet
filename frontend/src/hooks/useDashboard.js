@@ -15,8 +15,6 @@ export function useDashboard() {
           api.get('/users/me'),
           api.get('/wallet/me')
         ])
-        console.log('me:', meRes.data)
-        console.log('wallet:', balanceRes.data)
         setUser(meRes.data)
         setBalance(balanceRes.data.balance)
       } catch (err) {

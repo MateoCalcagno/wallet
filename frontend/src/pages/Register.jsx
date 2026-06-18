@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import AuthPanel from '../components/AuthPanel'
+import FormPage from '../components/FormPage'
 import api from '../api/axios'
+import IconInput from '../components/IconInput'
 
 function Register() {
   const [step, setStep] = useState(1) // 1 = form, 2 = verificar PIN
@@ -27,12 +28,16 @@ function Register() {
     e.preventDefault()
     setError('')
 
-    if (form.password.length < 8) {
-      setError('La contraseña debe tener al menos 8 caracteres')
+    if (!form.firstName || !form.lastName || !form.dni || !form.email || !form.password) {
+      setError('Completá todos los campos')
       return
     }
     if (!/^\d{7,8}$/.test(form.dni)) {
       setError('El DNI debe tener 7 u 8 dígitos')
+      return
+    }
+    if (form.password.length < 8) {
+      setError('La contraseña debe tener al menos 8 caracteres')
       return
     }
 
@@ -85,13 +90,7 @@ function Register() {
   ]
 
   return (
-    <div className="min-h-screen flex">
-
-      <AuthPanel title={"Creá tu cuenta,\nen segundos."} subtitle="Empezá a usar tu billetera digital de forma simple y segura." />
-
-      <div className="flex-1 flex flex-col justify-center px-8 md:px-14 bg-white overflow-y-auto py-10">
-        <div className="max-w-sm w-full mx-auto">
-
+    <FormPage panelTitle={"Creá tu cuenta,\nen segundos."} panelSubtitle="Empezá a usar tu billetera digital de forma simple y segura.">
           {step === 1 ? (
             <>
               <div className="mb-8">
@@ -109,21 +108,14 @@ function Register() {
                 {fields.map(({ name, label, type, placeholder, icon }) => (
                   <div key={name}>
                     <label className="block text-xs font-medium text-gray-500 mb-1.5">{label}</label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
-                        </svg>
-                      </span>
-                      <input
-                        type={type}
-                        name={name}
-                        value={form[name]}
-                        onChange={handleChange}
-                        placeholder={placeholder}
-                        className="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                      />
-                    </div>
+                    <IconInput
+                      type={type}
+                      name={name}
+                      value={form[name]}
+                      onChange={handleChange}
+                      placeholder={placeholder}
+                      iconPath={icon}
+                    />
                   </div>
                 ))}
 
@@ -234,10 +226,7 @@ function Register() {
               </p>
             </>
           )}
-
-        </div>
-      </div>
-    </div>
+    </FormPage>
   )
 }
 

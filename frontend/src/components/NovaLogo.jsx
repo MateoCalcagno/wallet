@@ -1,0 +1,17 @@
+function NovaLogo() {
+  return (
+    <div className="flex items-center gap-3">
+      <svg width="38" height="38" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <rect width="48" height="48" rx="10" fill="#1a3a6e"/>
+        <path d="M24 6 L29 18 L41 22 L29 26 L24 38 L19 26 L7 22 L19 18 Z" fill="#3d8ef8"/>
+        <circle cx="24" cy="22" r="3.5" fill="#6eb4ff"/>
+      </svg>
+      <div className="flex flex-col leading-tight">
+        <span className="text-white text-lg font-bold tracking-widest">NOVA</span>
+        <span className="text-blue-400 text-[10px] tracking-[0.3em]">WALLET</span>
+      </div>
+    </div>
+  )
+}
+
+export default NovaLogo

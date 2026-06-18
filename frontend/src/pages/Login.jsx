@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import AuthPanel from '../components/AuthPanel'
+import FormPage from '../components/FormPage'
 import api from '../api/axios'
+import IconInput from '../components/IconInput'
 
 function Login() {
   const [email, setEmail] = useState('')
@@ -27,14 +28,7 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen flex">
-
-      {/* Panel izquierdo */}
-      <AuthPanel title={"Tu dinero,\nbajo control."} subtitle="Administrá tu saldo, transferí y hacé depósitos en segundos." />
-
-      {/* Panel derecho */}
-      <div className="flex-1 flex flex-col justify-center px-8 md:px-14 bg-white">
-        <div className="max-w-sm w-full mx-auto">
+    <FormPage panelTitle={"Tu dinero,\nbajo control."} panelSubtitle="Administrá tu saldo, transferí y hacé depósitos en segundos.">
           <div className="mb-8">
             <h1 className="text-xl font-medium text-gray-900 mb-1">Bienvenido de nuevo</h1>
             <p className="text-sm text-gray-500">Ingresá a tu cuenta para continuar</p>
@@ -49,36 +43,25 @@ function Login() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">Email</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </span>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tu@email.com"
-                  className="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                />
-              </div>
+              <IconInput
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="tu@email.com"
+                iconPath="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
             </div>
 
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">Contraseña</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                </span>
-                <input
+                <IconInput
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-10 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  className="pr-10"
+                  iconPath="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                 />
                 <button
                   type="button"
@@ -130,9 +113,7 @@ function Login() {
               Registrate gratis
             </span>
           </p>
-        </div>
-      </div>
-    </div>
+    </FormPage>
   )
 }
 

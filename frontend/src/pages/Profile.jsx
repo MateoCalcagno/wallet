@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import AuthPanel from '../components/AuthPanel'
 import api from '../api/axios'
+import FormPage from '../components/FormPage'
+import IconInput from '../components/IconInput'
 
 function Profile() {
   const [alias, setAlias] = useState('')
@@ -32,15 +33,7 @@ function Profile() {
   }
 
   return (
-    <div className="min-h-screen flex">
-
-      {/* Izquierda */}
-      <AuthPanel title={"Tu alias,\ntu identidad."} subtitle="Personalizá tu alias para recibir transferencias más fácil." />
-
-      {/* Derecha */}
-      <div className="flex-1 flex flex-col justify-center px-8 md:px-14 bg-white">
-        <div className="max-w-sm w-full mx-auto">
-
+    <FormPage panelTitle={"Tu alias,\ntu identidad."} panelSubtitle="Personalizá tu alias para recibir transferencias más fácil.">
           <div className="mb-8">
             <h1 className="text-xl font-medium text-gray-900 mb-1">Editar alias</h1>
             <p className="text-sm text-gray-500">
@@ -63,20 +56,14 @@ function Profile() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">Nuevo alias</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                  </svg>
-                </span>
-                <input
-                  type="text"
-                  value={alias}
-                  onChange={(e) => setAlias(e.target.value.toLowerCase())}
-                  placeholder="palabra.palabra.palabra"
-                  className="w-full pl-9 pr-3 py-2.5 text-sm font-mono border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                />
-              </div>
+              <IconInput
+                type="text"
+                value={alias}
+                onChange={(e) => setAlias(e.target.value.toLowerCase())}
+                placeholder="palabra.palabra.palabra"
+                className="font-mono"
+                iconPath="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+              />
               <p className="text-xs text-gray-400 mt-1.5">
                 Podés usar letras, números, puntos y guiones.
               </p>
@@ -84,7 +71,7 @@ function Profile() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2 cursor-pointer"
             >
               Guardar alias
             </button>
@@ -92,15 +79,12 @@ function Profile() {
             <button
               type="button"
               onClick={() => navigate('/dashboard')}
-              className="w-full text-sm text-gray-500 hover:text-gray-700 transition py-1"
+              className="w-full text-sm text-gray-500 hover:text-gray-700 transition py-1 cursor-pointer"
             >
               ← Volver al inicio
             </button>
           </form>
-
-        </div>
-      </div>
-    </div>
+    </FormPage>
   )
 }
 
