@@ -39,14 +39,14 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public WalletResponse getBalance(String email) {
-        Wallet wallet = walletResolver.resolveByEmail(email);
+        Wallet wallet = getByEmail(email);
         return new WalletResponse(wallet.getBalance(), wallet.getCbu(), wallet.getAlias());
     }
 
     @Override
     @Transactional
     public void deposit(String email, BigDecimal amount, PaymentMethod paymentMethod) {
-        Wallet wallet = walletResolver.resolveByEmail(email);
+        Wallet wallet = getByEmail(email);
 
         DepositStrategy strategy = depositStrategyFactory.getStrategy(paymentMethod);
         BigDecimal finalAmount = strategy.process(amount);
@@ -58,7 +58,7 @@ public class WalletServiceImpl implements WalletService {
     @Override
     @Transactional
     public void withdraw(String email, BigDecimal amount) {
-        Wallet wallet = walletResolver.resolveByEmail(email);
+        Wallet wallet = getByEmail(email);
         wallet.withdraw(amount);
         transactionRecorder.recordWithdrawal(wallet, amount);
     }
@@ -66,7 +66,7 @@ public class WalletServiceImpl implements WalletService {
     @Override
     @Transactional
     public void updateAlias(String email, String alias) {
-        Wallet wallet = walletResolver.resolveByEmail(email);
+        Wallet wallet = getByEmail(email);
 
         if (wallet.getAlias().equals(alias)) {
             return; // ya tiene ese alias, no hay nada que cambiar
@@ -89,5 +89,9 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public Wallet getByUserId(Long userId) {
         return walletResolver.resolveByUserId(userId);
+    }
+
+    private Wallet getByEmail(String email) {
+        return walletResolver.resolveByEmail(email);
     }
 }

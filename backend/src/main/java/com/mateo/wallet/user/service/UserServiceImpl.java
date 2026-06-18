@@ -53,8 +53,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUserByEmail(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = findUserByEmail(email);
         Wallet wallet = walletService.getByUserId(user.getId());
         return userMapper.toResponse(user, wallet);
     }
@@ -62,8 +61,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void resetPassword(String email, String newPassword) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = findUserByEmail(email);
         user.setPassword(passwordEncoder.encode(newPassword));
+    }
+
+    private User findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 }

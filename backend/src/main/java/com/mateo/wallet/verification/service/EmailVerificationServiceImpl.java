@@ -1,11 +1,10 @@
 package com.mateo.wallet.verification.service;
 
+import com.mateo.wallet.common.email.EmailSender;
 import com.mateo.wallet.common.exception.ResourceNotFoundException;
 import com.mateo.wallet.verification.model.EmailVerification;
 import com.mateo.wallet.verification.repository.EmailVerificationRepository;
 
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +18,12 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     private final EmailVerificationRepository repo;
-    private final JavaMailSender mailSender;
+    private final EmailSender emailSender;
 
     public EmailVerificationServiceImpl(EmailVerificationRepository repo,
-                                        JavaMailSender mailSender) {
+                                        EmailSender emailSender) {
         this.repo = repo;
-        this.mailSender = mailSender;
+        this.emailSender = emailSender;
     }
 
     @Override
@@ -76,10 +75,10 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     }
 
     private void sendEmail(String to, String pin) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("Tu código de verificación - Nova Wallet");
-        message.setText("Tu código de verificación es: " + pin + "\n\nVence en " + PIN_EXPIRY_MINUTES + " minutos.");
-        mailSender.send(message);
+        emailSender.send(
+            to,
+            "Tu código de verificación - Nova Wallet",
+            "Tu código de verificación es: " + pin + "\n\nVence en " + PIN_EXPIRY_MINUTES + " minutos."
+        );
     }
 }
