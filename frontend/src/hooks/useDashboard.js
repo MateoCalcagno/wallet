@@ -20,7 +20,6 @@ export function useDashboard() {
         setUser(meRes.data)
         setBalance(balanceRes.data.balance)
       } catch (err) {
-        console.error('Error en fetchData:', err.response?.status, err.response?.data)
         navigate('/login')
       } finally {
         setIsLoading(false)

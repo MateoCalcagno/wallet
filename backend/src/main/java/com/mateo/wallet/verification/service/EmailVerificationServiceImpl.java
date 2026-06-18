@@ -9,13 +9,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Random;
 
 @Service
 public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     private static final int PIN_EXPIRY_MINUTES = 10;
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     private final EmailVerificationRepository repo;
     private final JavaMailSender mailSender;
@@ -29,7 +30,6 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     @Override
     @Transactional
     public void sendPin(String email) {
-        // Eliminar verificaciones anteriores del mismo email
         repo.deleteByEmail(email);
 
         String pin = generatePin();
@@ -44,16 +44,16 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     @Transactional
     public void verifyPin(String email, String pin) {
         EmailVerification verification = repo.findTopByEmailOrderByIdDesc(email)
-                .orElseThrow(() -> new ResourceNotFoundException("No se encontró una verificación para ese email"));
+                .orElseThrow(() -> new ResourceNotFoundException("No verification found for this email"));
 
         if (verification.isVerified()) {
-            throw new IllegalStateException("El email ya fue verificado");
+            throw new IllegalStateException("Email already verified");
         }
         if (LocalDateTime.now().isAfter(verification.getExpiresAt())) {
-            throw new IllegalStateException("El PIN expiró, solicitá uno nuevo");
+            throw new IllegalStateException("PIN has expired, please request a new one");
         }
         if (!verification.getPin().equals(pin)) {
-            throw new IllegalArgumentException("PIN incorrecto");
+            throw new IllegalArgumentException("Incorrect PIN");
         }
 
         verification.setVerified(true);
@@ -62,15 +62,17 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     @Override
     public void assertEmailVerified(String email) {
         EmailVerification verification = repo.findTopByEmailOrderByIdDesc(email)
-                .orElseThrow(() -> new IllegalStateException("El email no fue verificado"));
+                .orElseThrow(() -> new IllegalStateException("Email has not been verified"));
 
         if (!verification.isVerified()) {
-            throw new IllegalStateException("Debés verificar tu email antes de registrarte");
+            throw new IllegalStateException("You must verify your email before continuing");
         }
+
+        repo.deleteByEmail(email);
     }
 
     private String generatePin() {
-        return String.format("%06d", new Random().nextInt(999999));
+        return String.format("%06d", SECURE_RANDOM.nextInt(1_000_000));
     }
 
     private void sendEmail(String to, String pin) {
