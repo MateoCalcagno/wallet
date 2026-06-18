@@ -15,11 +15,11 @@ public class Transaction extends Auditable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "source_wallet_id", nullable = true) 
+    @JoinColumn(name = "source_wallet_id")
     private Wallet sourceWallet;
 
     @ManyToOne
-    @JoinColumn(name = "destination_wallet_id", nullable = true) 
+    @JoinColumn(name = "destination_wallet_id")
     private Wallet destinationWallet;
 
     @Column(nullable = false)
@@ -40,8 +40,6 @@ public class Transaction extends Auditable {
         this.amount = amount;
         this.type = type;
     }
-
-    // getters
 
     public Long getId() { return id; }
     public Wallet getSourceWallet() { return sourceWallet; }

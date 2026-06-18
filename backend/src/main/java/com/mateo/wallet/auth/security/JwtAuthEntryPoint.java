@@ -1,4 +1,4 @@
-package com.mateo.wallet.config;
+package com.mateo.wallet.auth.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mateo.wallet.common.response.ApiResponse;

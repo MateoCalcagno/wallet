@@ -32,7 +32,7 @@ function ForgotPassword() {
     setError('')
     try {
       setLoading(true)
-      await api.post('/users/forgot-password/verify', { email, pin })
+      await api.post('/users/verify-pin', { email, pin })
       setStep(3)
     } catch (err) {
       setError(err.response?.data?.message || 'Código incorrecto o expirado')

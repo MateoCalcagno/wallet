@@ -43,13 +43,6 @@ public class UserController {
     }
 
     @SecurityRequirements
-    @PostMapping("/forgot-password/verify")
-    public ResponseEntity<Void> verifyForgotPassword(@RequestBody @Valid VerifyPinRequest request) {
-        emailVerificationService.verifyPin(request.getEmail(), request.getPin());
-        return ResponseEntity.ok().build();
-    }
-
-    @SecurityRequirements
     @PostMapping("/forgot-password/reset")
     public ResponseEntity<Void> resetPassword(@RequestBody @Valid ResetPasswordRequest request) {
         emailVerificationService.assertEmailVerified(request.getEmail());
@@ -60,7 +53,6 @@ public class UserController {
     @SecurityRequirements
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest request) {
-        // Valida que el email haya sido verificado antes de crear el usuario
         emailVerificationService.assertEmailVerified(request.getEmail());
         return ResponseEntity.ok(userService.createUser(request));
     }

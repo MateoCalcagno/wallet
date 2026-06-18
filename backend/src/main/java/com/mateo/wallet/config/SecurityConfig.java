@@ -13,6 +13,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.mateo.wallet.auth.security.JwtAuthEntryPoint;
+import com.mateo.wallet.auth.security.JwtFilter;
+
 import java.util.List;
 
 @Configuration

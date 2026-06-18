@@ -1,7 +1,7 @@
 package com.mateo.wallet.transaction.listener;
 
-import com.mateo.wallet.transaction.email.TransferEmailService;
 import com.mateo.wallet.transaction.event.TransferCompletedEvent;
+import com.mateo.wallet.transaction.service.TransferEmailService;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;

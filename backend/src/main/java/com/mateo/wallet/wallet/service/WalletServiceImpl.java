@@ -68,17 +68,15 @@ public class WalletServiceImpl implements WalletService {
     public void updateAlias(String email, String alias) {
         Wallet wallet = walletResolver.resolveByEmail(email);
 
-        String newAlias = alias.toLowerCase();
-
-        if (wallet.getAlias().equals(newAlias)) {
+        if (wallet.getAlias().equals(alias)) {
             return; // ya tiene ese alias, no hay nada que cambiar
         }
 
-        if (walletRepository.existsByAlias(newAlias)) {
+        if (walletRepository.existsByAlias(alias)) {
             throw new IllegalArgumentException("Alias already in use");
         }
 
-        wallet.setAlias(newAlias);
+        wallet.setAlias(alias);
     }
 
     @Override

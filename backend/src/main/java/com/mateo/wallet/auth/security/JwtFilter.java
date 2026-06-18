@@ -1,4 +1,4 @@
-package com.mateo.wallet.config;
+package com.mateo.wallet.auth.security;
 
 import com.mateo.wallet.auth.util.JwtUtil;
 import jakarta.servlet.FilterChain;

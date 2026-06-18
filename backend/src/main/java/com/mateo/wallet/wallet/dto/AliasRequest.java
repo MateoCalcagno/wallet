@@ -11,6 +11,9 @@ public class AliasRequest {
 
     public AliasRequest() {}
 
-    public void setAlias(String alias){ this.alias = alias; } // para tests
+    public void setAlias(String alias) { 
+        this.alias = alias != null ? alias.toLowerCase() : null; 
+    }
+
     public String getAlias() { return alias; }
 }
