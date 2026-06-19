@@ -308,7 +308,7 @@ function Dashboard() {
                           </div>
                         </div>
                         <span className={`text-sm font-medium ${getAmountColor(t)}`}>
-                          {getAmountPrefix(t)}${Number(t.amount).toFixed(2)}
+                          {getAmountPrefix(t)}${Number(t.amount).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                       </div>
                     )

@@ -3,13 +3,18 @@ import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 import FormPage from '../components/FormPage'
 import IconInput from '../components/IconInput'
+import { useAmountInput } from '../hooks/useAmountInput'
 
 function Transfer() {
+  const { display, parsed: amount, handleChange } = useAmountInput()
   const [identifier, setIdentifier] = useState('')
-  const [amount, setAmount] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
+
+  const MAX_TRANSFER = 100000
+  const esCBU = /^\d{22}$/.test(identifier.trim())
+  const esAlias = /^[a-zA-Z0-9.]{6,20}$/.test(identifier.trim())
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -19,14 +24,23 @@ function Transfer() {
       setError('Ingresá un CBU o alias')
       return
     }
-    const parsed = parseFloat(amount)
-    if (isNaN(parsed) || parsed <= 0) {
+
+    if (!esCBU && !esAlias) {
+      setError('CBU inválido (22 dígitos) o alias inválido (6 a 20 caracteres)')
+      return
+    }
+
+    if (!amount || amount <= 0) {
       setError('Ingresá un monto válido')
+      return
+    }
+    if (amount > MAX_TRANSFER) {
+      setError('El monto máximo por transferencia es $100.000')
       return
     }
 
     try {
-      await api.post('/transactions/transfer', { identifier, amount: parsed })
+      await api.post('/transactions/transfer', { identifier, amount })
       setSuccess(true)
       setTimeout(() => navigate('/dashboard'), 1500)
     } catch (err) {
@@ -68,6 +82,7 @@ function Transfer() {
                 value={identifier}
                 onChange={e => setIdentifier(e.target.value)}
                 placeholder="sol.luna.rio  ó  1234567890123456789012"
+                maxLength={22}
                 iconPath="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
               />
             </div>
@@ -75,12 +90,11 @@ function Transfer() {
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">Monto</label>
               <IconInput
-                type="number"
-                value={amount}
-                onChange={e => setAmount(e.target.value)}
-                placeholder="0.00"
-                min="0.01"
-                step="0.01"
+                type="text"
+                inputMode="numeric"
+                value={display}
+                onChange={handleChange}
+                placeholder="0,00"
                 iconPath="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </div>

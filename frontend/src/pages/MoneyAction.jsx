@@ -3,27 +3,35 @@ import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 import FormPage from '../components/FormPage'
 import IconInput from '../components/IconInput'
+import { useAmountInput } from '../hooks/useAmountInput'
 
 const ICON_MONEY = "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 
 function MoneyAction({ config }) {
   const { panelTitle, panelSubtitle, title, subtitle, endpoint, buttonLabel, successMessage, errorMessages = {}, paymentMethods } = config
-  const [amount, setAmount] = useState('')
+  const { display, parsed: amount, handleChange } = useAmountInput()
   const [paymentMethod, setPaymentMethod] = useState(paymentMethods?.[0]?.value ?? null)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
 
+  const MAX_AMOUNT = 100000
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    const parsed = parseFloat(amount)
-    if (isNaN(parsed) || parsed <= 0) {
+
+    if (!amount || amount <= 0) {
       setError('Ingresá un monto válido')
       return
     }
+    if (amount > MAX_AMOUNT) {
+      setError('El monto máximo es $100.000')
+      return
+    }
+
     try {
-      const body = { amount: parsed }
+      const body = { amount }
       if (paymentMethod) body.paymentMethod = paymentMethod
       await api.post(endpoint, body)
       setSuccess(true)
@@ -93,12 +101,11 @@ function MoneyAction({ config }) {
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1.5">Monto</label>
               <IconInput
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="0.00"
-                min="0.01"
-                step="0.01"
+                type="text"
+                inputMode="numeric"
+                value={display}
+                onChange={handleChange}
+                placeholder="0,00"
                 iconPath="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </div>

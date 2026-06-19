@@ -84,6 +84,7 @@ function Register() {
     { name: 'lastName', label: 'Apellido', type: 'text', placeholder: 'Pérez',
       icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
     { name: 'dni', label: 'DNI', type: 'text', placeholder: '12345678',
+      maxLength: 8,
       icon: 'M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2' },
     { name: 'email', label: 'Email', type: 'email', placeholder: 'tu@email.com',
       icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
@@ -105,7 +106,7 @@ function Register() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                {fields.map(({ name, label, type, placeholder, icon }) => (
+                {fields.map(({ name, label, type, placeholder, icon, maxLength }) => (
                   <div key={name}>
                     <label className="block text-xs font-medium text-gray-500 mb-1.5">{label}</label>
                     <IconInput
@@ -114,6 +115,7 @@ function Register() {
                       value={form[name]}
                       onChange={handleChange}
                       placeholder={placeholder}
+                      maxLength={maxLength}
                       iconPath={icon}
                     />
                   </div>
@@ -133,12 +135,13 @@ function Register() {
                       value={form.password}
                       onChange={handleChange}
                       placeholder="Mínimo 8 caracteres"
+                      maxLength={20}
                       className="w-full pl-9 pr-10 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
                     >
                       {showPassword ? (
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
