@@ -1,38 +1,46 @@
-# 💳 Wallet App
+# 💳 Nova Wallet
 
-![Status](https://img.shields.io/badge/estado-en%20desarrollo%20continuo-blue)
+![Java](https://img.shields.io/badge/Java-21-orange)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-green)
+![React](https://img.shields.io/badge/React-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-blue)
+![Docker](https://img.shields.io/badge/Docker-2496ED)
 
-Aplicación de billetera virtual desarrollada con **Java, Spring Boot y React**. Permite a los usuarios registrarse, autenticarse mediante JWT, gestionar su saldo y realizar operaciones financieras de manera simple y segura.
+Billetera virtual desarrollada con **Java, Spring Boot, PostgreSQL y React**.
+
+Permite registrarse, autenticarse mediante JWT, administrar saldo, realizar depósitos, retiros y transferencias, consultar movimientos y gestionar datos bancarios de forma segura.
 
 ---
 
 ## ✨ Características
 
-* Registro y autenticación de usuarios
-* Autorización mediante JWT
-* Gestión de saldo personal
-* Depósitos y retiros de dinero
+* Registro de usuarios
+* Login con JWT
+* Recuperación de contraseña por email
+* Gestión de saldo
+* Depósitos y retiros
 * Transferencias por CBU o Alias
 * Historial de transacciones paginado
 * Generación automática de CBU
 * Alias personalizable
-* Perfil de usuario
-* Persistencia de datos con PostgreSQL
+* Skeleton loading y feedback visual de operaciones
 
 ---
 
-## 🛠️ Tecnologías utilizadas
+## 🛠️ Tecnologías
 
 ### Backend
-* Java 21
+
+* Java 
 * Spring Boot
 * Spring Security
-* JWT
 * Spring Data JPA
+* JWT
 * PostgreSQL
 * Maven
 
 ### Frontend
+
 * React
 * React Router
 * Axios
@@ -40,16 +48,14 @@ Aplicación de billetera virtual desarrollada con **Java, Spring Boot y React**.
 * Vite
 
 ### Infraestructura
+
 * Docker
 * Docker Compose
+* GitHub Actions
 
 ---
 
 ## 🏗️ Arquitectura
-
-El backend está organizado utilizando una **arquitectura modular y en capas**.
-
-Cada módulo representa una funcionalidad del sistema:
 
 ```text
 auth/
@@ -58,7 +64,7 @@ wallet/
 transaction/
 ```
 
-Dentro de cada módulo se sigue la siguiente estructura:
+Estructura por capas:
 
 ```text
 Controller
@@ -70,82 +76,75 @@ Repository
 Database
 ```
 
-Además, se utilizan:
-
-* DTOs para la comunicación entre cliente y servidor
-* Validaciones de datos
-* Manejo centralizado de excepciones
-* Seguridad basada en JWT
+Incluye DTOs, validaciones, manejo global de excepciones y seguridad basada en JWT.
 
 ---
 
 ## 🧩 Patrones de diseño
 
-- **Factory** — creación de transacciones y wallets (`TransactionFactory`, `WalletFactory`)
-- **Strategy** — métodos de depósito intercambiables con distintas comisiones (`DebitCardDepositStrategy`, `CreditCardDepositStrategy`, `BankTransferDepositStrategy`)
+* **Factory** — creación de wallets y transacciones
+* **Strategy** — métodos de depósito con distintas comisiones
+* **Observer** — notificación de eventos de transacciones
 
 ---
 
 ## 🧪 Testing
 
-* Tests unitarios con JUnit 5 y Mockito
-* Tests de integración con MockMvc y H2
-* Cobertura de código con JaCoCo
-* CI con GitHub Actions
+* JUnit 5
+* Mockito
+* MockMvc
+* H2 Database
+* JaCoCo
+* GitHub Actions CI
 
 ---
 
 ## 🚀 Funcionalidades
 
 ### Autenticación
+
 * Registro de usuarios
-* Inicio de sesión
-* Generación de token JWT
-* Protección de endpoints
+* Login
+* Verificación por email
+* Recuperación de contraseña
 
 ### Wallet
+
 * Consulta de saldo
-* Depósitos y retiros
+* Depósitos
+* Retiros
 * Actualización de alias
 
 ### Transferencias
-* Transferencia mediante Alias o CBU
-* Validación de saldo disponible
+
+* Por CBU o Alias
+* Validación de saldo
 * Registro automático de movimientos
 
 ### Historial
+
 * Consulta de movimientos
-* Paginación de resultados
-* Visualización de depósitos, retiros y transferencias
+* Paginación
+* Visualización de operaciones
 
 ---
 
-## 🐘 Base de datos
+## ▶️ Ejecución
 
-Levantar PostgreSQL utilizando Docker:
+### Base de datos
 
 ```bash
 docker compose up -d
 ```
 
----
-
-## ▶️ Ejecución del backend
+### Backend
 
 ```bash
 cd backend
 ./mvnw spring-boot:run
 ```
 
-Servidor:
-
-```text
-http://localhost:8080
-```
-
----
-
-## ⚛️ Ejecución del frontend
+### Frontend
 
 ```bash
 cd frontend
@@ -153,28 +152,28 @@ npm install
 npm run dev
 ```
 
-Aplicación:
-
-```text
-http://localhost:5173
-```
-
 ---
 
 ## 🌐 Endpoints principales
 
-### Autenticación
+### Auth
+
 ```http
 POST /auth/login
 ```
 
-### Usuarios
+### Users
+
 ```http
 POST /users
 GET /users/me
+POST /users/send-verification
+POST /users/verify-pin
+POST /users/forgot-password/reset
 ```
 
 ### Wallet
+
 ```http
 GET /wallet/me
 POST /wallet/deposit
@@ -182,7 +181,8 @@ POST /wallet/withdraw
 PATCH /wallet/alias
 ```
 
-### Transferencias
+### Transactions
+
 ```http
 POST /transactions/transfer
 GET /transactions/history
@@ -190,17 +190,8 @@ GET /transactions/history
 
 ---
 
-## ⚙️ Variables de entorno
-
-Copiá el archivo de ejemplo y completá con tus valores:
-
-```bash
-cp .env.example .env
-```
-
----
-
 ## 👨‍💻 Autor
 
 **Mateo Calcagno**
-Analista en Computación 
+
+Analista en Computación • Backend Developer 
