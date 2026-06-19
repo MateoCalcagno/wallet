@@ -59,7 +59,7 @@ function MoneyAction({ config }) {
             {/* Selector de método de pago — solo si se pasa paymentMethods */}
             {paymentMethods && (
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-2">Método de pago</label>
+                <label className="block text-xs font-medium text-gray-500 mb-2">Método de depósito</label>
                 <div className="flex flex-col gap-2">
                   {paymentMethods.map((m) => (
                     <label

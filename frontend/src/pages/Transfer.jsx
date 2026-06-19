@@ -14,11 +14,17 @@ function Transfer() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+
+    if (!identifier.trim()) {
+      setError('Ingresá un CBU o alias')
+      return
+    }
     const parsed = parseFloat(amount)
     if (isNaN(parsed) || parsed <= 0) {
       setError('Ingresá un monto válido')
       return
     }
+
     try {
       await api.post('/transactions/transfer', { identifier, amount: parsed })
       setSuccess(true)

@@ -27,8 +27,14 @@ function Profile() {
       await api.patch('/wallet/alias', { alias })
       setCurrentAlias(alias)
       setSuccess(true)
+      setTimeout(() => navigate('/dashboard'), 1500)
     } catch (err) {
-      setError(err.response?.data?.message || 'Error al actualizar el alias')
+      const msg = err.response?.data?.message || ''
+      if (msg.toLowerCase().includes('already in use')) {
+        setError('Ese alias ya está en uso, elegí otro')
+      } else {
+        setError(msg || 'Error al actualizar el alias')
+      }
     }
   }
 

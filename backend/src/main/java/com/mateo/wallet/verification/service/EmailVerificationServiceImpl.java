@@ -59,6 +59,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     }
 
     @Override
+    @Transactional
     public void assertEmailVerified(String email) {
         EmailVerification verification = repo.findTopByEmailOrderByIdDesc(email)
                 .orElseThrow(() -> new IllegalStateException("Email has not been verified"));
