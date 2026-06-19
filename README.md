@@ -1,11 +1,5 @@
 # 💳 Nova Wallet
 
-![Java](https://img.shields.io/badge/Java-21-orange)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-green)
-![React](https://img.shields.io/badge/React-blue)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-blue)
-![Docker](https://img.shields.io/badge/Docker-2496ED)
-
 Billetera virtual desarrollada con **Java, Spring Boot, PostgreSQL y React**.
 
 Permite registrarse, autenticarse mediante JWT, administrar saldo, realizar depósitos, retiros y transferencias, consultar movimientos y gestionar datos bancarios de forma segura.
