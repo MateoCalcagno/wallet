@@ -48,3 +48,9 @@ management:
     web:
       exposure:
         include: health
+
+logging:
+  level:
+    root: INFO
+    org.springframework.mail: DEBUG
+    com.mateo.wallet: DEBUG
