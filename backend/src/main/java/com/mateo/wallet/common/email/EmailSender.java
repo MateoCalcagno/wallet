@@ -18,8 +18,15 @@ import java.util.List;
 public class EmailSender {
 
     private final TransactionalEmailsApi api;
+    private final String senderEmail;
+    private final String senderName;
 
-    public EmailSender(@Value("${brevo.api-key}") String apiKey) {
+    public EmailSender(
+            @Value("${brevo.api-key}") String apiKey,
+            @Value("${brevo.sender-email}") String senderEmail,
+            @Value("${brevo.sender-name}") String senderName) {
+        this.senderEmail = senderEmail;
+        this.senderName = senderName;
         ApiClient client = Configuration.getDefaultApiClient();
         ApiKeyAuth auth = (ApiKeyAuth) client.getAuthentication("api-key");
         auth.setApiKey(apiKey);
@@ -32,8 +39,8 @@ public class EmailSender {
         email.setSubject(subject);
         email.setTextContent(body);
         email.setSender(new SendSmtpEmailSender()
-            .name("Nova Wallet")
-            .email("mateocalcagno5@gmail.com"));
+            .name(senderName)
+            .email(senderEmail));
 
         try {
             api.sendTransacEmail(email);
