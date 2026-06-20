@@ -6,7 +6,7 @@ spring:
     name: wallet
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/wallet-db?currentSchema=public&stringtype=unspecified&reWriteBatchedInserts=true
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?currentSchema=public&stringtype=unspecified&reWriteBatchedInserts=true
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
