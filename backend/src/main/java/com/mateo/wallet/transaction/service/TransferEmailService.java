@@ -4,7 +4,10 @@ import org.springframework.stereotype.Service;
 
 import com.mateo.wallet.common.email.EmailSender;
 import com.mateo.wallet.wallet.model.Wallet;
+
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 @Service
 public class TransferEmailService {
@@ -19,7 +22,7 @@ public class TransferEmailService {
         emailSender.send(
             toWallet.getUser().getEmail(),
             "Recibiste una transferencia - Nova Wallet",
-            "Hola " + toWallet.getUser().getFirstName() + ", recibiste $" + amount + " en tu wallet."
+            "Hola " + toWallet.getUser().getFirstName() + ", recibiste " + formatAmount(amount) + " en tu wallet."
         );
     }
 
@@ -27,7 +30,14 @@ public class TransferEmailService {
         emailSender.send(
             fromWallet.getUser().getEmail(),
             "Transferencia exitosa - Nova Wallet",
-            "Hola " + fromWallet.getUser().getFirstName() + ", tu transferencia de $" + amount + " fue exitosa."
+            "Hola " + fromWallet.getUser().getFirstName() + ", tu transferencia de " + formatAmount(amount) + " fue exitosa."
         );
+    }
+
+    private String formatAmount(BigDecimal amount) {
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.forLanguageTag("es-AR"));
+        nf.setMinimumFractionDigits(2);
+        nf.setMaximumFractionDigits(2);
+        return "$" + nf.format(amount);
     }
 }
