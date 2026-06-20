@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.http.HttpMethod;
 
 import com.mateo.wallet.auth.security.JwtAuthEntryPoint;
 import com.mateo.wallet.auth.security.JwtFilter;
@@ -62,6 +63,7 @@ public class SecurityConfig {
                 .authenticationEntryPoint(jwtAuthEntryPoint)
             )
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(
         "/auth/login",
                     "/users",
