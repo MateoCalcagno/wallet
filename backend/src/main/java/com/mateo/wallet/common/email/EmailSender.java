@@ -1,23 +1,32 @@
 package com.mateo.wallet.common.email;
 
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import com.resend.Resend;
+import com.resend.core.exception.ResendException;
+import com.resend.services.emails.model.CreateEmailOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EmailSender {
 
-    private final JavaMailSender mailSender;
+    private final Resend resend;
 
-    public EmailSender(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
+    public EmailSender(@Value("${resend.api-key}") String apiKey) {
+        this.resend = new Resend(apiKey);
     }
 
     public void send(String to, String subject, String body) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
-        mailSender.send(message);
+        CreateEmailOptions params = CreateEmailOptions.builder()
+            .from("Nova Wallet <onboarding@resend.dev>")
+            .to(to)
+            .subject(subject)
+            .text(body)
+            .build();
+
+        try {
+            resend.emails().send(params);
+        } catch (ResendException e) {
+            throw new RuntimeException("Error enviando email: " + e.getMessage(), e);
+        }
     }
 }

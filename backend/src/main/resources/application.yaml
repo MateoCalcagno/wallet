@@ -21,18 +21,6 @@ spring:
           time_zone: UTC
         format_sql: true
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
 server:
   port: 8080
 
@@ -54,3 +42,6 @@ logging:
     root: INFO
     org.springframework.mail: DEBUG
     com.mateo.wallet: DEBUG
+
+resend:
+  api-key: ${RESEND_API_KEY}
