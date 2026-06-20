@@ -1,5 +1,4 @@
 name: CI
-
 on:
   push:
     branches: [ main ]
@@ -11,16 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
-
       - name: Give execute permission to mvnw
         working-directory: backend
         run: chmod +x mvnw
-
       - name: Run tests
         working-directory: backend
         env:
@@ -30,3 +26,11 @@ jobs:
           JWT_EXPIRATION: 86400000
           CORS_ALLOWED_ORIGIN: http://localhost:3000
         run: ./mvnw test -e
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Trigger Render Deploy
+        run: curl "${{ secrets.RENDER_DEPLOY_HOOK }}"
