@@ -1,31 +1,43 @@
 package com.mateo.wallet.common.email;
 
-import com.resend.Resend;
-import com.resend.core.exception.ResendException;
-import com.resend.services.emails.model.CreateEmailOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import sendinblue.ApiClient;
+import sendinblue.ApiException;
+import sendinblue.Configuration;
+import sendinblue.auth.ApiKeyAuth;
+import sibApi.TransactionalEmailsApi;
+import sibModel.SendSmtpEmail;
+import sibModel.SendSmtpEmailSender;
+import sibModel.SendSmtpEmailTo;
+
+import java.util.List;
 
 @Component
 public class EmailSender {
 
-    private final Resend resend;
+    private final TransactionalEmailsApi api;
 
-    public EmailSender(@Value("${resend.api-key}") String apiKey) {
-        this.resend = new Resend(apiKey);
+    public EmailSender(@Value("${brevo.api-key}") String apiKey) {
+        ApiClient client = Configuration.getDefaultApiClient();
+        ApiKeyAuth auth = (ApiKeyAuth) client.getAuthentication("api-key");
+        auth.setApiKey(apiKey);
+        this.api = new TransactionalEmailsApi();
     }
 
     public void send(String to, String subject, String body) {
-        CreateEmailOptions params = CreateEmailOptions.builder()
-            .from("Nova Wallet <onboarding@resend.dev>")
-            .to(to)
-            .subject(subject)
-            .text(body)
-            .build();
+        SendSmtpEmail email = new SendSmtpEmail();
+        email.setTo(List.of(new SendSmtpEmailTo().email(to)));
+        email.setSubject(subject);
+        email.setTextContent(body);
+        email.setSender(new SendSmtpEmailSender()
+            .name("Nova Wallet")
+            .email("mateocalcagno5@gmail.com"));
 
         try {
-            resend.emails().send(params);
-        } catch (ResendException e) {
+            api.sendTransacEmail(email);
+        } catch (ApiException e) {
             throw new RuntimeException("Error enviando email: " + e.getMessage(), e);
         }
     }

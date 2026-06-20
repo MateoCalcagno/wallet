@@ -43,5 +43,5 @@ logging:
     org.springframework.mail: DEBUG
     com.mateo.wallet: DEBUG
 
-resend:
-  api-key: ${RESEND_API_KEY}
+brevo:
+  api-key: ${BREVO_API_KEY}
