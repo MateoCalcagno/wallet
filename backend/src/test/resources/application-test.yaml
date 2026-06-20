@@ -15,3 +15,8 @@ jwt:
 
 cors:
   allowed-origin: http://localhost:3000
+
+brevo:
+  api-key: test-api-key
+  sender-email: test@test.com
+  sender-name: Test
