@@ -67,8 +67,10 @@ public class SecurityConfig {
                 .requestMatchers(
         "/auth/login",
                     "/users",
+                    "/users/check-availability",
                     "/users/send-verification",   
                     "/users/verify-pin",
+                    "/users/forgot-password/send-verification",
                     "/users/forgot-password/verify",  
                     "/users/forgot-password/reset",           
                     "/v3/api-docs/**",

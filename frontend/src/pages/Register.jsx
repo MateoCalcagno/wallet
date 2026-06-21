@@ -41,14 +41,24 @@ function Register() {
       return
     }
 
+    document.body.style.cursor = 'wait'
     try {
       setLoading(true)
+      await api.post('/users/check-availability', { email: form.email, dni: form.dni })
       await api.post('/users/send-verification', { email: form.email })
       setStep(2)
     } catch (err) {
-      setError(err.response?.data?.message || 'Error al enviar el código')
+      const msg = err.response?.data?.message || ''
+      if (msg.toLowerCase().includes('email')) {
+        setError('El email ya está en uso, revisá tus datos')
+      } else if (msg.toLowerCase().includes('dni')) {
+        setError('El DNI ya está registrado, revisá tus datos')
+      } else {
+        setError('Error al enviar el código')
+      }
     } finally {
       setLoading(false)
+      document.body.style.cursor = 'default'
     }
   }
 
@@ -56,16 +66,24 @@ function Register() {
   const handleVerify = async (e) => {
     e.preventDefault()
     setError('')
-
+    document.body.style.cursor = 'wait'
     try {
       setLoading(true)
       await api.post('/users/verify-pin', { email: form.email, pin })
       await api.post('/users', form)
       navigate('/login')
     } catch (err) {
-      setError(err.response?.data?.message || 'Código incorrecto o expirado')
+      const msg = err.response?.data?.message || ''
+      if (msg.toLowerCase().includes('email already')) {
+        setError('El email ya está registrado')
+      } else if (msg.toLowerCase().includes('dni already')) {
+        setError('El DNI ya está registrado')
+      } else {
+        setError('Código incorrecto o expirado')
+      }
     } finally {
       setLoading(false)
+      document.body.style.cursor = 'default'
     }
   }
 
@@ -165,7 +183,9 @@ function Register() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2 cursor-pointer"
+                  className={`w-full bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2 disabled:opacity-60 ${
+                    loading ? 'cursor-wait opacity-75' : 'hover:bg-blue-700 cursor-pointer'
+                  }`}
                 >
                   {loading ? 'Enviando código...' : 'Continuar'}
                 </button>
@@ -183,7 +203,7 @@ function Register() {
               <div className="mb-8">
                 <button
                   onClick={() => { setStep(1); setError(''); setPin('') }}
-                  className="text-sm text-gray-400 hover:text-gray-600 mb-4 flex items-center gap-1"
+                  className="text-sm text-gray-400 hover:text-gray-600 mb-4 flex items-center gap-1 cursor-pointer"
                 >
                   ← Volver
                 </button>
@@ -215,7 +235,9 @@ function Register() {
                 <button
                   type="submit"
                   disabled={loading || pin.length !== 6}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white py-2.5 rounded-lg text-sm font-medium transition cursor-pointer"
+                  className={`w-full bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium transition disabled:opacity-60 ${
+                    loading ? 'cursor-wait opacity-75' : 'hover:bg-blue-700 cursor-pointer'
+                  }`}
                 >
                   {loading ? 'Verificando...' : 'Verificar y crear cuenta'}
                 </button>
@@ -223,7 +245,7 @@ function Register() {
 
               <p className="text-center text-sm text-gray-500 mt-6">
                 ¿No recibiste el código?{' '}
-                <span onClick={handleResend} className="text-blue-600 font-medium cursor-pointer hover:underline">
+                <span onClick={handleResend} className="text-blue-600 font-medium hover:underline cursor-pointer">
                   Reenviar
                 </span>
               </p>

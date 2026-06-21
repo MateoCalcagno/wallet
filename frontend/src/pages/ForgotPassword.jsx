@@ -12,25 +12,35 @@ function ForgotPassword() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [resending, setResending] = useState(false)
   const navigate = useNavigate()
 
   const handleSendPin = async (e) => {
     e.preventDefault()
     setError('')
+    document.body.style.cursor = 'wait'
     try {
       setLoading(true)
-      await api.post('/users/send-verification', { email })
+      await api.post('/users/forgot-password/send-verification', { email })
       setStep(2)
     } catch (err) {
-      setError(err.response?.data?.message || 'Error al enviar el código')
+      const msg = err.response?.data?.message || ''
+      console.log(err.response?.data)
+      if (msg.toLowerCase().includes('user not found')) {
+        setError('No existe una cuenta con ese email')
+      } else {
+        setError('Error al enviar el código')
+      }
     } finally {
       setLoading(false)
+      document.body.style.cursor = 'default'
     }
   }
 
   const handleVerifyPin = async (e) => {
     e.preventDefault()
     setError('')
+    document.body.style.cursor = 'wait'
     try {
       setLoading(true)
       await api.post('/users/verify-pin', { email, pin })
@@ -39,20 +49,21 @@ function ForgotPassword() {
       setError(err.response?.data?.message || 'Código incorrecto o expirado')
     } finally {
       setLoading(false)
+      document.body.style.cursor = 'default'
     }
   }
 
-  const handleReset = async (e) => {
-    e.preventDefault()
+  const handleResendPin = async () => {
     setError('')
+    document.body.style.cursor = 'wait'
     try {
-      setLoading(true)
-      await api.post('/users/forgot-password/reset', { email, newPassword })
-      navigate('/login')
+      setResending(true)
+      await api.post('/users/send-verification', { email })
     } catch (err) {
-      setError(err.response?.data?.message || 'Error al cambiar la contraseña')
+      setError(err.response?.data?.message || 'Error al reenviar el código')
     } finally {
-      setLoading(false)
+      setResending(false)
+      document.body.style.cursor = 'default'
     }
   }
 
@@ -61,7 +72,7 @@ function ForgotPassword() {
           {step !== 1 && (
             <button
               onClick={() => { setStep(step - 1); setError('') }}
-              className="text-sm text-gray-400 hover:text-gray-600 mb-6 flex items-center gap-1"
+              className="text-sm text-gray-400 hover:text-gray-600 mb-6 flex items-center gap-1 cursor-pointer"
             >
               ← Volver
             </button>
@@ -89,7 +100,9 @@ function ForgotPassword() {
                 <button
                   type="submit"
                   disabled={loading || !email}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 text-white py-2.5 rounded-lg text-sm font-medium transition cursor-pointer"
+                  className={`w-full bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium transition disabled:opacity-60 ${
+                    loading ? 'cursor-wait opacity-75' : 'hover:bg-blue-700 cursor-pointer disabled:cursor-not-allowed'
+                  }`}
                 >
                   {loading ? 'Enviando...' : 'Enviar código'}
                 </button>
@@ -125,14 +138,21 @@ function ForgotPassword() {
                 <button
                   type="submit"
                   disabled={loading || pin.length !== 6}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white py-2.5 rounded-lg text-sm font-medium transition cursor-pointer"
+                  className={`w-full bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium transition disabled:opacity-60 ${
+                    loading ? 'cursor-wait opacity-75' : 'hover:bg-blue-700 cursor-pointer'
+                  }`}
                 >
                   {loading ? 'Verificando...' : 'Verificar código'}
                 </button>
               </form>
               <p className="text-center text-sm text-gray-500 mt-6">
                 ¿No recibiste el código?{' '}
-                <span onClick={handleSendPin} className="text-blue-600 font-medium cursor-pointer hover:underline">Reenviar</span>
+                <span
+                  onClick={resending ? undefined : handleResendPin}
+                  className={`text-blue-600 font-medium ${resending ? 'opacity-50 cursor-wait' : 'cursor-pointer hover:underline'}`}
+                >
+                  {resending ? 'Reenviando...' : 'Reenviar'}
+                </span>
               </p>
             </>
           )}
@@ -183,7 +203,9 @@ function ForgotPassword() {
                 <button
                   type="submit"
                   disabled={loading || newPassword.length < 8}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white py-2.5 rounded-lg text-sm font-medium transition cursor-pointer"
+                  className={`w-full bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium transition disabled:opacity-60 ${
+                    loading ? 'cursor-wait opacity-75' : 'hover:bg-blue-700 cursor-pointer'
+                  }`}
                 >
                   {loading ? 'Guardando...' : 'Cambiar contraseña'}
                 </button>

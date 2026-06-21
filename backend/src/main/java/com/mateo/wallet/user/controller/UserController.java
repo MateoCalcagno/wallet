@@ -1,5 +1,6 @@
 package com.mateo.wallet.user.controller;
 
+import com.mateo.wallet.user.dto.CheckAvailabilityRequest;
 import com.mateo.wallet.user.dto.ResetPasswordRequest;
 import com.mateo.wallet.user.dto.SendVerificationRequest;
 import com.mateo.wallet.user.dto.UserRequest;
@@ -43,10 +44,25 @@ public class UserController {
     }
 
     @SecurityRequirements
+    @PostMapping("/forgot-password/send-verification")
+    public ResponseEntity<Void> sendForgotPasswordVerification(@RequestBody @Valid SendVerificationRequest request) {
+        userService.findUserByEmail(request.getEmail()); 
+        emailVerificationService.sendPin(request.getEmail());
+        return ResponseEntity.ok().build();
+    }
+
+    @SecurityRequirements
     @PostMapping("/forgot-password/reset")
     public ResponseEntity<Void> resetPassword(@RequestBody @Valid ResetPasswordRequest request) {
         emailVerificationService.assertEmailVerified(request.getEmail());
         userService.resetPassword(request.getEmail(), request.getNewPassword());
+        return ResponseEntity.ok().build();
+    }
+
+    @SecurityRequirements
+    @PostMapping("/check-availability")
+    public ResponseEntity<Void> checkAvailability(@RequestBody CheckAvailabilityRequest request) {
+        userService.checkAvailability(request.email(), request.dni());
         return ResponseEntity.ok().build();
     }
 

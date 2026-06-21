@@ -9,10 +9,14 @@ function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setError('')
+    setIsLoading(true)
+    document.body.style.cursor = 'wait'  
     try {
       const res = await api.post('/auth/login', { email, password })
       localStorage.setItem('token', res.data.token)
@@ -24,6 +28,9 @@ function Login() {
       } else {
         setError('Ocurrió un error al iniciar sesión')
       }
+    } finally {
+      setIsLoading(false)
+      document.body.style.cursor = 'default'  
     }
   }
 
@@ -92,9 +99,12 @@ function Login() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2 cursor-pointer"
+              disabled={isLoading}
+              className={`w-full bg-blue-600 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2 ${
+                isLoading ? 'cursor-wait opacity-75' : 'hover:bg-blue-700 cursor-pointer'
+              }`}
             >
-              Ingresar
+              {isLoading ? 'Ingresando...' : 'Ingresar'}
             </button>
           </form>
 

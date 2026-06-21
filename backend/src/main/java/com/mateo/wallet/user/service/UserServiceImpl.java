@@ -65,8 +65,17 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(newPassword));
     }
 
-    private User findUserByEmail(String email) {
+    @Override
+    public User findUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    @Override
+    public void checkAvailability(String email, String dni) {
+        if (userRepository.existsByEmail(email))
+            throw new EmailAlreadyExistsException();
+        if (userRepository.existsByDni(dni))
+            throw new DniAlreadyExistsException();
     }
 }

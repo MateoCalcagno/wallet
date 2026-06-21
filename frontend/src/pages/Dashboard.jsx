@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDashboard } from '../hooks/useDashboard'
 import { useTransactionHistory } from '../hooks/useTransactionHistory'
@@ -12,6 +12,18 @@ function Dashboard() {
   const [copiedField, setCopiedField] = useState(null)
   const [showBalance, setShowBalance] = useState(true)
   const navigate = useNavigate()
+  const [showProfile, setShowProfile] = useState(false)
+  const profileRef = useRef(null)
+
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setShowProfile(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
 
   const handleCopy = async (text, field) => {
     try {
@@ -157,10 +169,72 @@ function Dashboard() {
             Hola, {user?.firstName || ''} !
           </h1>
           <p className="text-xs text-gray-400 mt-0.5">{user?.email || '...'}</p>
-          <div className="w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
+          <div className="relative" ref={profileRef}>
+            <div
+              onClick={() => setShowProfile(!showProfile)}
+              className={`w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center cursor-pointer border-2 transition ${
+                showProfile ? 'border-blue-500' : 'border-transparent'
+              }`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+
+            {showProfile && (
+              <div className="absolute right-0 top-10 w-90 z-50 rounded-2xl overflow-hidden border border-white/15"
+                style={{ backdropFilter: 'blur(20px)', background: 'rgba(15, 23, 42, 0.85)' }}>
+
+                {/* Header */}
+                <div className="flex items-center gap-3 px-4 py-3 border-b border-white/8">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center"
+                    style={{ background: 'rgba(59,130,246,0.25)', border: '1.5px solid rgba(59,130,246,0.5)' }}>
+                    <svg className="w-5 h-5 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-white text-sm font-medium leading-none">{user?.firstName} {user?.lastName}</p>
+                    <p className="text-white/40 text-xs mt-1">cuenta personal</p>
+                  </div>
+                </div>
+
+                {/* Datos */}
+                <div className="py-2">
+                  {[
+                    { label: 'nombre', value: `${user?.firstName} ${user?.lastName}` },
+                    { label: 'dni', value: user?.dni },
+                    { label: 'email', value: user?.email },
+                  ].map((item, i, arr) => (
+                    <div key={item.label}>
+                      <div className="flex items-center gap-3 px-4 py-3">
+                        <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+                          style={{ background: 'rgba(255,255,255,0.06)' }}>
+                          <span className="text-white/40 text-xs">{item.label[0].toUpperCase()}</span>
+                        </div>
+                        <div>
+                          <p className="text-white/35 text-xs leading-none">{item.label}</p>
+                          <p className="text-white/85 text-xs font-medium mt-0.5">{item.value}</p>
+                        </div>
+                      </div>
+                      {i < arr.length - 1 && <div className="mx-4 h-px" style={{ background: 'rgba(255,255,255,0.07)' }} />}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Logout */}
+                <div className="px-4 pb-3">
+                  <button onClick={handleLogout}
+                    className="flex items-center gap-2 w-full px-3 py-3 rounded-xl text-red-400 text-xs font-medium cursor-pointer"
+                    style={{ background: 'rgba(239,68,68,0.12)', border: '0.5px solid rgba(239,68,68,0.25)' }}>
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    Cerrar sesión
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
