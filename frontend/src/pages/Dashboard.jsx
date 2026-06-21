@@ -3,17 +3,35 @@ import { useNavigate } from 'react-router-dom'
 import { useDashboard } from '../hooks/useDashboard'
 import { useTransactionHistory } from '../hooks/useTransactionHistory'
 import { getIconConfig, getLabel, getAmountColor, getAmountPrefix, formatDate } from '../utils/transactionHelpers'
+import OnboardingTour from '../components/OnboardingTour'
+import { useTour } from '../hooks/useTour'
 import NavItem from '../components/NavItem'
 import NovaLogo from '../components/NovaLogo'
 
 function Dashboard() {
   const { user, balance, isLoading, handleLogout } = useDashboard()
   const { history, page, setPage, totalPages, historyError } = useTransactionHistory()
+  const { isOpen, step, startTour, endTour, nextStep } = useTour()
   const [copiedField, setCopiedField] = useState(null)
   const [showBalance, setShowBalance] = useState(true)
   const navigate = useNavigate()
   const [showProfile, setShowProfile] = useState(false)
   const profileRef = useRef(null)
+  const refNav      = useRef(null)
+  const refBalance  = useRef(null)
+  const refActions  = useRef(null)
+  const refCbu      = useRef(null)
+  const refHistory  = useRef(null)
+  const refHelpBtn  = useRef(null)
+
+  const tourSteps = [
+    { ref: refNav,     title: 'Navegación principal',  desc: 'Desde acá accedés a Inicio, Transferencias, Depósitos y Retiros.',                         placement: 'right',  padding: 8 },
+    { ref: refBalance, title: 'Tu saldo disponible',   desc: 'Acá ves cuánto dinero tenés. Podés ocultarlo tocando el ícono del ojo.',                   placement: 'bottom', padding: 6 },
+    { ref: refActions, title: 'Acciones rápidas',      desc: 'Depositá, transferí o retirá plata con un solo toque desde estos botones.',                 placement: 'bottom', padding: 6 },
+    { ref: refCbu,     title: 'Tus datos bancarios',   desc: 'Tu CBU y alias para recibir transferencias. Podés copiarlos o editar tu alias.',            placement: 'top',    padding: 6 },
+    { ref: refHistory, title: 'Últimos movimientos',   desc: 'Acá aparece todo lo que entra y sale de tu cuenta, con fecha y monto.',                     placement: 'top',    padding: 6 },
+    { ref: refHelpBtn, title: '¡Ya sabés todo!',       desc: 'Si querés volver a ver este tour, tocá el botón "?" que está acá arriba cuando quieras.',   placement: 'bottom', padding: 6 },
+  ]
 
   useEffect(() => {
     const handleClick = (e) => {
@@ -137,7 +155,7 @@ function Dashboard() {
           </div>
 
           {/* Nav */}
-          <nav className="flex flex-col gap-1">
+          <nav ref={refNav} className="flex flex-col gap-1">
             <NavItem active path="/dashboard" label="Inicio"
               icon="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             <NavItem path="/transfer" label="Transferir"
@@ -169,7 +187,17 @@ function Dashboard() {
             Hola, {user?.firstName || ''} !
           </h1>
           <p className="text-xs text-gray-400 mt-0.5">{user?.email || '...'}</p>
-          <div className="relative" ref={profileRef}>
+          <div className="relative flex items-center gap-4" ref={profileRef}>
+
+            <button
+              ref={refHelpBtn}
+              onClick={startTour}
+              className="w-8 h-8 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-500 text-sm font-medium hover:bg-blue-100 transition cursor-pointer"
+              title="Ver tour"
+            >
+              ?
+            </button>
+
             <div
               onClick={() => setShowProfile(!showProfile)}
               className={`w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center cursor-pointer border-2 transition ${
@@ -241,7 +269,7 @@ function Dashboard() {
         <div className="p-6 flex flex-col gap-5">
 
           {/* Balance card */}
-          <div className="bg-slate-900 rounded-xl p-5 relative overflow-hidden">
+          <div ref={refBalance} className="bg-slate-900 rounded-xl p-5 relative overflow-hidden">
             <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-blue-900 opacity-50" />
             <div className="absolute -bottom-8 right-20 w-20 h-20 rounded-full bg-blue-600 opacity-15" />
             <p className="text-slate-500 text-xs relative z-10">Saldo disponible</p>
@@ -277,7 +305,7 @@ function Dashboard() {
                 )}
               </button>
             </div>
-            <div className="flex gap-2 relative z-10">
+            <div ref={refActions} className="flex gap-2 relative z-10">
               <button
                 onClick={() => navigate('/deposit')}
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs font-medium transition cursor-pointer"
@@ -309,7 +337,7 @@ function Dashboard() {
           </div>
 
           {/* CBU y Alias */}
-          <div className="bg-blue-50 rounded-xl border border-blue-100 p-4 flex flex-col gap-3">
+          <div ref={refCbu} className="bg-blue-50 rounded-xl border border-blue-100 p-4 flex flex-col gap-3">
             <p className="text-xs font-medium text-blue-400">Tus datos bancarios</p>
 
             <div className="flex items-center justify-between">
@@ -350,7 +378,7 @@ function Dashboard() {
           </div>
 
           {/* Historial */}
-          <div className="flex flex-col">
+          <div ref={refHistory} className="flex flex-col">
             <p className="text-xs font-medium text-gray-400 mb-3">Últimos movimientos</p>
 
             {historyError && (
@@ -420,6 +448,13 @@ function Dashboard() {
 
         </div>
       </div>
+      <OnboardingTour
+        steps={tourSteps}
+        isOpen={isOpen}
+        currentStep={step}
+        onNext={() => nextStep(tourSteps.length)}
+        onEnd={endTour}
+      />
     </div>
   )
 }
