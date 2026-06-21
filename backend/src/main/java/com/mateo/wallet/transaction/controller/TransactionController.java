@@ -2,6 +2,7 @@ package com.mateo.wallet.transaction.controller;
 
 import com.mateo.wallet.transaction.dto.TransactionResponse;
 import com.mateo.wallet.transaction.dto.TransferRequest;
+import com.mateo.wallet.transaction.model.TransactionType;
 import com.mateo.wallet.transaction.service.TransactionService;
 
 import jakarta.validation.Valid;
@@ -34,10 +35,11 @@ public class TransactionController {
     public ResponseEntity<Page<TransactionResponse>> getHistory(
             @AuthenticationPrincipal String email,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "4") int size
+            @RequestParam(defaultValue = "4") int size,
+            @RequestParam(required = false) TransactionType type
     ) {
         return ResponseEntity.ok(
-                transactionService.getHistory(email, page, size)
+                transactionService.getHistory(email, page, size, type)
         );
     }
 }

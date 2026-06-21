@@ -5,6 +5,8 @@ import com.mateo.wallet.transaction.dto.TransactionResponse;
 import com.mateo.wallet.transaction.event.TransferCompletedEvent;
 import com.mateo.wallet.transaction.factory.TransactionFactory;
 import com.mateo.wallet.transaction.mapper.TransactionMapper;
+import com.mateo.wallet.transaction.model.Transaction;
+import com.mateo.wallet.transaction.model.TransactionType;
 import com.mateo.wallet.transaction.repository.TransactionRepository;
 import com.mateo.wallet.wallet.model.Wallet;
 import com.mateo.wallet.wallet.resolver.WalletResolver;
@@ -57,14 +59,15 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Page<TransactionResponse> getHistory(String email, int page, int size) {
+    public Page<TransactionResponse> getHistory(String email, int page, int size, TransactionType type) {
         Wallet wallet = walletResolver.resolveByEmail(email);
-
         Pageable pageable = PageRequest.of(page, size);
 
-        return transactionRepository
-                .findBySourceWalletIdOrDestinationWalletIdOrderByCreatedAtDesc(
-                        wallet.getId(), wallet.getId(), pageable)
-                .map(t -> transactionMapper.toResponse(t, wallet));
+        Page<Transaction> result = (type == null)
+            ? transactionRepository.findBySourceWalletIdOrDestinationWalletIdOrderByCreatedAtDesc(
+                wallet.getId(), wallet.getId(), pageable)
+            : transactionRepository.findByWalletIdAndType(wallet.getId(), type, pageable);
+
+        return result.map(t -> transactionMapper.toResponse(t, wallet));
     }
 }
