@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import NavItem from './NavItem'
 import NovaLogo from './NovaLogo'
@@ -10,6 +10,18 @@ function AppLayout({ children, onStartTour, refHelpBtn }) {
   const profileRef = useRef(null)
   const navigate = useNavigate()
   const location = useLocation()
+
+  // Cerrar dropdown al hacer click en cualquier parte fuera
+  useEffect(() => {
+    if (!showProfile) return
+    const handleClickOutside = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setShowProfile(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showProfile])
 
   return (
     <div className="flex min-h-screen">
@@ -79,13 +91,14 @@ function AppLayout({ children, onStartTour, refHelpBtn }) {
               </button>
             )}
 
+            {/* select-none evita que se seleccione texto al hacer click */}
             <div
               onClick={() => setShowProfile(!showProfile)}
-              className={`w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center cursor-pointer border-2 transition ${
+              className={`w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center cursor-pointer border-2 transition select-none ${
                 showProfile ? 'border-blue-500' : 'border-transparent'
               }`}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-blue-300 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>

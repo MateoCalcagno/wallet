@@ -57,14 +57,12 @@ function Dashboard() {
             </div>
           </div>
         </div>
-
         <div className="flex-1 flex flex-col bg-gray-50">
           <div className="bg-white border-b border-gray-100 px-6 py-4 flex justify-between items-center">
             <div className="h-4 w-28 bg-gray-200 rounded animate-pulse" />
             <div className="h-3 w-36 bg-gray-200 rounded animate-pulse" />
             <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
           </div>
-
           <div className="p-6 flex flex-col gap-5">
             <div className="bg-slate-900 rounded-xl p-5 relative overflow-hidden">
               <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-blue-900 opacity-50" />
@@ -119,15 +117,39 @@ function Dashboard() {
 
   return (
     <AppLayout refNav={refNav} refHelpBtn={refHelpBtn} onStartTour={startTour}>
-      <div className="p-6 flex flex-col gap-5">
+      <div className="p-5 flex flex-col gap-4">
 
-        {/* Balance card */}
+        {/* Balance card — tamaño original p-5 */}
         <div ref={refBalance} className="bg-slate-900 rounded-xl p-5 relative overflow-hidden">
-          <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-blue-900 opacity-50" />
-          <div className="absolute -bottom-8 right-20 w-20 h-20 rounded-full bg-blue-600 opacity-15" />
-          <p className="text-slate-500 text-xs relative z-10">Saldo disponible</p>
-          <div className="flex items-center gap-2 mt-1 mb-4">
-            <p className="text-white text-3xl font-medium relative z-10 flex items-start">
+          <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-blue-700 opacity-25" />
+          <div className="absolute -bottom-8 right-20 w-20 h-20 rounded-full bg-blue-500 opacity-10" />
+          <div className="absolute top-0 left-0 w-full h-full"
+            style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.07) 0%, transparent 60%)' }} />
+
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
+                <p className="text-slate-500 text-xs">Saldo disponible</p>
+              </div>
+              <button
+                onClick={() => setShowBalance(!showBalance)}
+                className="text-slate-500 hover:text-slate-300 transition cursor-pointer"
+              >
+                {showBalance ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                  </svg>
+                )}
+              </button>
+            </div>
+
+            <p className="text-white text-3xl font-medium flex items-start mt-1 mb-4">
               {showBalance ? (
                 balance !== null ? (
                   <>
@@ -141,50 +163,38 @@ function Dashboard() {
                 <span>$***</span>
               )}
             </p>
-            <button
-              onClick={() => setShowBalance(!showBalance)}
-              className="text-slate-500 hover:text-slate-300 transition cursor-pointer mt-1"
-            >
-              {showBalance ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+
+            <div className="h-px bg-slate-700/60 mb-4" />
+
+            <div ref={refActions} className="flex gap-2">
+              <button
+                onClick={() => navigate('/deposit')}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs font-medium transition cursor-pointer"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                Depositar
+              </button>
+              <button
+                onClick={() => navigate('/transfer')}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs font-medium transition cursor-pointer border border-slate-600/50"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
-              )}
-            </button>
-          </div>
-          <div ref={refActions} className="flex gap-2 relative z-10">
-            <button
-              onClick={() => navigate('/deposit')}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs font-medium transition cursor-pointer"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              Depositar
-            </button>
-            <button
-              onClick={() => navigate('/transfer')}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs font-medium transition cursor-pointer"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-              </svg>
-              Transferir
-            </button>
-            <button
-              onClick={() => navigate('/withdraw')}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs font-medium transition cursor-pointer"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-              </svg>
-              Retirar
-            </button>
+                Transferir
+              </button>
+              <button
+                onClick={() => navigate('/withdraw')}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs font-medium transition cursor-pointer border border-slate-600/50"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Retirar
+              </button>
+            </div>
           </div>
         </div>
 
@@ -228,15 +238,7 @@ function Dashboard() {
 
         {/* Historial */}
         <div ref={refHistory} className="flex flex-col">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-xs font-medium text-gray-400">Últimos movimientos</p>
-            <button
-              onClick={() => navigate('/history')}
-              className="text-xs text-blue-500 hover:text-blue-700 transition cursor-pointer"
-            >
-              Ver todos →
-            </button>
-          </div>
+          <p className="text-xs font-medium text-blue-400 mb-3 pl-4">Últimos movimientos</p>
 
           {historyError && (
             <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 mb-3">
@@ -244,14 +246,14 @@ function Dashboard() {
             </div>
           )}
 
-          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+          <div className="bg-blue-50 rounded-xl border border-blue-100 overflow-hidden">
             {history.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-8">No hay transacciones aún.</p>
+              <p className="text-sm text-blue-300 text-center py-8">No hay transacciones aún.</p>
             ) : (
               history.map((t) => {
                 const { bg, color, icon } = getIconConfig(t)
                 return (
-                  <div key={t.id} className="flex justify-between items-center px-4 py-3 border-b border-gray-50 last:border-0">
+                  <div key={t.id} className="flex justify-between items-center px-4 py-3 border-b border-blue-100/60 last:border-0">
                     <div className="flex items-center gap-3">
                       <div className={`w-8 h-8 ${bg} rounded-lg flex items-center justify-center shrink-0`}>
                         <svg xmlns="http://www.w3.org/2000/svg" className={`w-4 h-4 ${color}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -260,7 +262,7 @@ function Dashboard() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-800">{getLabel(t)}</p>
-                        <p className="text-xs text-gray-400">{formatDate(t.createdAt)}</p>
+                        <p className="text-xs text-blue-300">{formatDate(t.createdAt)}</p>
                       </div>
                     </div>
                     <span className={`text-sm font-medium ${getAmountColor(t)}`}>
@@ -270,8 +272,17 @@ function Dashboard() {
                 )
               })
             )}
+            <div className="border-t border-blue-100">
+              <button
+                onClick={() => navigate('/history')}
+                className="w-full py-3 text-xs font-medium text-blue-500 hover:text-blue-700 hover:bg-blue-100/50 transition cursor-pointer"
+              >
+                Ver todos los movimientos →
+              </button>
+            </div>
           </div>
         </div>
+
       </div>
 
       <OnboardingTour
