@@ -7,9 +7,13 @@ import OnboardingTour from '../components/OnboardingTour'
 import { useTour } from '../hooks/useTour'
 import NovaLogo from '../components/NovaLogo'
 import AppLayout from '../components/AppLayout'
+import WelcomeSplash from '../components/WelcomeSplash'
+import { useFirstVisit } from '../hooks/useFirstVisit'
 
 function Dashboard() {
   const { user, balance, isLoading, handleLogout } = useDashboard()
+  const { isFirstVisit, markVisited } = useFirstVisit()
+  const [showSplash, setShowSplash] = useState(isFirstVisit)
   const { history, historyError } = useTransactionHistory({ size: 3 })
   const { isOpen, step, startTour, endTour, nextStep } = useTour()
   const [copiedField, setCopiedField] = useState(null)
@@ -48,93 +52,33 @@ function Dashboard() {
     }
   }
 
+  const handleSplashDismiss = (startTourAfter) => {
+    setShowSplash(false)
+    markVisited()
+    if (startTourAfter) setTimeout(() => startTour(), 400)
+  }
+
+  if (showSplash) return (
+    <WelcomeSplash
+      onStart={() => handleSplashDismiss(true)}
+      onSkip={() => handleSplashDismiss(false)}
+    />
+  )
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen">
-        <div className="w-52 bg-slate-900 flex flex-col justify-between py-7 px-5 relative overflow-hidden shrink-0">
-          <div className="absolute -top-14 -right-14 w-40 h-40 rounded-full bg-blue-900 opacity-35" />
-          <div className="absolute -bottom-10 -left-10 w-28 h-28 rounded-full bg-blue-900 opacity-25" />
-          <div className="z-10">
-            <div className="mb-8"><NovaLogo /></div>
-            <div className="flex flex-col gap-3">
-              {[...Array(2)].map((_, i) => (
-                <div key={i} className="h-8 bg-slate-800 rounded-lg animate-pulse" />
-              ))}
-            </div>
+        <div className="w-52 bg-slate-900 flex flex-col py-7 px-5 shrink-0">
+          <div className="mb-8"><NovaLogo /></div>
+          <div className="flex flex-col gap-3">
+            <div className="h-8 bg-slate-800 rounded-lg animate-pulse" />
+            <div className="h-8 bg-slate-800 rounded-lg animate-pulse" />
           </div>
         </div>
-        <div className="flex-1 flex flex-col bg-gray-50">
-          <div className="bg-white border-b border-gray-100 px-6 py-4 flex justify-between items-center">
-            <div className="h-4 w-28 bg-gray-200 rounded animate-pulse" />
-            <div className="h-3 w-36 bg-gray-200 rounded animate-pulse" />
-            <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
-          </div>
-          <div className="p-5 flex flex-col gap-4">
-
-            {/* Balance card skeleton */}
-            <div className="bg-slate-900 rounded-xl p-6 relative overflow-hidden">
-              <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-blue-700 opacity-25" />
-              {/* Label + badge */}
-              <div className="flex items-center justify-between mb-1">
-                <div className="h-3 w-24 bg-slate-700 rounded animate-pulse" />
-                <div className="h-4 w-16 bg-slate-700 rounded-full animate-pulse" />
-              </div>
-              {/* Saldo + ojo + chevron */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="h-11 w-48 bg-slate-700 rounded animate-pulse" />
-                <div className="w-4 h-4 bg-slate-700 rounded animate-pulse" />
-                <div className="w-10 h-10 bg-slate-700 rounded animate-pulse ml-auto" />
-              </div>
-              <div className="h-px bg-slate-700/60 mb-2.5" />
-              {/* Botones */}
-              <div className="flex gap-1.5">
-                <div className="h-7 flex-1 bg-blue-900 rounded-lg animate-pulse" />
-                <div className="h-7 flex-1 bg-slate-800 rounded-lg animate-pulse" />
-                <div className="h-7 flex-1 bg-slate-800 rounded-lg animate-pulse" />
-              </div>
-            </div>
-
-            {/* CBU skeleton */}
-            <div className="bg-blue-50 rounded-xl border border-blue-100 p-4 flex flex-col gap-2.5">
-              <div className="h-3 w-28 bg-blue-200 rounded animate-pulse" />
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col gap-1">
-                  <div className="h-3 w-8 bg-blue-200 rounded animate-pulse" />
-                  <div className="h-4 w-48 bg-blue-200 rounded animate-pulse" />
-                </div>
-                <div className="h-3 w-10 bg-blue-200 rounded animate-pulse" />
-              </div>
-              <div className="h-px bg-blue-100" />
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col gap-1">
-                  <div className="h-3 w-8 bg-blue-200 rounded animate-pulse" />
-                  <div className="h-4 w-32 bg-blue-200 rounded animate-pulse" />
-                </div>
-                <div className="h-3 w-10 bg-blue-200 rounded animate-pulse" />
-              </div>
-            </div>
-
-            {/* Historial skeleton */}
-            <div className="flex flex-col">
-              <div className="h-3 w-32 bg-gray-200 rounded animate-pulse mb-3 ml-4" />
-              <div className="bg-blue-50 rounded-xl border border-blue-100 overflow-hidden">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="flex justify-between items-center px-4 py-3 border-b border-blue-100/60 last:border-0">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-200 rounded-lg animate-pulse" />
-                      <div className="flex flex-col gap-1">
-                        <div className="h-3 w-28 bg-blue-200 rounded animate-pulse" />
-                        <div className="h-3 w-20 bg-blue-100 rounded animate-pulse" />
-                      </div>
-                    </div>
-                    <div className="h-3 w-16 bg-blue-200 rounded animate-pulse" />
-                  </div>
-                ))}
-              </div>
-              <div className="h-4 w-44 bg-gray-200 rounded animate-pulse mt-6 mx-auto" />
-            </div>
-
-          </div>
+        <div className="flex-1 bg-gray-50 p-5 flex flex-col gap-4">
+          <div className="h-36 bg-slate-200 rounded-xl animate-pulse" />
+          <div className="h-24 bg-slate-200 rounded-xl animate-pulse" />
+          <div className="h-48 bg-slate-200 rounded-xl animate-pulse" />
         </div>
       </div>
     )

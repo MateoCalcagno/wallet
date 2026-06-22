@@ -71,18 +71,9 @@ function TransactionHistory() {
             style={{ minHeight: `${LIST_HEIGHT}px` }}
           >
             {isLoading ? (
-              <div className="flex flex-col">
+              <div className="flex flex-col gap-2 p-3">
                 {[...Array(7)].map((_, i) => (
-                  <div key={i} className="flex justify-between items-center px-4 py-3 border-b border-blue-100/60 last:border-0">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-200 rounded-lg animate-pulse" />
-                      <div className="flex flex-col gap-1.5">
-                        <div className="h-3 w-28 bg-blue-200 rounded animate-pulse" />
-                        <div className="h-2.5 w-20 bg-blue-100 rounded animate-pulse" />
-                      </div>
-                    </div>
-                    <div className="h-3 w-16 bg-blue-200 rounded animate-pulse" />
-                  </div>
+                  <div key={i} className="h-12 bg-blue-100 rounded-lg animate-pulse" />
                 ))}
               </div>
             ) : history.length === 0 ? (

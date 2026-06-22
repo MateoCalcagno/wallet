@@ -76,58 +76,15 @@ function Statistics() {
         </div>
 
         {isLoading ? (
-  <div className="flex flex-col gap-3">
-
-    {/* Balance del mes skeleton */}
-    <div className="bg-white rounded-xl p-4 border border-gray-100">
-      <div className="h-3 w-24 bg-gray-200 rounded animate-pulse mb-2" />
-      <div className="h-8 w-44 bg-gray-200 rounded animate-pulse mb-3" />
-      <div className="h-px bg-gray-100 mb-3" />
-      <div className="h-1.5 w-full bg-gray-100 rounded-full animate-pulse mb-2" />
-      <div className="flex justify-between">
-        <div className="h-3 w-20 bg-gray-100 rounded animate-pulse" />
-        <div className="h-3 w-20 bg-gray-100 rounded animate-pulse" />
-      </div>
-    </div>
-
-    {/* Cards ingresos / gastos skeleton */}
-    <div className="grid grid-cols-2 gap-3">
-      {[0, 1].map((i) => (
-        <div key={i} className="bg-blue-50 border border-blue-100 rounded-xl p-3">
-          <div className="flex items-center gap-2 mb-1.5">
-            <div className="w-7 h-7 bg-blue-100 rounded-lg animate-pulse" />
-            <div className="h-3 w-14 bg-blue-100 rounded animate-pulse" />
+          <div className="flex flex-col gap-4">
+            <div className="h-28 bg-slate-200 rounded-xl animate-pulse" />
+            <div className="grid grid-cols-2 gap-3">
+              <div className="h-20 bg-slate-200 rounded-xl animate-pulse" />
+              <div className="h-20 bg-slate-200 rounded-xl animate-pulse" />
+            </div>
+            <div className="h-44 bg-slate-200 rounded-xl animate-pulse" />
           </div>
-          <div className="h-6 w-28 bg-blue-100 rounded animate-pulse" />
-        </div>
-      ))}
-    </div>
-
-    {/* Gráfico skeleton */}
-    <div className="bg-blue-50 border border-blue-100 rounded-xl p-3">
-      <div className="h-3 w-24 bg-blue-100 rounded animate-pulse mb-3" />
-      <div className="flex items-end gap-0.5 h-28">
-        {[...Array(10)].map((_, i) => (
-          <div
-            key={i}
-            className="flex-1 bg-blue-100 rounded-t animate-pulse"
-            style={{ height: `${20 + Math.random() * 60}%` }}
-          />
-        ))}
-      </div>
-      <div className="flex justify-between mt-1.5">
-        <div className="h-3 w-3 bg-blue-100 rounded animate-pulse" />
-        <div className="h-3 w-3 bg-blue-100 rounded animate-pulse" />
-        <div className="h-3 w-3 bg-blue-100 rounded animate-pulse" />
-      </div>
-      <div className="flex gap-4 mt-2">
-        <div className="h-3 w-16 bg-blue-100 rounded animate-pulse" />
-        <div className="h-3 w-16 bg-blue-100 rounded animate-pulse" />
-      </div>
-    </div>
-
-  </div>
-) : (
+        ) : (
           <>
             {/* Balance del mes */}
             <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm relative overflow-hidden">

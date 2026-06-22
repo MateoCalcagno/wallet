@@ -7,7 +7,7 @@ export function useTour() {
     try { return localStorage.getItem(TOUR_KEY) === '1' } catch { return false }
   }
 
-  const [isOpen, setIsOpen] = useState(() => !alreadySeen())
+  const [isOpen, setIsOpen] = useState(false)
   const [step, setStep] = useState(0)
 
   const startTour = useCallback(() => {

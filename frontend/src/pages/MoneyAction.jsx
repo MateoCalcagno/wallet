@@ -17,19 +17,16 @@ function MoneyAction({ config }) {
 
   const MAX_AMOUNT = 100000
 
+  const [loading, setLoading] = useState(false)
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
-    if (!amount || amount <= 0) {
-      setError('Ingresá un monto válido')
-      return
-    }
-    if (amount > MAX_AMOUNT) {
-      setError('El monto máximo es $100.000')
-      return
-    }
+    if (!amount || amount <= 0) { setError('Ingresá un monto válido'); return }
+    if (amount > MAX_AMOUNT) { setError('El monto máximo es $100.000'); return }
 
+    setLoading(true)
     try {
       const body = { amount }
       if (paymentMethod) body.paymentMethod = paymentMethod
@@ -40,6 +37,7 @@ function MoneyAction({ config }) {
       const msg = err.response?.data?.message || ''
       const matched = Object.entries(errorMessages).find(([key]) => msg.toLowerCase().includes(key))
       setError(matched ? matched[1] : 'Ocurrió un error')
+      setLoading(false)
     }
   }
 
@@ -110,8 +108,18 @@ function MoneyAction({ config }) {
               />
             </div>
 
-            <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2 cursor-pointer">
-              {buttonLabel}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed text-white py-2.5 rounded-lg text-sm font-medium transition mt-2 cursor-pointer flex items-center justify-center gap-2"
+            >
+              {loading && (
+                <svg className="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 12 0 12 12h-4z"/>
+                </svg>
+              )}
+              {loading ? 'Procesando...' : buttonLabel}
             </button>
             <button type="button" onClick={() => navigate('/dashboard')} className="w-full text-sm text-gray-500 hover:text-gray-700 transition py-1 cursor-pointer">
               ← Volver al inicio
