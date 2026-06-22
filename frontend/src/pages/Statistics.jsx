@@ -60,11 +60,11 @@ function Statistics() {
 
         {/* Header */}
         <div className="pb-3 border-b border-gray-100 pl-3">
-          <p className="text-xs text-gray-400 font-medium mb-1 flex items-center gap-1.5">
+          <p className="text-xs text-gray-400 font-medium mb-4 flex items-center gap-1.5">
             <span className="inline-block w-4 h-px bg-gray-300" />
             Estadísticas
           </p>
-          <h1 className="text-4xl font-bold text-slate-700 leading-none tracking-tight">Estadísticas</h1>
+          <h1 className="text-4xl font-bold text-slate-800 leading-none tracking-tight">Estadísticas</h1>
           <p className="text-sm text-blue-400 mt-1 capitalize">{monthName}</p>
         </div>
 
@@ -88,28 +88,27 @@ function Statistics() {
         ) : (
           <>
             {/* Balance del mes */}
-            {/* Balance del mes */}
-<div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm relative overflow-hidden">
-  <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-blue-50 -translate-y-8 translate-x-8" />
+            <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-blue-50 -translate-y-8 translate-x-8" />
 
-  <div className="relative z-10">
-    <p className="text-xs text-gray-400 mb-1">Balance del mes</p>
-    <p className={`text-3xl font-medium mt-1 mb-3 ${stats.balance >= 0 ? 'text-slate-800' : 'text-red-500'}`}>
-      {stats.balance >= 0 ? '+' : '-'}{fmt(stats.balance)}
-    </p>
+              <div className="relative z-10">
+                <p className="text-xs text-gray-400 mb-1">Balance del mes</p>
+                <p className={`text-3xl font-medium mt-1 mb-3 ${stats.balance >= 0 ? 'text-slate-800' : 'text-red-500'}`}>
+                  {stats.balance >= 0 ? '+' : '-'}{fmt(stats.balance)}
+                </p>
 
-    <div className="h-px bg-gray-100 mb-3" />
+                <div className="h-px bg-gray-100 mb-3" />
 
-    <div className="flex rounded-full overflow-hidden h-1.5 mb-2">
-      <div className="bg-blue-400 transition-all duration-700" style={{ width: `${stats.ingresosPercent}%` }} />
-      <div className="bg-red-300 transition-all duration-700" style={{ width: `${stats.gastosPercent}%` }} />
-    </div>
-    <div className="flex justify-between">
-      <span className="text-xs text-blue-400">Ingresos {stats.ingresosPercent.toFixed(0)}%</span>
-      <span className="text-xs text-red-400">Gastos {stats.gastosPercent.toFixed(0)}%</span>
-    </div>
-  </div>
-</div>
+                <div className="flex rounded-full overflow-hidden h-1.5 mb-2">
+                  <div className="bg-blue-400 transition-all duration-700" style={{ width: `${stats.ingresosPercent}%` }} />
+                  <div className="bg-red-300 transition-all duration-700" style={{ width: `${stats.gastosPercent}%` }} />
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-xs text-blue-400">Ingresos {stats.ingresosPercent.toFixed(0)}%</span>
+                  <span className="text-xs text-red-400">Gastos {stats.gastosPercent.toFixed(0)}%</span>
+                </div>
+              </div>
+            </div>
 
             {/* Cards ingresos / gastos */}
             <div className="grid grid-cols-2 gap-3">

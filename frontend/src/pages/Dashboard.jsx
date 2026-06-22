@@ -118,88 +118,101 @@ function Dashboard() {
   return (
     <AppLayout refNav={refNav} refHelpBtn={refHelpBtn} onStartTour={startTour}>
       <div className="p-5 flex flex-col gap-4">
+        <p className="text-xs text-gray-400 font-medium flex items-center gap-1.5 ml-3">
+          <span className="inline-block w-4 h-px bg-gray-300" />
+          Mi Cuenta
+        </p>
 
-        {/* Balance card — tamaño original p-5 */}
-        <div ref={refBalance} className="bg-slate-900 rounded-xl p-5 relative overflow-hidden">
-          <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-blue-700 opacity-25" />
-          <div className="absolute -bottom-8 right-20 w-20 h-20 rounded-full bg-blue-500 opacity-10" />
-          <div className="absolute top-0 left-0 w-full h-full"
-            style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.07) 0%, transparent 60%)' }} />
+        {/* Balance card */}
+        <div ref={refBalance} className="relative w-full max-w-full overflow-hidden rounded-xl bg-slate-900 p-3.5 isolate">
+          {/* Decoraciones absolutas con 'isolate' en el padre para evitar fugas visuales */}
+          <div className="absolute -right-6 -top-6 -z-10 h-20 w-20 rounded-full bg-blue-700 opacity-25 pointer-events-none" />
+          <div className="absolute -bottom-4 right-14 -z-10 h-12 w-12 rounded-full bg-blue-500 opacity-10 pointer-events-none" />
+          <div 
+            className="absolute top-0 left-0 w-full h-full -z-10 pointer-events-none"
+            style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.07) 0%, transparent 60%)' }}
+          />
 
-          <div className="relative z-10">
-            <div className="flex items-center justify-between mb-1">
-              <div className="flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
-                <p className="text-slate-500 text-xs">Saldo disponible</p>
+          <div className="relative z-10 w-full">
+
+            {/* Texto secundario de Saldo */}
+            <p className="text-slate-600 text-[11px] mb-1 select-none ml-1">Saldo disponible</p>
+
+            {/* Bloque de número grande, centavos arriba y ojo al lado */}
+            <div className="flex items-center gap-3 mb-4 max-w-full overflow-hidden">
+              <div className="flex items-baseline leading-none overflow-hidden select-none">
+                {showBalance ? (
+                  balance !== null ? (
+                    <>
+                      <span className="text-slate-400 text-[20px] font-normal mr-0.5">$</span>
+                      <span className="text-white text-[44px] font-semibold tracking-tight truncate">
+                        {Math.floor(Number(balance)).toLocaleString('es-AR')}
+                      </span>
+                      {/* Centavos corregidos para evitar saltos de línea o desbordamientos */}
+                      <span className="text-slate-500 text-[14px] font-medium align-super self-start mt-1 ml-0.5 inline-block">
+                        {String(Math.round((Number(balance) % 1) * 100)).padStart(2, '0')}
+                      </span>
+                    </>
+                  ) : <span className="text-white text-[44px] font-semibold">...</span>
+                ) : (
+                  <>
+                    <span className="text-slate-400 text-[20px] font-normal mr-0.5">$</span>
+                    <span className="text-white text-[44px] font-semibold tracking-tight">***</span>
+                  </>
+                )}
               </div>
+
+              {/* El Ojo ubicado al lado del saldo */}
               <button
                 onClick={() => setShowBalance(!showBalance)}
-                className="text-slate-500 hover:text-slate-300 transition cursor-pointer"
+                className="text-slate-500 hover:text-slate-300 transition cursor-pointer self-center mt-1 shrink-0"
               >
                 {showBalance ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
                   </svg>
                 )}
               </button>
             </div>
 
-            <p className="text-white text-3xl font-medium flex items-start mt-1 mb-4">
-              {showBalance ? (
-                balance !== null ? (
-                  <>
-                    <span>${Math.floor(Number(balance)).toLocaleString('es-AR')}</span>
-                    <span className="text-base font-medium text-slate-400 mt-1 ml-1">
-                      {(Number(balance) % 1).toFixed(2).slice(2)}
-                    </span>
-                  </>
-                ) : '...'
-              ) : (
-                <span>$***</span>
-              )}
-            </p>
+            <div className="h-px bg-slate-700/60 mb-2.5" />
 
-            <div className="h-px bg-slate-700/60 mb-4" />
-
-            <div ref={refActions} className="flex gap-2">
-              <button
-                onClick={() => navigate('/deposit')}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs font-medium transition cursor-pointer"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            {/* Acciones (con flex-wrap para pantallas muy chicas si el espacio no alcanza) */}
+            <div ref={refActions} className="flex gap-1.5 w-full">
+              <button onClick={() => navigate('/deposit')}
+                className="flex items-center justify-center gap-1 px-17 py-[5px] bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-[11px] font-medium transition cursor-pointer min-w-0">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
-                Depositar
+                <span className="truncate">Depositar</span>
               </button>
-              <button
-                onClick={() => navigate('/transfer')}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs font-medium transition cursor-pointer border border-slate-600/50"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              
+              <button onClick={() => navigate('/transfer')}
+                className="flex items-center justify-center gap-1 px-17 py-[5px] bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] font-medium transition cursor-pointer border border-slate-600/30 min-w-0">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
-                Transferir
+                <span className="truncate">Transferir</span>
               </button>
-              <button
-                onClick={() => navigate('/withdraw')}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs font-medium transition cursor-pointer border border-slate-600/50"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              
+              <button onClick={() => navigate('/withdraw')}
+                className="flex items-center justify-center gap-1 px-17 py-[5px] bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] font-medium transition cursor-pointer border border-slate-600/30 min-w-0">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                 </svg>
-                Retirar
+                <span className="truncate">Retirar</span>
               </button>
             </div>
           </div>
         </div>
 
         {/* CBU y Alias */}
-        <div ref={refCbu} className="bg-blue-50 rounded-xl border border-blue-100 p-4 flex flex-col gap-3">
+        <div ref={refCbu} className="bg-blue-50 rounded-xl border border-blue-100 p-4 flex flex-col gap-2.5">
           <p className="text-xs font-medium text-blue-400">Tus datos bancarios</p>
           <div className="flex items-center justify-between">
             <div>

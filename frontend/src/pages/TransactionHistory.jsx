@@ -22,13 +22,13 @@ function TransactionHistory() {
 
         {/* Header + Filtros */}
         <div className="pb-3 border-b border-gray-100 pl-3">
-          <p className="text-xs text-gray-400 font-medium mb-1 flex items-center gap-1.5">
+          <p className="text-xs text-gray-400 font-medium mb-4 flex items-center gap-1.5">
             <span className="inline-block w-4 h-px bg-gray-300" />
             Movimientos
           </p>
           <div className="flex items-end justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-slate-700 leading-none tracking-tight">Movimientos</h1>
+              <h1 className="text-4xl font-bold text-slate-800 leading-none tracking-tight">Movimientos</h1>
               <p className="text-sm text-blue-400 mt-1">Historial completo de tu cuenta</p>
             </div>
 
@@ -107,7 +107,7 @@ function TransactionHistory() {
         </div>
 
         {/* Paginación */}
-        <div className="flex items-center justify-center gap-5 p-3.5">
+        <div className="flex items-center justify-center gap-5 p-2">
           <button
             disabled={page === 0}
             onClick={() => setPage(page - 1)}
