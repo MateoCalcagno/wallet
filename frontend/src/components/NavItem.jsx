@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom'
+import { forwardRef } from 'react'
 
-function NavItem({ path, label, icon, active }) {
+const NavItem = forwardRef(function NavItem({ path, label, icon, active }, ref) {
   const navigate = useNavigate()
   return (
     <div
+      ref={ref}
       onClick={() => navigate(path)}
       className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm transition
         ${active
@@ -17,6 +19,6 @@ function NavItem({ path, label, icon, active }) {
       {label}
     </div>
   )
-}
+})
 
 export default NavItem

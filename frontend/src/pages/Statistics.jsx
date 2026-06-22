@@ -1,9 +1,11 @@
 import { useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useTransactionHistory } from '../hooks/useTransactionHistory'
 import AppLayout from '../components/AppLayout'
 
 function Statistics() {
   const { history, isLoading } = useTransactionHistory({ size: 100 })
+  const navigate = useNavigate()
 
   const stats = useMemo(() => {
     const now = new Date()
@@ -60,32 +62,72 @@ function Statistics() {
 
         {/* Header */}
         <div className="pb-3 border-b border-gray-100 pl-3">
-          <p className="text-xs text-gray-400 font-medium mb-4 flex items-center gap-1.5">
-            <span className="inline-block w-4 h-px bg-gray-300" />
-            Estadísticas
-          </p>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="flex items-center gap-1.5 text-xs text-gray-400 font-medium hover:text-blue-400 transition cursor-pointer mb-4"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Volver a Inicio
+          </button>
           <h1 className="text-4xl font-bold text-slate-800 leading-none tracking-tight">Estadísticas</h1>
           <p className="text-sm text-blue-400 mt-1 capitalize">{monthName}</p>
         </div>
 
         {isLoading ? (
-          <div className="flex flex-col gap-3">
-            <div className="bg-slate-900 rounded-xl p-4 flex flex-col gap-3">
-              <div className="h-3 w-32 bg-slate-700 rounded animate-pulse" />
-              <div className="h-8 w-48 bg-slate-700 rounded animate-pulse" />
-              <div className="h-2 w-full bg-slate-700 rounded-full animate-pulse" />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              {[0, 1].map((i) => (
-                <div key={i} className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-                  <div className="h-3 w-20 bg-blue-200 rounded animate-pulse mb-2" />
-                  <div className="h-7 w-32 bg-blue-200 rounded animate-pulse" />
-                </div>
-              ))}
-            </div>
-            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 h-40 animate-pulse" />
+  <div className="flex flex-col gap-3">
+
+    {/* Balance del mes skeleton */}
+    <div className="bg-white rounded-xl p-4 border border-gray-100">
+      <div className="h-3 w-24 bg-gray-200 rounded animate-pulse mb-2" />
+      <div className="h-8 w-44 bg-gray-200 rounded animate-pulse mb-3" />
+      <div className="h-px bg-gray-100 mb-3" />
+      <div className="h-1.5 w-full bg-gray-100 rounded-full animate-pulse mb-2" />
+      <div className="flex justify-between">
+        <div className="h-3 w-20 bg-gray-100 rounded animate-pulse" />
+        <div className="h-3 w-20 bg-gray-100 rounded animate-pulse" />
+      </div>
+    </div>
+
+    {/* Cards ingresos / gastos skeleton */}
+    <div className="grid grid-cols-2 gap-3">
+      {[0, 1].map((i) => (
+        <div key={i} className="bg-blue-50 border border-blue-100 rounded-xl p-3">
+          <div className="flex items-center gap-2 mb-1.5">
+            <div className="w-7 h-7 bg-blue-100 rounded-lg animate-pulse" />
+            <div className="h-3 w-14 bg-blue-100 rounded animate-pulse" />
           </div>
-        ) : (
+          <div className="h-6 w-28 bg-blue-100 rounded animate-pulse" />
+        </div>
+      ))}
+    </div>
+
+    {/* Gráfico skeleton */}
+    <div className="bg-blue-50 border border-blue-100 rounded-xl p-3">
+      <div className="h-3 w-24 bg-blue-100 rounded animate-pulse mb-3" />
+      <div className="flex items-end gap-0.5 h-28">
+        {[...Array(10)].map((_, i) => (
+          <div
+            key={i}
+            className="flex-1 bg-blue-100 rounded-t animate-pulse"
+            style={{ height: `${20 + Math.random() * 60}%` }}
+          />
+        ))}
+      </div>
+      <div className="flex justify-between mt-1.5">
+        <div className="h-3 w-3 bg-blue-100 rounded animate-pulse" />
+        <div className="h-3 w-3 bg-blue-100 rounded animate-pulse" />
+        <div className="h-3 w-3 bg-blue-100 rounded animate-pulse" />
+      </div>
+      <div className="flex gap-4 mt-2">
+        <div className="h-3 w-16 bg-blue-100 rounded animate-pulse" />
+        <div className="h-3 w-16 bg-blue-100 rounded animate-pulse" />
+      </div>
+    </div>
+
+  </div>
+) : (
           <>
             {/* Balance del mes */}
             <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm relative overflow-hidden">

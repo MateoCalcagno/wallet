@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useTransactionHistory } from '../hooks/useTransactionHistory'
 import { getIconConfig, getLabel, getAmountColor, getAmountPrefix, formatDate } from '../utils/transactionHelpers'
 import AppLayout from '../components/AppLayout'
@@ -13,6 +14,7 @@ const FILTERS = [
 const LIST_HEIGHT = 430
 
 function TransactionHistory() {
+  const navigate = useNavigate()
   const [type, setType] = useState('')
   const { history, page, setPage, totalPages, historyError, isLoading } = useTransactionHistory({ size: 7, type })
 
@@ -22,10 +24,15 @@ function TransactionHistory() {
 
         {/* Header + Filtros */}
         <div className="pb-3 border-b border-gray-100 pl-3">
-          <p className="text-xs text-gray-400 font-medium mb-4 flex items-center gap-1.5">
-            <span className="inline-block w-4 h-px bg-gray-300" />
-            Movimientos
-          </p>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="flex items-center gap-1.5 text-xs text-gray-400 font-medium hover:text-blue-400 transition cursor-pointer mb-4"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            Volver a Inicio
+          </button>
           <div className="flex items-end justify-between">
             <div>
               <h1 className="text-4xl font-bold text-slate-800 leading-none tracking-tight">Movimientos</h1>

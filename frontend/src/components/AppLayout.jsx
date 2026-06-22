@@ -4,7 +4,7 @@ import NavItem from './NavItem'
 import NovaLogo from './NovaLogo'
 import { useDashboard } from '../hooks/useDashboard'
 
-function AppLayout({ children, onStartTour, refHelpBtn }) {
+function AppLayout({ children, onStartTour, refHelpBtn, refNav, refNavHome, refNavMovimientos, refNavEstadisticas }) {
   const { user, handleLogout } = useDashboard()
   const [showProfile, setShowProfile] = useState(false)
   const profileRef = useRef(null)
@@ -36,20 +36,23 @@ function AppLayout({ children, onStartTour, refHelpBtn }) {
             <NovaLogo />
           </div>
 
-          <nav className="flex flex-col gap-1">
+          <nav ref={refNav} className="flex flex-col gap-1">
             <NavItem
+              ref={refNavHome}
               active={location.pathname === '/dashboard'}
               path="/dashboard"
               label="Inicio"
               icon="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
             />
             <NavItem
+              ref={refNavMovimientos}
               active={location.pathname === '/history'}
               path="/history"
               label="Movimientos"
               icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
             />
             <NavItem
+              ref={refNavEstadisticas}
               active={location.pathname === '/statistics'}
               path="/statistics"
               label="Estadísticas"
@@ -77,7 +80,9 @@ function AppLayout({ children, onStartTour, refHelpBtn }) {
           <h1 className="text-base font-medium text-gray-900">
             Hola, {user?.firstName || ''} !
           </h1>
-          <p className="text-xs text-gray-400 mt-0.5">{user?.email || '...'}</p>
+          <p className="text-xs text-gray-400 mt-0.5 capitalize">
+            {new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}
+          </p>
           <div className="relative flex items-center gap-4" ref={profileRef}>
 
             {onStartTour && (

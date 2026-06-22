@@ -22,14 +22,20 @@ function Dashboard() {
   const refCbu      = useRef(null)
   const refHistory  = useRef(null)
   const refHelpBtn  = useRef(null)
+  const refHeader = useRef(null)
+  const refNavHome         = useRef(null)
+  const refNavMovimientos  = useRef(null)
+  const refNavEstadisticas = useRef(null)
 
   const tourSteps = [
-    { ref: refNav,     title: 'Navegación principal',  desc: 'Desde acá accedés a Inicio y tus Movimientos.',                                             placement: 'right',  padding: 8 },
-    { ref: refBalance, title: 'Tu saldo disponible',   desc: 'Acá ves cuánto dinero tenés. Podés ocultarlo tocando el ícono del ojo.',                   placement: 'bottom', padding: 6 },
-    { ref: refActions, title: 'Acciones rápidas',      desc: 'Depositá, transferí o retirá plata con un solo toque desde estos botones.',                 placement: 'bottom', padding: 6 },
-    { ref: refCbu,     title: 'Tus datos bancarios',   desc: 'Tu CBU y alias para recibir transferencias. Podés copiarlos o editar tu alias.',            placement: 'top',    padding: 6 },
-    { ref: refHistory, title: 'Últimos movimientos',   desc: 'Acá aparece todo lo que entra y sale de tu cuenta, con fecha y monto.',                     placement: 'top',    padding: 6 },
-    { ref: refHelpBtn, title: '¡Ya sabés todo!',       desc: 'Si querés volver a ver este tour, tocá el botón "?" que está acá arriba cuando quieras.',   placement: 'bottom', padding: 6 },
+    { ref: refNavHome,         title: 'Inicio',         desc: 'Tu pantalla principal: saldo, acciones rápidas y últimos movimientos.',         placement: 'right', padding: 6 },
+    { ref: refNavMovimientos,  title: 'Movimientos',    desc: 'El historial completo de todo lo que entra y sale de tu cuenta.',               placement: 'right', padding: 6 },
+    { ref: refNavEstadisticas, title: 'Estadísticas',   desc: 'Gráficos y resúmenes para entender cómo usás tu plata.',                       placement: 'right', padding: 6 },
+    { ref: refBalance, title: 'Tu saldo disponible',  desc: 'Acá ves cuánto dinero tenés. Podés ocultarlo con el ícono del ojo, o ver el historial completo con la flecha.',  placement: 'bottom', padding: 6 },
+    { ref: refActions, title: 'Acciones rápidas',     desc: 'Depositá, transferí o retirá con un toque.',                                               placement: 'bottom', padding: 6 },
+    { ref: refCbu,     title: 'Tus datos bancarios',  desc: 'Tu CBU y alias para recibir transferencias. Copiálos o editá tu alias desde acá.',         placement: 'top',    padding: 6 },
+    { ref: refHistory, title: 'Últimos movimientos',  desc: 'Las últimas transacciones de tu cuenta. Tocá "Ver todos" para el historial completo.',   placement: 'top',    padding: 6 },
+    { ref: refHelpBtn, title: '¡Ya sabés todo!',      desc: 'Si querés volver a ver este tour, tocá el botón "?" de arriba a la derecha cuando quieras.', placement: 'bottom', padding: 6 },
   ]
 
   const handleCopy = async (text, field) => {
@@ -63,18 +69,33 @@ function Dashboard() {
             <div className="h-3 w-36 bg-gray-200 rounded animate-pulse" />
             <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
           </div>
-          <div className="p-6 flex flex-col gap-5">
-            <div className="bg-slate-900 rounded-xl p-5 relative overflow-hidden">
-              <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-blue-900 opacity-50" />
-              <div className="h-3 w-24 bg-slate-700 rounded animate-pulse mb-2" />
-              <div className="h-9 w-40 bg-slate-700 rounded animate-pulse mb-4" />
-              <div className="flex gap-2">
-                <div className="h-7 w-24 bg-slate-700 rounded-lg animate-pulse" />
-                <div className="h-7 w-24 bg-slate-700 rounded-lg animate-pulse" />
-                <div className="h-7 w-24 bg-slate-700 rounded-lg animate-pulse" />
+          <div className="p-5 flex flex-col gap-4">
+
+            {/* Balance card skeleton */}
+            <div className="bg-slate-900 rounded-xl p-6 relative overflow-hidden">
+              <div className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-blue-700 opacity-25" />
+              {/* Label + badge */}
+              <div className="flex items-center justify-between mb-1">
+                <div className="h-3 w-24 bg-slate-700 rounded animate-pulse" />
+                <div className="h-4 w-16 bg-slate-700 rounded-full animate-pulse" />
+              </div>
+              {/* Saldo + ojo + chevron */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-11 w-48 bg-slate-700 rounded animate-pulse" />
+                <div className="w-4 h-4 bg-slate-700 rounded animate-pulse" />
+                <div className="w-10 h-10 bg-slate-700 rounded animate-pulse ml-auto" />
+              </div>
+              <div className="h-px bg-slate-700/60 mb-2.5" />
+              {/* Botones */}
+              <div className="flex gap-1.5">
+                <div className="h-7 flex-1 bg-blue-900 rounded-lg animate-pulse" />
+                <div className="h-7 flex-1 bg-slate-800 rounded-lg animate-pulse" />
+                <div className="h-7 flex-1 bg-slate-800 rounded-lg animate-pulse" />
               </div>
             </div>
-            <div className="bg-blue-50 rounded-xl border border-blue-100 p-4 flex flex-col gap-3">
+
+            {/* CBU skeleton */}
+            <div className="bg-blue-50 rounded-xl border border-blue-100 p-4 flex flex-col gap-2.5">
               <div className="h-3 w-28 bg-blue-200 rounded animate-pulse" />
               <div className="flex justify-between items-center">
                 <div className="flex flex-col gap-1">
@@ -92,23 +113,27 @@ function Dashboard() {
                 <div className="h-3 w-10 bg-blue-200 rounded animate-pulse" />
               </div>
             </div>
+
+            {/* Historial skeleton */}
             <div className="flex flex-col">
-              <div className="h-3 w-32 bg-gray-200 rounded animate-pulse mb-3" />
-              <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+              <div className="h-3 w-32 bg-gray-200 rounded animate-pulse mb-3 ml-4" />
+              <div className="bg-blue-50 rounded-xl border border-blue-100 overflow-hidden">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="flex justify-between items-center px-4 py-3 border-b border-gray-50 last:border-0">
+                  <div key={i} className="flex justify-between items-center px-4 py-3 border-b border-blue-100/60 last:border-0">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gray-200 rounded-lg animate-pulse" />
+                      <div className="w-8 h-8 bg-blue-200 rounded-lg animate-pulse" />
                       <div className="flex flex-col gap-1">
-                        <div className="h-3 w-28 bg-gray-200 rounded animate-pulse" />
-                        <div className="h-3 w-20 bg-gray-100 rounded animate-pulse" />
+                        <div className="h-3 w-28 bg-blue-200 rounded animate-pulse" />
+                        <div className="h-3 w-20 bg-blue-100 rounded animate-pulse" />
                       </div>
                     </div>
-                    <div className="h-3 w-16 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-3 w-16 bg-blue-200 rounded animate-pulse" />
                   </div>
                 ))}
               </div>
+              <div className="h-4 w-44 bg-gray-200 rounded animate-pulse mt-6 mx-auto" />
             </div>
+
           </div>
         </div>
       </div>
@@ -116,29 +141,30 @@ function Dashboard() {
   }
 
   return (
-    <AppLayout refNav={refNav} refHelpBtn={refHelpBtn} onStartTour={startTour}>
+    <AppLayout refNav={refNav} refNavHome={refNavHome} refNavMovimientos={refNavMovimientos} refNavEstadisticas={refNavEstadisticas} refHelpBtn={refHelpBtn} onStartTour={startTour}>
       <div className="p-5 flex flex-col gap-4">
-        <p className="text-xs text-gray-400 font-medium flex items-center gap-1.5 ml-3">
-          <span className="inline-block w-4 h-px bg-gray-300" />
-          Mi Cuenta
-        </p>
 
         {/* Balance card */}
-        <div ref={refBalance} className="relative w-full max-w-full overflow-hidden rounded-xl bg-slate-900 p-3.5 isolate">
-          {/* Decoraciones absolutas con 'isolate' en el padre para evitar fugas visuales */}
+        <div ref={refBalance} className="relative w-full max-w-full overflow-hidden rounded-xl bg-slate-900 p-6 isolate">
           <div className="absolute -right-6 -top-6 -z-10 h-20 w-20 rounded-full bg-blue-700 opacity-25 pointer-events-none" />
           <div className="absolute -bottom-4 right-14 -z-10 h-12 w-12 rounded-full bg-blue-500 opacity-10 pointer-events-none" />
-          <div 
+          <div
             className="absolute top-0 left-0 w-full h-full -z-10 pointer-events-none"
             style={{ background: 'linear-gradient(135deg, rgba(59,130,246,0.07) 0%, transparent 60%)' }}
           />
 
           <div className="relative z-10 w-full">
 
-            {/* Texto secundario de Saldo */}
-            <p className="text-slate-600 text-[11px] mb-1 select-none ml-1">Saldo disponible</p>
+            {/* Fila superior: label + badge ACTIVO */}
+            <div className="flex items-center justify-between mb-1 ml-1 mr-0.5">
+              <p className="text-slate-500 text-[11px] select-none">Saldo disponible</p>
+              <span className="flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-medium px-2 py-0.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
+                ACTIVO
+              </span>
+            </div>
 
-            {/* Bloque de número grande, centavos arriba y ojo al lado */}
+            {/* Saldo + ojo */}
             <div className="flex items-center gap-3 mb-4 max-w-full overflow-hidden">
               <div className="flex items-baseline leading-none overflow-hidden select-none">
                 {showBalance ? (
@@ -148,7 +174,6 @@ function Dashboard() {
                       <span className="text-white text-[44px] font-semibold tracking-tight truncate">
                         {Math.floor(Number(balance)).toLocaleString('es-AR')}
                       </span>
-                      {/* Centavos corregidos para evitar saltos de línea o desbordamientos */}
                       <span className="text-slate-500 text-[14px] font-medium align-super self-start mt-1 ml-0.5 inline-block">
                         {String(Math.round((Number(balance) % 1) * 100)).padStart(2, '0')}
                       </span>
@@ -161,8 +186,6 @@ function Dashboard() {
                   </>
                 )}
               </div>
-
-              {/* El Ojo ubicado al lado del saldo */}
               <button
                 onClick={() => setShowBalance(!showBalance)}
                 className="text-slate-500 hover:text-slate-300 transition cursor-pointer self-center mt-1 shrink-0"
@@ -178,30 +201,39 @@ function Dashboard() {
                   </svg>
                 )}
               </button>
+              <button
+                onClick={() => navigate('/history')}
+                className="text-white hover:text-slate-300 transition cursor-pointer self-center mt-1 shrink-0 ml-auto"
+                aria-label="Ver historial"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
             </div>
 
             <div className="h-px bg-slate-700/60 mb-2.5" />
 
-            {/* Acciones (con flex-wrap para pantallas muy chicas si el espacio no alcanza) */}
+            {/* Acciones */}
             <div ref={refActions} className="flex gap-1.5 w-full">
               <button onClick={() => navigate('/deposit')}
-                className="flex items-center justify-center gap-1 px-17 py-[5px] bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-[11px] font-medium transition cursor-pointer min-w-0">
+                className="flex-1 flex items-center justify-center gap-1 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-[11px] font-medium transition cursor-pointer min-w-0">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 <span className="truncate">Depositar</span>
               </button>
-              
+
               <button onClick={() => navigate('/transfer')}
-                className="flex items-center justify-center gap-1 px-17 py-[5px] bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] font-medium transition cursor-pointer border border-slate-600/30 min-w-0">
+                className="flex flex-1 items-center justify-center gap-1 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] font-medium transition cursor-pointer border border-slate-600/30 min-w-0">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                 </svg>
                 <span className="truncate">Transferir</span>
               </button>
-              
+
               <button onClick={() => navigate('/withdraw')}
-                className="flex items-center justify-center gap-1 px-17 py-[5px] bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] font-medium transition cursor-pointer border border-slate-600/30 min-w-0">
+                className="flex flex-1 items-center justify-center gap-1 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-[11px] font-medium transition cursor-pointer border border-slate-600/30 min-w-0">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                 </svg>
@@ -212,37 +244,28 @@ function Dashboard() {
         </div>
 
         {/* CBU y Alias */}
-        <div ref={refCbu} className="bg-blue-50 rounded-xl border border-blue-100 p-4 flex flex-col gap-2.5">
-          <p className="text-xs font-medium text-blue-400">Tus datos bancarios</p>
+        <div ref={refCbu} className="bg-blue-50 rounded-xl border border-slate-900 p-4 flex flex-col gap-2.5">
+          <p className="text-xs font-medium text-gray-400">Tus datos bancarios</p>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-blue-300 mb-0.5">CBU</p>
-              <p className="text-sm font-mono text-blue-900">{user?.cbu || '...'}</p>
+              <p className="text-xs text-gray-400 mb-0.5">CBU</p>
+              <p className="text-sm font-mono text-gray-800">{user?.cbu || '...'}</p>
             </div>
-            <button
-              onClick={() => handleCopy(user?.cbu, 'cbu')}
-              className="text-xs text-blue-500 hover:text-blue-700 transition cursor-pointer"
-            >
+            <button onClick={() => handleCopy(user?.cbu, 'cbu')} className="text-xs text-blue-500 hover:text-blue-700 transition cursor-pointer">
               {copiedField === 'cbu' ? '✓ Copiado' : 'Copiar'}
             </button>
           </div>
-          <div className="h-px bg-blue-100" />
+          <div className="h-px bg-gray-100" />
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs text-blue-300 mb-0.5">Alias</p>
-              <p className="text-sm font-mono text-blue-900">{user?.alias || '...'}</p>
+              <p className="text-xs text-gray-400 mb-0.5">Alias</p>
+              <p className="text-sm font-mono text-gray-800">{user?.alias || '...'}</p>
             </div>
             <div className="flex gap-2">
-              <button
-                onClick={() => handleCopy(user?.alias, 'alias')}
-                className="text-xs text-blue-500 hover:text-blue-700 transition cursor-pointer"
-              >
+              <button onClick={() => handleCopy(user?.alias, 'alias')} className="text-xs text-blue-500 hover:text-blue-700 transition cursor-pointer">
                 {copiedField === 'alias' ? '✓ Copiado' : 'Copiar'}
               </button>
-              <button
-                onClick={() => navigate('/profile')}
-                className="text-xs text-blue-300 hover:text-blue-500 transition cursor-pointer"
-              >
+              <button onClick={() => navigate('/profile')} className="text-xs text-gray-400 hover:text-blue-500 transition cursor-pointer">
                 Editar
               </button>
             </div>
@@ -251,22 +274,20 @@ function Dashboard() {
 
         {/* Historial */}
         <div ref={refHistory} className="flex flex-col">
-          <p className="text-xs font-medium text-blue-400 mb-3 pl-4">Últimos movimientos</p>
-
+          <p className="text-xs font-medium text-gray-400 mb-3 pl-4">Últimos movimientos</p>
           {historyError && (
             <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 mb-3">
               {historyError}
             </div>
           )}
-
-          <div className="bg-blue-50 rounded-xl border border-blue-100 overflow-hidden">
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
             {history.length === 0 ? (
-              <p className="text-sm text-blue-300 text-center py-8">No hay transacciones aún.</p>
+              <p className="text-sm text-gray-400 text-center py-8">No hay transacciones aún.</p>
             ) : (
               history.map((t) => {
                 const { bg, color, icon } = getIconConfig(t)
                 return (
-                  <div key={t.id} className="flex justify-between items-center px-4 py-3 border-b border-blue-100/60 last:border-0">
+                  <div key={t.id} className="flex justify-between items-center px-4 py-3 border-b border-gray-50 last:border-0">
                     <div className="flex items-center gap-3">
                       <div className={`w-8 h-8 ${bg} rounded-lg flex items-center justify-center shrink-0`}>
                         <svg xmlns="http://www.w3.org/2000/svg" className={`w-4 h-4 ${color}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -275,7 +296,7 @@ function Dashboard() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-800">{getLabel(t)}</p>
-                        <p className="text-xs text-blue-300">{formatDate(t.createdAt)}</p>
+                        <p className="text-xs text-gray-400">{formatDate(t.createdAt)}</p>
                       </div>
                     </div>
                     <span className={`text-sm font-medium ${getAmountColor(t)}`}>
@@ -285,15 +306,10 @@ function Dashboard() {
                 )
               })
             )}
-            <div className="border-t border-blue-100">
-              <button
-                onClick={() => navigate('/history')}
-                className="w-full py-3 text-xs font-medium text-blue-500 hover:text-blue-700 hover:bg-blue-100/50 transition cursor-pointer"
-              >
-                Ver todos los movimientos →
-              </button>
-            </div>
           </div>
+          <button onClick={() => navigate('/history')} className="mt-6 text-sm font-medium text-slate-900 hover:text-blue-500 transition cursor-pointer text-center mx-auto block">
+            Ver todos los movimientos →
+          </button>
         </div>
 
       </div>
