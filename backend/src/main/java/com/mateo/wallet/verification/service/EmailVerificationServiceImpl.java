@@ -78,7 +78,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     private void sendEmail(String to, String pin) {
         emailSender.send(
             to,
-            "Tu código de verificación - Nova Wallet",
+            "Tu código de verificación - NW",
             "Tu código de verificación es: " + pin + "\n\nVence en " + PIN_EXPIRY_MINUTES + " minutos."
         );
     }

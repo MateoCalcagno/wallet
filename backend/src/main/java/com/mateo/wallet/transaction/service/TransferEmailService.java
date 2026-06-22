@@ -21,7 +21,7 @@ public class TransferEmailService {
     public void notifyRecipient(Wallet toWallet, BigDecimal amount) {
         emailSender.send(
             toWallet.getUser().getEmail(),
-            "Recibiste una transferencia - Nova Wallet",
+            "Transferencia recibida - NW",
             "Hola " + toWallet.getUser().getFirstName() + ", recibiste " + formatAmount(amount) + " en tu wallet."
         );
     }
@@ -29,7 +29,7 @@ public class TransferEmailService {
     public void notifySender(Wallet fromWallet, BigDecimal amount) {
         emailSender.send(
             fromWallet.getUser().getEmail(),
-            "Transferencia exitosa - Nova Wallet",
+            "Transferencia enviada - NW",
             "Hola " + fromWallet.getUser().getFirstName() + ", tu transferencia de " + formatAmount(amount) + " fue exitosa."
         );
     }

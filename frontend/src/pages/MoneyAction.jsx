@@ -31,6 +31,7 @@ function MoneyAction({ config }) {
       const body = { amount }
       if (paymentMethod) body.paymentMethod = paymentMethod
       await api.post(endpoint, body)
+      setLoading(false)
       setSuccess(true)
       setTimeout(() => navigate('/dashboard'), 1500)
     } catch (err) {
@@ -111,7 +112,7 @@ function MoneyAction({ config }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed text-white py-2.5 rounded-lg text-sm font-medium transition mt-2 cursor-pointer flex items-center justify-center gap-2"
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2 cursor-pointer flex items-center justify-center gap-2"
             >
               {loading && (
                 <svg className="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
