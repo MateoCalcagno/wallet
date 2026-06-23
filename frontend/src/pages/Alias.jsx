@@ -4,7 +4,7 @@ import api from '../api/axios'
 import FormPage from '../components/FormPage'
 import IconInput from '../components/IconInput'
 
-function Profile() {
+function Alias() {
   const [alias, setAlias] = useState('')
   const [currentAlias, setCurrentAlias] = useState('')
   const [error, setError] = useState('')
@@ -22,6 +22,16 @@ function Profile() {
     e.preventDefault()
     setError('')
     setSuccess(false)
+
+    if (alias === currentAlias) {
+      setError('Ingresa un nuevo alias')
+      return
+    }
+
+    if (!alias.trim()) {
+      setError('Ingresá un alias')
+      return
+    }
 
     try {
       await api.patch('/wallet/alias', { alias })
@@ -66,8 +76,9 @@ function Profile() {
                 type="text"
                 value={alias}
                 onChange={(e) => setAlias(e.target.value.toLowerCase())}
-                placeholder="palabra.palabra.palabra"
+                placeholder="mi.nuevo.alias"
                 className="font-mono"
+                maxLength={30}
                 iconPath="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
               />
               <p className="text-xs text-gray-400 mt-1.5">
@@ -77,7 +88,8 @@ function Profile() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2 cursor-pointer"
+              disabled={alias === currentAlias}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-medium transition mt-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Guardar alias
             </button>
@@ -94,4 +106,4 @@ function Profile() {
   )
 }
 
-export default Profile
+export default Alias

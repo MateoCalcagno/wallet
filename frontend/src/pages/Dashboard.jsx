@@ -209,7 +209,7 @@ function Dashboard() {
               <button onClick={() => handleCopy(user?.alias, 'alias')} className="text-xs text-blue-500 hover:text-blue-700 transition cursor-pointer">
                 {copiedField === 'alias' ? '✓ Copiado' : 'Copiar'}
               </button>
-              <button onClick={() => navigate('/profile')} className="text-xs text-gray-400 hover:text-blue-500 transition cursor-pointer">
+              <button onClick={() => navigate('/alias')} className="text-xs text-gray-400 hover:text-blue-500 transition cursor-pointer">
                 Editar
               </button>
             </div>

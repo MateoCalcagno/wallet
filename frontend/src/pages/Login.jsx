@@ -17,6 +17,12 @@ function Login() {
     setError('')
     setIsLoading(true)
     document.body.style.cursor = 'wait'  
+    if (!email.trim() || !password.trim()) {
+      setError('Ingresá tu email y contraseña')
+      setIsLoading(false)
+      document.body.style.cursor = 'default'
+      return
+    }
     try {
       const res = await api.post('/auth/login', { email, password })
       localStorage.setItem('token', res.data.token)

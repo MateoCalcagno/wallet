@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
-import Profile from './pages/Profile'
+import Alias from './pages/Alias'
 import Deposit from './pages/Deposit'
 import Transfer from './pages/Transfer'
 import Withdraw from './pages/Withdraw'
@@ -22,7 +22,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-      <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+      <Route path="/alias" element={<PrivateRoute><Alias /></PrivateRoute>} />
       <Route path="/history" element={<PrivateRoute><TransactionHistory /></PrivateRoute>} />
       <Route path="/statistics" element={<PrivateRoute><Statistics /></PrivateRoute>} /> 
       <Route path="/deposit" element={<PrivateRoute><Deposit /></PrivateRoute>} />
