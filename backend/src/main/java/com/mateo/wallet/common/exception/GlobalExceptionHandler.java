@@ -83,6 +83,13 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse(400, ex.getMessage()));
     }
 
+    @ExceptionHandler(TooManyRequestsException.class)
+    public ResponseEntity<ApiResponse> handleTooManyRequests(TooManyRequestsException ex) {
+        return ResponseEntity
+                .status(HttpStatus.TOO_MANY_REQUESTS)
+                .body(new ApiResponse(429, ex.getMessage()));
+    }
+
     // siempre al último — atrapa todo lo que no matcheó arriba
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleGeneric(Exception ex) {

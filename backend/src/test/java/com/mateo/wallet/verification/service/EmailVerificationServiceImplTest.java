@@ -2,6 +2,7 @@ package com.mateo.wallet.verification.service;
 
 import com.mateo.wallet.common.email.EmailSender;
 import com.mateo.wallet.common.exception.ResourceNotFoundException;
+import com.mateo.wallet.common.exception.TooManyRequestsException;
 import com.mateo.wallet.verification.model.EmailVerification;
 import com.mateo.wallet.verification.repository.EmailVerificationRepository;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -166,5 +168,65 @@ class EmailVerificationServiceImplTest {
 
         assertTrue(ex.getMessage().contains("verify your email"));
         verify(repo, never()).deleteByEmail(any());
+    }
+
+    // ─── límite de intentos y reenvío ───────────────────────────────────────────
+
+    @Test
+    void verifyPin_incorrectPin_incrementsAttempts() {
+        EmailVerification verification = new EmailVerification(
+                "mateo@gmail.com", "123456", LocalDateTime.now().plusMinutes(5));
+
+        when(repo.findTopByEmailOrderByIdDesc("mateo@gmail.com")).thenReturn(Optional.of(verification));
+
+        assertThrows(IllegalArgumentException.class, () ->
+                emailVerificationService.verifyPin("mateo@gmail.com", "999999"));
+
+        assertEquals(1, verification.getAttempts());
+    }
+
+    @Test
+    void verifyPin_tooManyAttempts_blocksEvenWithCorrectPin() {
+        EmailVerification verification = new EmailVerification(
+                "mateo@gmail.com", "123456", LocalDateTime.now().plusMinutes(5));
+        for (int i = 0; i < 5; i++) {
+            verification.incrementAttempts();
+        }
+
+        when(repo.findTopByEmailOrderByIdDesc("mateo@gmail.com")).thenReturn(Optional.of(verification));
+
+        assertThrows(TooManyRequestsException.class, () ->
+                emailVerificationService.verifyPin("mateo@gmail.com", "123456"));
+
+        assertFalse(verification.isVerified());
+    }
+
+    @Test
+    void sendPin_withinCooldown_throwsTooManyRequests() {
+        // vencimiento a 10 min = PIN enviado recién
+        EmailVerification recent = new EmailVerification(
+                "mateo@gmail.com", "123456", LocalDateTime.now().plusMinutes(10));
+
+        when(repo.findTopByEmailOrderByIdDesc("mateo@gmail.com")).thenReturn(Optional.of(recent));
+
+        assertThrows(TooManyRequestsException.class, () ->
+                emailVerificationService.sendPin("mateo@gmail.com"));
+
+        verify(repo, never()).save(any());
+        verify(emailSender, never()).send(any(), any(), any());
+    }
+
+    @Test
+    void sendPin_afterCooldown_sendsNewPin() {
+        // PIN enviado hace 2 minutos
+        EmailVerification old = new EmailVerification(
+                "mateo@gmail.com", "123456", LocalDateTime.now().plusMinutes(8));
+
+        when(repo.findTopByEmailOrderByIdDesc("mateo@gmail.com")).thenReturn(Optional.of(old));
+
+        emailVerificationService.sendPin("mateo@gmail.com");
+
+        verify(repo).deleteByEmail("mateo@gmail.com");
+        verify(repo).save(any());
     }
 }

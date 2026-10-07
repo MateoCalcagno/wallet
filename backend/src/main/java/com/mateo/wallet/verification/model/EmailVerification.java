@@ -23,6 +23,11 @@ public class EmailVerification {
     @Column(nullable = false)
     private boolean verified = false;
 
+    // columnDefinition con default: así Hibernate puede agregar la columna
+    // aunque la tabla ya tenga filas (en Render).
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private int attempts = 0;
+
     public EmailVerification() {}
 
     public EmailVerification(String email, String pin, LocalDateTime expiresAt) {
@@ -37,4 +42,6 @@ public class EmailVerification {
     public LocalDateTime getExpiresAt() { return expiresAt; }
     public boolean isVerified() { return verified; }
     public void setVerified(boolean verified) { this.verified = verified; }
+    public int getAttempts() { return attempts; }
+    public void incrementAttempts() { this.attempts++; }
 }
