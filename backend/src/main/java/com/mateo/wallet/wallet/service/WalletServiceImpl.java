@@ -46,7 +46,7 @@ public class WalletServiceImpl implements WalletService {
     @Override
     @Transactional
     public void deposit(String email, BigDecimal amount, PaymentMethod paymentMethod) {
-        Wallet wallet = getByEmail(email);
+        Wallet wallet = walletResolver.resolveByEmailForUpdate(email);
 
         DepositStrategy strategy = depositStrategyFactory.getStrategy(paymentMethod);
         BigDecimal finalAmount = strategy.process(amount);
@@ -58,7 +58,7 @@ public class WalletServiceImpl implements WalletService {
     @Override
     @Transactional
     public void withdraw(String email, BigDecimal amount) {
-        Wallet wallet = getByEmail(email);
+        Wallet wallet = walletResolver.resolveByEmailForUpdate(email);
         wallet.withdraw(amount);
         transactionRecorder.recordWithdrawal(wallet, amount);
     }

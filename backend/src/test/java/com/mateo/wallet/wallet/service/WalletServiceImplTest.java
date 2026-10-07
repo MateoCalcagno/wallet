@@ -58,7 +58,7 @@ class WalletServiceImplTest {
             amount.multiply(new BigDecimal("0.01"))
         ); // simula 1% de comisión
 
-        when(walletResolver.resolveByEmail("mateo@gmail.com")).thenReturn(wallet);
+        when(walletResolver.resolveByEmailForUpdate("mateo@gmail.com")).thenReturn(wallet);
         when(depositStrategyFactory.getStrategy(PaymentMethod.DEBIT_CARD)).thenReturn(mockStrategy);
 
         walletService.deposit("mateo@gmail.com", new BigDecimal("100"), PaymentMethod.DEBIT_CARD);
@@ -72,7 +72,7 @@ class WalletServiceImplTest {
         Wallet wallet = buildWallet(new BigDecimal("100"));
         DepositStrategy mockStrategy = amount -> amount; // sin comisión
 
-        when(walletResolver.resolveByEmail("mateo@gmail.com")).thenReturn(wallet);
+        when(walletResolver.resolveByEmailForUpdate("mateo@gmail.com")).thenReturn(wallet);
         when(depositStrategyFactory.getStrategy(PaymentMethod.BANK_TRANSFER)).thenReturn(mockStrategy);
 
         walletService.deposit("mateo@gmail.com", new BigDecimal("50"), PaymentMethod.BANK_TRANSFER);
@@ -85,7 +85,7 @@ class WalletServiceImplTest {
     void withdraw_success() {
         Wallet wallet = buildWallet(new BigDecimal("100"));
 
-        when(walletResolver.resolveByEmail("mateo@gmail.com")).thenReturn(wallet);
+        when(walletResolver.resolveByEmailForUpdate("mateo@gmail.com")).thenReturn(wallet);
 
         walletService.withdraw("mateo@gmail.com", new BigDecimal("50"));
 
@@ -97,7 +97,7 @@ class WalletServiceImplTest {
     void withdraw_insufficientBalance() {
         Wallet wallet = buildWallet(new BigDecimal("30"));
 
-        when(walletResolver.resolveByEmail("mateo@gmail.com")).thenReturn(wallet);
+        when(walletResolver.resolveByEmailForUpdate("mateo@gmail.com")).thenReturn(wallet);
 
         assertThrows(InsufficientBalanceException.class, () ->
                 walletService.withdraw("mateo@gmail.com", new BigDecimal("100"))

@@ -44,11 +44,22 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public void transfer(String fromEmail, String identifier, BigDecimal amount) {
-        Wallet fromWallet = walletResolver.resolveByEmail(fromEmail);
-        Wallet toWallet = walletResolver.resolveByIdentifier(identifier);
+        Long fromId = walletResolver.resolveIdByEmail(fromEmail);
+        Long toId = walletResolver.resolveIdByIdentifier(identifier);
 
-        if (fromWallet.getId().equals(toWallet.getId())) {
+        if (fromId.equals(toId)) {
             throw new SelfTransferException();
+        }
+
+        // Se bloquean siempre en orden ascendente de id para evitar deadlocks
+        Wallet fromWallet;
+        Wallet toWallet;
+        if (fromId < toId) {
+            fromWallet = walletResolver.lockById(fromId);
+            toWallet = walletResolver.lockById(toId);
+        } else {
+            toWallet = walletResolver.lockById(toId);
+            fromWallet = walletResolver.lockById(fromId);
         }
 
         fromWallet.withdraw(amount);

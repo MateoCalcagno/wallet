@@ -68,8 +68,10 @@ class TransactionServiceImplTest {
         Wallet from = buildWallet(1L, new BigDecimal("500"));
         Wallet to = buildWallet(2L, new BigDecimal("100"));
 
-        when(walletResolver.resolveByEmail("from@gmail.com")).thenReturn(from);
-        when(walletResolver.resolveByIdentifier("alias.destino.test")).thenReturn(to);
+        when(walletResolver.resolveIdByEmail("from@gmail.com")).thenReturn(1L);
+        when(walletResolver.resolveIdByIdentifier("alias.destino.test")).thenReturn(2L);
+        when(walletResolver.lockById(1L)).thenReturn(from);
+        when(walletResolver.lockById(2L)).thenReturn(to);
         when(transactionFactory.createTransfer(any(), any(), any()))
                 .thenReturn(new Transaction(from, to, new BigDecimal("200"), TransactionType.TRANSFER));
 
@@ -85,8 +87,10 @@ class TransactionServiceImplTest {
         Wallet from = buildWallet(1L, new BigDecimal("500"));
         Wallet to = buildWallet(2L, new BigDecimal("100"));
 
-        when(walletResolver.resolveByEmail("from@gmail.com")).thenReturn(from);
-        when(walletResolver.resolveByIdentifier("alias.destino.test")).thenReturn(to);
+        when(walletResolver.resolveIdByEmail("from@gmail.com")).thenReturn(1L);
+        when(walletResolver.resolveIdByIdentifier("alias.destino.test")).thenReturn(2L);
+        when(walletResolver.lockById(1L)).thenReturn(from);
+        when(walletResolver.lockById(2L)).thenReturn(to);
         when(transactionFactory.createTransfer(any(), any(), any()))
                 .thenReturn(new Transaction(from, to, new BigDecimal("200"), TransactionType.TRANSFER));
 
@@ -101,8 +105,10 @@ class TransactionServiceImplTest {
         Wallet from = buildWallet(1L, new BigDecimal("50"));
         Wallet to = buildWallet(2L, new BigDecimal("100"));
 
-        when(walletResolver.resolveByEmail("from@gmail.com")).thenReturn(from);
-        when(walletResolver.resolveByIdentifier("alias.destino.test")).thenReturn(to);
+        when(walletResolver.resolveIdByEmail("from@gmail.com")).thenReturn(1L);
+        when(walletResolver.resolveIdByIdentifier("alias.destino.test")).thenReturn(2L);
+        when(walletResolver.lockById(1L)).thenReturn(from);
+        when(walletResolver.lockById(2L)).thenReturn(to);
 
         assertThrows(InsufficientBalanceException.class, () ->
                 transactionService.transfer("from@gmail.com", "alias.destino.test", new BigDecimal("200"))
@@ -116,8 +122,8 @@ class TransactionServiceImplTest {
     void transfer_toYourself() {
         Wallet from = buildWallet(1L, new BigDecimal("500"));
 
-        when(walletResolver.resolveByEmail("from@gmail.com")).thenReturn(from);
-        when(walletResolver.resolveByIdentifier("alias.destino.test")).thenReturn(from);
+        when(walletResolver.resolveIdByEmail("from@gmail.com")).thenReturn(1L);
+        when(walletResolver.resolveIdByIdentifier("alias.destino.test")).thenReturn(1L);
 
         assertThrows(SelfTransferException.class, () ->
                 transactionService.transfer("from@gmail.com", "alias.destino.test", new BigDecimal("200"))

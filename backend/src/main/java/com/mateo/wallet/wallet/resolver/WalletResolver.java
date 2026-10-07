@@ -29,4 +29,24 @@ public class WalletResolver {
                 .or(() -> walletRepository.findByAlias(identifier))
                 .orElseThrow(() -> new ResourceNotFoundException("Destination wallet not found"));
     }
+
+    public Long resolveIdByEmail(String email) {
+        return walletRepository.findIdByUserEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
+    }
+
+    public Long resolveIdByIdentifier(String identifier) {
+        return walletRepository.findIdByCbu(identifier)
+                .or(() -> walletRepository.findIdByAlias(identifier))
+                .orElseThrow(() -> new ResourceNotFoundException("Destination wallet not found"));
+    }
+
+    public Wallet lockById(Long id) {
+        return walletRepository.findByIdForUpdate(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
+    }
+
+    public Wallet resolveByEmailForUpdate(String email) {
+        return lockById(resolveIdByEmail(email));
+    }
 }
