@@ -45,7 +45,8 @@ public class EmailSender {
         try {
             api.sendTransacEmail(email);
         } catch (ApiException e) {
-            throw new RuntimeException("Error enviando email: " + e.getMessage(), e);
+            throw new RuntimeException("Error enviando email: code=" + e.getCode()
+                    + " body=" + e.getResponseBody(), e);
         }
     }
 }
