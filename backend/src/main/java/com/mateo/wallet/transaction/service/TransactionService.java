@@ -8,6 +8,6 @@ import com.mateo.wallet.transaction.dto.TransactionResponse;
 import com.mateo.wallet.transaction.model.TransactionType;
 
 public interface TransactionService {
-    void transfer(String fromEmail, String identifier, BigDecimal amount);
+    void transfer(String fromEmail, String identifier, BigDecimal amount, String idempotencyKey);
     Page<TransactionResponse> getHistory(String email, int page, int size, TransactionType type);
 }

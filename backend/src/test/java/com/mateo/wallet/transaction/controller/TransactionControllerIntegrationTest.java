@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import java.util.UUID;
 
 import java.math.BigDecimal;
 
@@ -95,6 +96,7 @@ class TransactionControllerIntegrationTest {
         mockMvc.perform(post("/transactions/transfer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token)
+                .header("Idempotency-Key", UUID.randomUUID().toString())
                 .content(objectMapper.writeValueAsString(buildTransfer(toWallet.getAlias(), new BigDecimal("100")))))
                 .andExpect(status().isOk());
     }
@@ -104,6 +106,7 @@ class TransactionControllerIntegrationTest {
         mockMvc.perform(post("/transactions/transfer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token)
+                .header("Idempotency-Key", UUID.randomUUID().toString())
                 .content(objectMapper.writeValueAsString(buildTransfer(toWallet.getAlias(), new BigDecimal("9999")))))
                 .andExpect(status().isBadRequest());
     }
@@ -115,6 +118,7 @@ class TransactionControllerIntegrationTest {
         mockMvc.perform(post("/transactions/transfer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token)
+                .header("Idempotency-Key", UUID.randomUUID().toString())
                 .content(objectMapper.writeValueAsString(buildTransfer(fromWallet.getAlias(), new BigDecimal("100")))))
                 .andExpect(status().isBadRequest());
     }
@@ -133,6 +137,7 @@ class TransactionControllerIntegrationTest {
         mockMvc.perform(post("/transactions/transfer")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token)
+                .header("Idempotency-Key", UUID.randomUUID().toString())
                 .content(objectMapper.writeValueAsString(buildTransfer(toWallet.getAlias(), new BigDecimal("100")))))
                 .andExpect(status().isOk());
 

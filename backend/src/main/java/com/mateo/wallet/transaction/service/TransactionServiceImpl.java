@@ -18,6 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mateo.wallet.transaction.model.IdempotencyKey;
+import com.mateo.wallet.transaction.repository.IdempotencyKeyRepository;
+
 import java.math.BigDecimal;
 
 @Service
@@ -28,22 +31,30 @@ public class TransactionServiceImpl implements TransactionService {
     private final WalletResolver walletResolver;
     private final TransactionFactory transactionFactory;
     private final ApplicationEventPublisher eventPublisher;
+    private final IdempotencyKeyRepository idempotencyKeyRepository;
 
     public TransactionServiceImpl(TransactionRepository transactionRepository,
                                   TransactionMapper transactionMapper,
                                   WalletResolver walletResolver,
                                   TransactionFactory transactionFactory,
-                                  ApplicationEventPublisher eventPublisher) {
+                                  ApplicationEventPublisher eventPublisher,
+                                  IdempotencyKeyRepository idempotencyKeyRepository) {
         this.transactionRepository = transactionRepository;
         this.transactionMapper = transactionMapper;
         this.walletResolver = walletResolver;
         this.transactionFactory = transactionFactory;
         this.eventPublisher = eventPublisher;
+        this.idempotencyKeyRepository = idempotencyKeyRepository;
     }
 
     @Override
     @Transactional
-    public void transfer(String fromEmail, String identifier, BigDecimal amount) {
+    public void transfer(String fromEmail, String identifier, BigDecimal amount, String idempotencyKey) {
+        // Anotar el ticket. Si ya existe, la base lanza DataIntegrityViolationException
+        // y esta transacción entera se revierte (no se mueve plata).
+        idempotencyKeyRepository.saveAndFlush(new IdempotencyKey(
+                fromEmail, idempotencyKey, TransferRequestHash.of(identifier, amount)));
+
         Long fromId = walletResolver.resolveIdByEmail(fromEmail);
         Long toId = walletResolver.resolveIdByIdentifier(identifier);
 
