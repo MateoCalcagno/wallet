@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
+import com.mateo.wallet.transaction.repository.IdempotencyKeyRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -50,6 +51,9 @@ class TransactionServiceImplTest {
     @Mock
     private ApplicationEventPublisher eventPublisher;
 
+    @Mock
+    private IdempotencyKeyRepository idempotencyKeyRepository;
+
     @InjectMocks
     private TransactionServiceImpl transactionService;
 
@@ -75,11 +79,12 @@ class TransactionServiceImplTest {
         when(transactionFactory.createTransfer(any(), any(), any()))
                 .thenReturn(new Transaction(from, to, new BigDecimal("200"), TransactionType.TRANSFER));
 
-        transactionService.transfer("from@gmail.com", "alias.destino.test", new BigDecimal("200"));
+        transactionService.transfer("from@gmail.com", "alias.destino.test", new BigDecimal("200"), "key-1");
 
         assertEquals(new BigDecimal("300"), from.getBalance());
         assertEquals(new BigDecimal("300"), to.getBalance());
         verify(transactionRepository).save(any());
+        verify(idempotencyKeyRepository).saveAndFlush(any());
     }
 
     @Test
@@ -94,7 +99,7 @@ class TransactionServiceImplTest {
         when(transactionFactory.createTransfer(any(), any(), any()))
                 .thenReturn(new Transaction(from, to, new BigDecimal("200"), TransactionType.TRANSFER));
 
-        transactionService.transfer("from@gmail.com", "alias.destino.test", new BigDecimal("200"));
+        transactionService.transfer("from@gmail.com", "alias.destino.test", new BigDecimal("200"), "key-1");
 
         ArgumentCaptor<TransferCompletedEvent> captor = ArgumentCaptor.forClass(TransferCompletedEvent.class);
         verify(eventPublisher).publishEvent(captor.capture());
@@ -111,7 +116,7 @@ class TransactionServiceImplTest {
         when(walletResolver.lockById(2L)).thenReturn(to);
 
         assertThrows(InsufficientBalanceException.class, () ->
-                transactionService.transfer("from@gmail.com", "alias.destino.test", new BigDecimal("200"))
+                transactionService.transfer("from@gmail.com", "alias.destino.test", new BigDecimal("200"), "key-1")
         );
 
         verify(transactionRepository, never()).save(any());
@@ -126,7 +131,7 @@ class TransactionServiceImplTest {
         when(walletResolver.resolveIdByIdentifier("alias.destino.test")).thenReturn(1L);
 
         assertThrows(SelfTransferException.class, () ->
-                transactionService.transfer("from@gmail.com", "alias.destino.test", new BigDecimal("200"))
+                transactionService.transfer("from@gmail.com", "alias.destino.test", new BigDecimal("200"), "key-1")
         );
 
         verify(transactionRepository, never()).save(any());

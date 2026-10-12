@@ -4,6 +4,7 @@ import com.mateo.wallet.transaction.dto.TransactionResponse;
 import com.mateo.wallet.transaction.dto.TransferRequest;
 import com.mateo.wallet.transaction.model.TransactionType;
 import com.mateo.wallet.transaction.service.TransactionService;
+import com.mateo.wallet.transaction.service.IdempotentTransferService;
 
 import jakarta.validation.Valid;
 
@@ -17,18 +18,26 @@ import org.springframework.data.domain.Page;
 public class TransactionController {
 
     private final TransactionService transactionService;
+    private final IdempotentTransferService idempotentTransferService;
 
-    public TransactionController(TransactionService transactionService) {
+    public TransactionController(TransactionService transactionService,
+                                IdempotentTransferService idempotentTransferService) {
         this.transactionService = transactionService;
+        this.idempotentTransferService = idempotentTransferService;
     }
 
     @PostMapping("/transfer")
     public ResponseEntity<Void> transfer(
             @RequestBody @Valid TransferRequest request,
+            @RequestHeader("Idempotency-Key") String idempotencyKey,
             @AuthenticationPrincipal String email
     ) {
-        transactionService.transfer(email, request.getIdentifier(), request.getAmount());
-        return ResponseEntity.ok().build();
+        boolean executed = idempotentTransferService.transfer(
+                email, request.getIdentifier(), request.getAmount(), idempotencyKey);
+
+        return executed
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.ok().header("Idempotent-Replay", "true").build();
     }
 
     @GetMapping("/history")

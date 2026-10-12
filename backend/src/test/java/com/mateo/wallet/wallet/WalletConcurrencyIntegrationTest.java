@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -131,8 +132,8 @@ class WalletConcurrencyIntegrationTest {
 
         List<Runnable> tasks = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            tasks.add(() -> transactionService.transfer("a@test.com", b.getCbu(), new BigDecimal("10")));
-            tasks.add(() -> transactionService.transfer("b@test.com", a.getCbu(), new BigDecimal("10")));
+            tasks.add(() -> transactionService.transfer("a@test.com", b.getCbu(), new BigDecimal("10"), UUID.randomUUID().toString()));
+            tasks.add(() -> transactionService.transfer("b@test.com", a.getCbu(), new BigDecimal("10"), UUID.randomUUID().toString()));
         }
 
         List<Throwable> unexpected = runConcurrently(tasks);
