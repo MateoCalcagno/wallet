@@ -5,9 +5,11 @@ import com.mateo.wallet.common.exception.InsufficientBalanceException;
 import com.mateo.wallet.user.model.User;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import org.hibernate.annotations.Check;
 
 @Entity
 @Table(name = "wallets")
+@Check(name = "chk_wallet_balance_non_negative", constraints = "balance >= 0")
 public class Wallet extends Auditable {
 
     @Id

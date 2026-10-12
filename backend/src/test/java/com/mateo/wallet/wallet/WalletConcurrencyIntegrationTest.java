@@ -31,6 +31,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 /**
  * Prueba que el saldo se mantiene consistente cuando llegan operaciones simultáneas.
  * No usa @Transactional a nivel de test: cada hilo necesita su propia transacción real.
@@ -49,6 +53,7 @@ class WalletConcurrencyIntegrationTest {
     @Autowired private WalletRepository walletRepository;
     @Autowired private TransactionRepository transactionRepository;
     @Autowired private WalletFactory walletFactory;
+    @Autowired private JdbcTemplate jdbc;
 
     // Evita que el listener asíncrono intente enviar mails reales.
     @MockitoBean private EmailSender emailSender;
@@ -137,5 +142,13 @@ class WalletConcurrencyIntegrationTest {
         assertEquals(0, new BigDecimal("2000").compareTo(total),
                 "La suma de saldos debe seguir siendo 2000, pero es " + total);
         assertEquals(20, transactionRepository.count(), "Deben registrarse las 20 transferencias");
+    }
+
+    @Test
+    void database_rejectsNegativeBalance_evenBypassingTheCode() {
+        Wallet wallet = createWallet("check@test.com", "30000009", "100");
+
+        assertThrows(DataIntegrityViolationException.class,
+                () -> jdbc.update("UPDATE wallets SET balance = -1 WHERE id = ?", wallet.getId()));
     }
 }
