@@ -27,6 +27,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -148,5 +150,38 @@ class TransactionControllerIntegrationTest {
                 .andExpect(jsonPath("$.content").isArray())
                 .andExpect(jsonPath("$.content[0].type").value("TRANSFER"))
                 .andExpect(jsonPath("$.content[0].direction").value("SENT"));
+    }
+
+    @Test
+    void transfer_missingIdempotencyKey_returns400() throws Exception {
+        mockMvc.perform(post("/transactions/transfer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token)
+                .content(objectMapper.writeValueAsString(buildTransfer(toWallet.getAlias(), new BigDecimal("100")))))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void transfer_sameKeyTwice_secondIsReplay() throws Exception {
+        String key = UUID.randomUUID().toString();
+        String body = objectMapper.writeValueAsString(buildTransfer(toWallet.getAlias(), new BigDecimal("100")));
+
+        mockMvc.perform(post("/transactions/transfer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token)
+                .header("Idempotency-Key", key)
+                .content(body))
+                .andExpect(status().isOk())
+                .andExpect(header().doesNotExist("Idempotent-Replay"));
+
+        mockMvc.perform(post("/transactions/transfer")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token)
+                .header("Idempotency-Key", key)
+                .content(body))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Idempotent-Replay", "true"));
+
+        assertEquals(1, transactionRepository.count());
     }
 }
