@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 import FormPage from '../components/FormPage'
@@ -10,6 +10,7 @@ function Transfer() {
   const [identifier, setIdentifier] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const attempt = useRef(null)
   const navigate = useNavigate()
 
   const MAX_TRANSFER = 100000
@@ -28,12 +29,30 @@ function Transfer() {
     if (amount > MAX_TRANSFER) { setError('El monto máximo por transferencia es $100.000'); return }
 
     setLoading(true)
+
+    // Misma clave mientras el contenido no cambie; si cambia, intento nuevo
+    const fingerprint = `${identifier.trim()}|${amount}`
+    if (!attempt.current || attempt.current.fingerprint !== fingerprint) {
+      attempt.current = { key: crypto.randomUUID(), fingerprint }
+    }
+
     try {
-      await api.post('/transactions/transfer', { identifier, amount })
+      await api.post(
+        '/transactions/transfer',
+        { identifier, amount },
+        { headers: { 'Idempotency-Key': attempt.current.key } }
+      )
+      attempt.current = null
       setLoading(false)
       setSuccess(true)
       setTimeout(() => navigate('/dashboard'), 1500)
     } catch (err) {
+      // Con respuesta 4xx el intento terminó. Sin respuesta (red) o con 5xx,
+      // conservamos la clave: no sabemos si el back llegó a procesarlo.
+      if (err.response && err.response.status < 500) {
+        attempt.current = null
+      }
+
       const msg = err.response?.data?.message || ''
       if (msg.toLowerCase().includes('destination wallet not found')) {
         setError('No se encontró ninguna cuenta con ese CBU o alias')
