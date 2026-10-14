@@ -42,6 +42,19 @@ Una billetera digital full-stack que permite a los usuarios gestionar su dinero:
 
 ---
 
+## 🔒 Concurrencia e idempotencia
+
+| Problema | Defensa |
+|---|---|
+| Doble gasto (retiros simultáneos con saldo para uno) | Lock pesimista (`SELECT … FOR UPDATE`) |
+| Deadlock en transferencias cruzadas A→B / B→A | Locks siempre en orden ascendente de id |
+| La misma transferencia enviada dos veces | Header `Idempotency-Key` + `UNIQUE` en la base |
+| Un bug futuro que olvide el lock | `CHECK (balance >= 0)` |
+
+El test de concurrencia falla sin el lock y pasa 20 de 20 corridas con él. Un reintento con la misma clave devuelve `200` + `Idempotent-Replay: true` y no mueve plata; la misma clave con otro monto o destino devuelve `422`, y sin el header, `400`.
+
+---
+
 ## 🎨 Patrones de diseño
 
 | Patrón | Dónde se aplica |
