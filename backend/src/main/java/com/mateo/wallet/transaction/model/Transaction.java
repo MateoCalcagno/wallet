@@ -7,7 +7,13 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "transactions")
+@Table(
+    name = "transactions",
+    indexes = {
+        @Index(name = "idx_transactions_source_wallet", columnList = "source_wallet_id"),
+        @Index(name = "idx_transactions_destination_wallet", columnList = "destination_wallet_id")
+    }
+)
 public class Transaction extends Auditable {
 
     @Id
