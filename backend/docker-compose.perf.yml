@@ -1,0 +1,50 @@
+name: wallet-perf
+
+services:
+  db:
+    image: postgres:16
+    container_name: wallet-perf-db
+    environment:
+      POSTGRES_DB: wallet
+      POSTGRES_USER: wallet
+      POSTGRES_PASSWORD: wallet
+    ports:
+      - "5433:5432"
+    volumes:
+      - perf_pgdata:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits: { cpus: "1", memory: 512m }
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wallet -d wallet"]
+      interval: 3s
+      retries: 20
+
+  app:
+    build: .
+    container_name: wallet-perf-app
+    depends_on:
+      db: { condition: service_healthy }
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: wallet
+      DB_USERNAME: wallet
+      DB_PASSWORD: wallet
+      JWT_SECRET: perf-secret-perf-secret-perf-secret-1234
+      BREVO_API_KEY: dummy
+      BREVO_SENDER_EMAIL: perf@test.com
+      BREVO_SENDER_NAME: Perf
+      SPRING_JPA_SHOW_SQL: "false"
+      LOGGING_LEVEL_ROOT: INFO
+      LOGGING_LEVEL_COM_MATEO_WALLET: INFO
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_MAIL: INFO
+      JAVA_TOOL_OPTIONS: "-Xms384m -Xmx384m"
+    deploy:
+      resources:
+        limits: { cpus: "2", memory: 700m }
+
+volumes:
+  perf_pgdata:
