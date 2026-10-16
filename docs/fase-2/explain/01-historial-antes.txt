@@ -1,0 +1,24 @@
+                                                                  QUERY PLAN                                                                   
+-----------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=6453.59..6455.92 rows=20 width=55) (actual time=1019.093..1024.022 rows=20 loops=1)
+   Buffers: shared hit=3305
+   ->  Gather Merge  (cost=6453.59..8387.83 rows=16578 width=55) (actual time=1019.051..1023.977 rows=20 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         Buffers: shared hit=3305
+         ->  Sort  (cost=5453.57..5474.29 rows=8289 width=55) (actual time=1001.610..1001.612 rows=16 loops=3)
+               Sort Key: created_at DESC
+               Sort Method: top-N heapsort  Memory: 29kB
+               Buffers: shared hit=3305
+               Worker 0:  Sort Method: top-N heapsort  Memory: 29kB
+               Worker 1:  Sort Method: top-N heapsort  Memory: 28kB
+               ->  Parallel Seq Scan on transactions  (cost=0.00..5233.00 rows=8289 width=55) (actual time=15.459..1000.648 rows=6686 loops=3)
+                     Filter: ((source_wallet_id = 1) OR (destination_wallet_id = 1))
+                     Rows Removed by Filter: 99981
+                     Buffers: shared hit=3233
+ Planning:
+   Buffers: shared hit=90
+ Planning Time: 21.948 ms
+ Execution Time: 1026.560 ms
+(20 rows)
+

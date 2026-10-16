@@ -1,0 +1,26 @@
+                                                                               QUERY PLAN                                                                               
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=4295.47..4295.52 rows=20 width=55) (actual time=5.703..5.764 rows=20 loops=1)
+   Buffers: shared hit=270 read=22
+   ->  Sort  (cost=4295.47..4344.59 rows=19646 width=55) (actual time=5.678..5.738 rows=20 loops=1)
+         Sort Key: created_at DESC
+         Sort Method: top-N heapsort  Memory: 29kB
+         Buffers: shared hit=270 read=22
+         ->  Bitmap Heap Scan on transactions  (cost=240.35..3772.70 rows=19646 width=55) (actual time=1.991..4.323 rows=20057 loops=1)
+               Recheck Cond: ((source_wallet_id = 1) OR (destination_wallet_id = 1))
+               Heap Blocks: exact=264
+               Buffers: shared hit=267 read=22
+               ->  BitmapOr  (cost=240.35..240.35 rows=19957 width=0) (actual time=1.933..1.992 rows=0 loops=1)
+                     Buffers: shared hit=3 read=22
+                     ->  Bitmap Index Scan on idx_transactions_source_wallet  (cost=0.00..114.82 rows=9920 width=0) (actual time=1.130..1.131 rows=10020 loops=1)
+                           Index Cond: (source_wallet_id = 1)
+                           Buffers: shared hit=3 read=11
+                     ->  Bitmap Index Scan on idx_transactions_destination_wallet  (cost=0.00..115.70 rows=10037 width=0) (actual time=0.434..0.434 rows=10037 loops=1)
+                           Index Cond: (destination_wallet_id = 1)
+                           Buffers: shared read=11
+ Planning:
+   Buffers: shared hit=119 read=2
+ Planning Time: 3.317 ms
+ Execution Time: 6.960 ms
+(22 rows)
+

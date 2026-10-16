@@ -1,0 +1,16 @@
+                              List of relations
+ Schema |            Name             | Type  | Owner  |        Table        
+--------+-----------------------------+-------+--------+---------------------
+ public | email_verifications_pkey    | index | wallet | email_verifications
+ public | idempotency_keys_pkey       | index | wallet | idempotency_keys
+ public | transactions_pkey           | index | wallet | transactions
+ public | uk382n96djdnuol32vcrthoxt2l | index | wallet | wallets
+ public | uk6aphui3g30h49muho4c91n0yl | index | wallet | users
+ public | uk6dotkott2kjsp8vw4d0m25fb7 | index | wallet | users
+ public | uk_idempotency_user_key     | index | wallet | idempotency_keys
+ public | ukq56tyvsq648twr8fretclj0p8 | index | wallet | wallets
+ public | uksswfdl9fq40xlkove1y5kc7kv | index | wallet | wallets
+ public | users_pkey                  | index | wallet | users
+ public | wallets_pkey                | index | wallet | wallets
+(11 rows)
+
