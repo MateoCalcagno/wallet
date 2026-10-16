@@ -62,9 +62,16 @@ public class TransactionServiceImpl implements TransactionService {
             throw new SelfTransferException();
         }
 
-        // BROKEN ON PURPOSE (experiment B): always lock sender first, no id ordering
-        Wallet fromWallet = walletResolver.lockById(fromId);
-        Wallet toWallet = walletResolver.lockById(toId);
+        // Se bloquean siempre en orden ascendente de id para evitar deadlocks
+        Wallet fromWallet;
+        Wallet toWallet;
+        if (fromId < toId) {
+            fromWallet = walletResolver.lockById(fromId);
+            toWallet = walletResolver.lockById(toId);
+        } else {
+            toWallet = walletResolver.lockById(toId);
+            fromWallet = walletResolver.lockById(fromId);
+        }
 
         fromWallet.withdraw(amount);
         toWallet.deposit(amount);
