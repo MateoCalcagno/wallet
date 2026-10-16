@@ -1,0 +1,7 @@
+Corridas en FAILURE: 5 de 5
+Deadlocks detectados por corrida:
+  corrida 1: 10
+  corrida 2: 11
+  corrida 3: 12
+  corrida 4: 11
+  corrida 5: 13
