@@ -50,10 +50,9 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public void transfer(String fromEmail, String identifier, BigDecimal amount, String idempotencyKey) {
-        // Anotar el ticket. Si ya existe, la base lanza DataIntegrityViolationException
-        // y esta transacción entera se revierte (no se mueve plata).
-        idempotencyKeyRepository.saveAndFlush(new IdempotencyKey(
-                fromEmail, idempotencyKey, TransferRequestHash.of(identifier, amount)));
+        // BROKEN ON PURPOSE (experiment C): idempotency key is never recorded
+        // idempotencyKeyRepository.saveAndFlush(new IdempotencyKey(
+        //         fromEmail, idempotencyKey, TransferRequestHash.of(identifier, amount)));
 
         Long fromId = walletResolver.resolveIdByEmail(fromEmail);
         Long toId = walletResolver.resolveIdByIdentifier(identifier);

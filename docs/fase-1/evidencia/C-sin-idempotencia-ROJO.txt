@@ -1,0 +1,65 @@
+=== corrida 1 ===
+[ERROR] Tests run: 4, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 30.85 s <<< FAILURE! -- in com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.sameKeyTwice_debitsOnlyOnce -- Time elapsed: 0.206 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: El segundo intento debe ser un replay, no una nueva transferencia ==> expected: <false> but was: <true>
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.manyParallelRequestsWithSameKey_debitOnlyOnce -- Time elapsed: 0.325 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Solo un request debe ejecutar la transferencia ==> expected: <1> but was: <8>
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.sameKeyDifferentPayload_isRejected -- Time elapsed: 0.145 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <com.mateo.wallet.common.exception.IdempotencyKeyReuseException> but was: <com.mateo.wallet.common.exception.InsufficientBalanceException>
+[ERROR]   TransferIdempotencyIntegrationTest.manyParallelRequestsWithSameKey_debitOnlyOnce:133 Solo un request debe ejecutar la transferencia ==> expected: <1> but was: <8>
+[ERROR]   TransferIdempotencyIntegrationTest.sameKeyDifferentPayload_isRejected:88 Unexpected exception type thrown, expected: <com.mateo.wallet.common.exception.IdempotencyKeyReuseException> but was: <com.mateo.wallet.common.exception.InsufficientBa
+[ERROR]   TransferIdempotencyIntegrationTest.sameKeyTwice_debitsOnlyOnce:76 El segundo intento debe ser un replay, no una nueva transferencia ==> expected: <false> but was: <true>
+[ERROR] Tests run: 4, Failures: 3, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE
+=== corrida 2 ===
+[ERROR] Tests run: 4, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 26.92 s <<< FAILURE! -- in com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.sameKeyTwice_debitsOnlyOnce -- Time elapsed: 0.367 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: El segundo intento debe ser un replay, no una nueva transferencia ==> expected: <false> but was: <true>
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.manyParallelRequestsWithSameKey_debitOnlyOnce -- Time elapsed: 0.310 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Solo un request debe ejecutar la transferencia ==> expected: <1> but was: <8>
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.sameKeyDifferentPayload_isRejected -- Time elapsed: 0.145 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <com.mateo.wallet.common.exception.IdempotencyKeyReuseException> but was: <com.mateo.wallet.common.exception.InsufficientBalanceException>
+[ERROR]   TransferIdempotencyIntegrationTest.manyParallelRequestsWithSameKey_debitOnlyOnce:133 Solo un request debe ejecutar la transferencia ==> expected: <1> but was: <8>
+[ERROR]   TransferIdempotencyIntegrationTest.sameKeyDifferentPayload_isRejected:88 Unexpected exception type thrown, expected: <com.mateo.wallet.common.exception.IdempotencyKeyReuseException> but was: <com.mateo.wallet.common.exception.InsufficientBa
+[ERROR]   TransferIdempotencyIntegrationTest.sameKeyTwice_debitsOnlyOnce:76 El segundo intento debe ser un replay, no una nueva transferencia ==> expected: <false> but was: <true>
+[ERROR] Tests run: 4, Failures: 3, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE
+=== corrida 3 ===
+[ERROR] Tests run: 4, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 25.88 s <<< FAILURE! -- in com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.sameKeyTwice_debitsOnlyOnce -- Time elapsed: 0.196 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: El segundo intento debe ser un replay, no una nueva transferencia ==> expected: <false> but was: <true>
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.manyParallelRequestsWithSameKey_debitOnlyOnce -- Time elapsed: 0.332 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Solo un request debe ejecutar la transferencia ==> expected: <1> but was: <8>
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.sameKeyDifferentPayload_isRejected -- Time elapsed: 0.141 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <com.mateo.wallet.common.exception.IdempotencyKeyReuseException> but was: <com.mateo.wallet.common.exception.InsufficientBalanceException>
+[ERROR]   TransferIdempotencyIntegrationTest.manyParallelRequestsWithSameKey_debitOnlyOnce:133 Solo un request debe ejecutar la transferencia ==> expected: <1> but was: <8>
+[ERROR]   TransferIdempotencyIntegrationTest.sameKeyDifferentPayload_isRejected:88 Unexpected exception type thrown, expected: <com.mateo.wallet.common.exception.IdempotencyKeyReuseException> but was: <com.mateo.wallet.common.exception.InsufficientBa
+[ERROR]   TransferIdempotencyIntegrationTest.sameKeyTwice_debitsOnlyOnce:76 El segundo intento debe ser un replay, no una nueva transferencia ==> expected: <false> but was: <true>
+[ERROR] Tests run: 4, Failures: 3, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE
+=== corrida 4 ===
+[ERROR] Tests run: 4, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 38.01 s <<< FAILURE! -- in com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.sameKeyTwice_debitsOnlyOnce -- Time elapsed: 0.171 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: El segundo intento debe ser un replay, no una nueva transferencia ==> expected: <false> but was: <true>
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.manyParallelRequestsWithSameKey_debitOnlyOnce -- Time elapsed: 0.269 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Solo un request debe ejecutar la transferencia ==> expected: <1> but was: <8>
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.sameKeyDifferentPayload_isRejected -- Time elapsed: 0.124 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <com.mateo.wallet.common.exception.IdempotencyKeyReuseException> but was: <com.mateo.wallet.common.exception.InsufficientBalanceException>
+[ERROR]   TransferIdempotencyIntegrationTest.manyParallelRequestsWithSameKey_debitOnlyOnce:133 Solo un request debe ejecutar la transferencia ==> expected: <1> but was: <8>
+[ERROR]   TransferIdempotencyIntegrationTest.sameKeyDifferentPayload_isRejected:88 Unexpected exception type thrown, expected: <com.mateo.wallet.common.exception.IdempotencyKeyReuseException> but was: <com.mateo.wallet.common.exception.InsufficientBa
+[ERROR]   TransferIdempotencyIntegrationTest.sameKeyTwice_debitsOnlyOnce:76 El segundo intento debe ser un replay, no una nueva transferencia ==> expected: <false> but was: <true>
+[ERROR] Tests run: 4, Failures: 3, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE
+=== corrida 5 ===
+[ERROR] Tests run: 4, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 24.56 s <<< FAILURE! -- in com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.sameKeyTwice_debitsOnlyOnce -- Time elapsed: 0.164 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: El segundo intento debe ser un replay, no una nueva transferencia ==> expected: <false> but was: <true>
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.manyParallelRequestsWithSameKey_debitOnlyOnce -- Time elapsed: 0.344 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Solo un request debe ejecutar la transferencia ==> expected: <1> but was: <8>
+[ERROR] com.mateo.wallet.transaction.TransferIdempotencyIntegrationTest.sameKeyDifferentPayload_isRejected -- Time elapsed: 0.116 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <com.mateo.wallet.common.exception.IdempotencyKeyReuseException> but was: <com.mateo.wallet.common.exception.InsufficientBalanceException>
+[ERROR]   TransferIdempotencyIntegrationTest.manyParallelRequestsWithSameKey_debitOnlyOnce:133 Solo un request debe ejecutar la transferencia ==> expected: <1> but was: <8>
+[ERROR]   TransferIdempotencyIntegrationTest.sameKeyDifferentPayload_isRejected:88 Unexpected exception type thrown, expected: <com.mateo.wallet.common.exception.IdempotencyKeyReuseException> but was: <com.mateo.wallet.common.exception.InsufficientBa
+[ERROR]   TransferIdempotencyIntegrationTest.sameKeyTwice_debitsOnlyOnce:76 El segundo intento debe ser un replay, no una nueva transferencia ==> expected: <false> but was: <true>
+[ERROR] Tests run: 4, Failures: 3, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE
