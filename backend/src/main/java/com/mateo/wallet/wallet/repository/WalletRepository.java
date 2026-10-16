@@ -26,7 +26,7 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
     @Query("select w.id from Wallet w where w.alias = :alias")
     Optional<Long> findIdByAlias(@Param("alias") String alias);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    //@Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select w from Wallet w where w.id = :id")
     Optional<Wallet> findByIdForUpdate(@Param("id") Long id);
 }

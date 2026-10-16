@@ -1,0 +1,44 @@
+=== corrida 1 ===
+[ERROR] Tests run: 3, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 32.25 s <<< FAILURE! -- in com.mateo.wallet.wallet.WalletConcurrencyIntegrationTest
+[ERROR] com.mateo.wallet.wallet.WalletConcurrencyIntegrationTest.concurrentWithdrawals_cannotSpendTheSameBalanceTwice -- Time elapsed: 1.111 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Con saldo 100 y retiros de 100, solo uno puede tener éxito ==> expected: <1> but was: <8>
+[ERROR] com.mateo.wallet.wallet.WalletConcurrencyIntegrationTest.crossedTransfers_keepTotalMoneyAndDoNotDeadlock -- Time elapsed: 0.684 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: La suma de saldos debe seguir siendo 2000, pero es 2040.00 ==> expected: <0> but was: <-1>
+[ERROR]   WalletConcurrencyIntegrationTest.concurrentWithdrawals_cannotSpendTheSameBalanceTwice:122 Con saldo 100 y retiros de 100, solo uno puede tener éxito ==> expected: <1> but was: <8>
+[ERROR]   WalletConcurrencyIntegrationTest.crossedTransfers_keepTotalMoneyAndDoNotDeadlock:143 La suma de saldos debe seguir siendo 2000, pero es 2040.00 ==> expected: <0> but was: <-1>
+[ERROR] Tests run: 3, Failures: 2, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE
+=== corrida 2 ===
+[ERROR] Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 29.16 s <<< FAILURE! -- in com.mateo.wallet.wallet.WalletConcurrencyIntegrationTest
+[ERROR] com.mateo.wallet.wallet.WalletConcurrencyIntegrationTest.concurrentWithdrawals_cannotSpendTheSameBalanceTwice -- Time elapsed: 2.214 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Con saldo 100 y retiros de 100, solo uno puede tener éxito ==> expected: <1> but was: <8>
+[ERROR]   WalletConcurrencyIntegrationTest.concurrentWithdrawals_cannotSpendTheSameBalanceTwice:122 Con saldo 100 y retiros de 100, solo uno puede tener éxito ==> expected: <1> but was: <8>
+[ERROR] Tests run: 3, Failures: 1, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE
+=== corrida 3 ===
+[ERROR] Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 27.62 s <<< FAILURE! -- in com.mateo.wallet.wallet.WalletConcurrencyIntegrationTest
+[ERROR] com.mateo.wallet.wallet.WalletConcurrencyIntegrationTest.concurrentWithdrawals_cannotSpendTheSameBalanceTwice -- Time elapsed: 1.924 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Con saldo 100 y retiros de 100, solo uno puede tener éxito ==> expected: <1> but was: <8>
+[ERROR]   WalletConcurrencyIntegrationTest.concurrentWithdrawals_cannotSpendTheSameBalanceTwice:122 Con saldo 100 y retiros de 100, solo uno puede tener éxito ==> expected: <1> but was: <8>
+[ERROR] Tests run: 3, Failures: 1, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE
+=== corrida 4 ===
+[ERROR] Tests run: 3, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 25.47 s <<< FAILURE! -- in com.mateo.wallet.wallet.WalletConcurrencyIntegrationTest
+[ERROR] com.mateo.wallet.wallet.WalletConcurrencyIntegrationTest.concurrentWithdrawals_cannotSpendTheSameBalanceTwice -- Time elapsed: 0.779 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Con saldo 100 y retiros de 100, solo uno puede tener éxito ==> expected: <1> but was: <8>
+[ERROR] com.mateo.wallet.wallet.WalletConcurrencyIntegrationTest.crossedTransfers_keepTotalMoneyAndDoNotDeadlock -- Time elapsed: 0.360 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: La suma de saldos debe seguir siendo 2000, pero es 1980.00 ==> expected: <0> but was: <1>
+[ERROR]   WalletConcurrencyIntegrationTest.concurrentWithdrawals_cannotSpendTheSameBalanceTwice:122 Con saldo 100 y retiros de 100, solo uno puede tener éxito ==> expected: <1> but was: <8>
+[ERROR]   WalletConcurrencyIntegrationTest.crossedTransfers_keepTotalMoneyAndDoNotDeadlock:143 La suma de saldos debe seguir siendo 2000, pero es 1980.00 ==> expected: <0> but was: <1>
+[ERROR] Tests run: 3, Failures: 2, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE
+=== corrida 5 ===
+[ERROR] Tests run: 3, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 30.95 s <<< FAILURE! -- in com.mateo.wallet.wallet.WalletConcurrencyIntegrationTest
+[ERROR] com.mateo.wallet.wallet.WalletConcurrencyIntegrationTest.concurrentWithdrawals_cannotSpendTheSameBalanceTwice -- Time elapsed: 0.949 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Con saldo 100 y retiros de 100, solo uno puede tener éxito ==> expected: <1> but was: <8>
+[ERROR] com.mateo.wallet.wallet.WalletConcurrencyIntegrationTest.crossedTransfers_keepTotalMoneyAndDoNotDeadlock -- Time elapsed: 0.384 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: La suma de saldos debe seguir siendo 2000, pero es 2010.00 ==> expected: <0> but was: <-1>
+[ERROR]   WalletConcurrencyIntegrationTest.concurrentWithdrawals_cannotSpendTheSameBalanceTwice:122 Con saldo 100 y retiros de 100, solo uno puede tener éxito ==> expected: <1> but was: <8>
+[ERROR]   WalletConcurrencyIntegrationTest.crossedTransfers_keepTotalMoneyAndDoNotDeadlock:143 La suma de saldos debe seguir siendo 2000, pero es 2010.00 ==> expected: <0> but was: <-1>
+[ERROR] Tests run: 3, Failures: 2, Errors: 0, Skipped: 0
+[INFO] BUILD FAILURE
