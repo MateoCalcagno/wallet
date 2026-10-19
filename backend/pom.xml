@@ -129,6 +129,23 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Tests de concurrencia contra PostgreSQL real -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <!-- ===== Build ===== -->
@@ -169,6 +186,16 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Tests: zona horaria fija (postgres:16 rechaza el alias America/Buenos_Aires).
+                 @{argLine} conserva el agente de JaCoCo. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>@{argLine} -Duser.timezone=UTC</argLine>
+                </configuration>
             </plugin>
 
             <!-- Compilador con soporte a Lombok -->

@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
+import com.mateo.wallet.support.PostgresTestConfig;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.concurrent.CountDownLatch;
@@ -19,9 +20,8 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ActiveProfiles("test")
-@TestPropertySource(properties =
-        "spring.datasource.url=jdbc:h2:mem:verificationdb;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=15000")
+@ActiveProfiles({"test", "test-pg"})
+@Import(PostgresTestConfig.class)
 class EmailVerificationAttemptsIntegrationTest {
 
     private static final String EMAIL = "mateo@test.com";

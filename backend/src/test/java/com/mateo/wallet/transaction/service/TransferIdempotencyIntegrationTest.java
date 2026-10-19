@@ -16,7 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
+import com.mateo.wallet.support.PostgresTestConfig;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.math.BigDecimal;
@@ -32,9 +33,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ActiveProfiles("test")
-@TestPropertySource(properties =
-        "spring.datasource.url=jdbc:h2:mem:idempotencydb;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=15000")
+@ActiveProfiles({"test", "test-pg"})
+@Import(PostgresTestConfig.class)
 class TransferIdempotencyIntegrationTest {
 
     @Autowired private IdempotentTransferService transferService;

@@ -15,7 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
+import com.mateo.wallet.support.PostgresTestConfig;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.math.BigDecimal;
@@ -41,9 +42,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * No usa @Transactional a nivel de test: cada hilo necesita su propia transacción real.
  */
 @SpringBootTest
-@ActiveProfiles("test")
-@TestPropertySource(properties =
-        "spring.datasource.url=jdbc:h2:mem:concurrencydb;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=15000")
+@ActiveProfiles({"test", "test-pg"})
+@Import(PostgresTestConfig.class)
 class WalletConcurrencyIntegrationTest {
 
     private static final int THREADS = 8;
